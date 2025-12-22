@@ -1,0 +1,814 @@
+{
+  "tableId": "D1",
+  "source": {
+    "tableId": "D1",
+    "csvFilename": "Table-D1-Sums-of-Subdomain-Standard-Scores-to-Domain-Standard-Scores.csv",
+    "csvSha256": "46d802560ce22d7133e584a7511434d8b2ab3f3b029db420b94c432ec7741f5d",
+    "generatedAt": "2025-12-22T20:08:56.056Z",
+    "generatorVersion": "dayc2-csv2json@1.0.0"
+  },
+  "rows": [
+    {
+      "csvRow": 2,
+      "sumRange1": {
+        "min": 100,
+        "max": 101
+      },
+      "standardScore1": {
+        "value": 49
+      },
+      "sumRange2": {
+        "min": 166,
+        "max": 167
+      },
+      "standardScore2": {
+        "value": 83
+      },
+      "sumRange3": {
+        "min": 227,
+        "max": 229
+      },
+      "standardScore3": {
+        "value": 117
+      }
+    },
+    {
+      "csvRow": 3,
+      "sumRange1": {
+        "value": 102
+      },
+      "standardScore1": {
+        "value": 50
+      },
+      "sumRange2": {
+        "min": 168,
+        "max": 170
+      },
+      "standardScore2": {
+        "value": 84
+      },
+      "sumRange3": {
+        "min": 230,
+        "max": 231
+      },
+      "standardScore3": {
+        "value": 118
+      }
+    },
+    {
+      "csvRow": 4,
+      "sumRange1": {
+        "value": 103
+      },
+      "standardScore1": {
+        "value": 51
+      },
+      "sumRange2": {
+        "min": 171,
+        "max": 172
+      },
+      "standardScore2": {
+        "value": 85
+      },
+      "sumRange3": {
+        "min": 232,
+        "max": 233
+      },
+      "standardScore3": {
+        "value": 119
+      }
+    },
+    {
+      "csvRow": 5,
+      "sumRange1": {
+        "min": 104,
+        "max": 105
+      },
+      "standardScore1": {
+        "value": 52
+      },
+      "sumRange2": {
+        "min": 173,
+        "max": 174
+      },
+      "standardScore2": {
+        "value": 86
+      },
+      "sumRange3": {
+        "min": 234,
+        "max": 235
+      },
+      "standardScore3": {
+        "value": 120
+      }
+    },
+    {
+      "csvRow": 6,
+      "sumRange1": {
+        "min": 106,
+        "max": 107
+      },
+      "standardScore1": {
+        "value": 53
+      },
+      "sumRange2": {
+        "min": 175,
+        "max": 176
+      },
+      "standardScore2": {
+        "value": 87
+      },
+      "sumRange3": {
+        "min": 236,
+        "max": 237
+      },
+      "standardScore3": {
+        "value": 121
+      }
+    },
+    {
+      "csvRow": 7,
+      "sumRange1": {
+        "min": 108,
+        "max": 109
+      },
+      "standardScore1": {
+        "value": 54
+      },
+      "sumRange2": {
+        "min": 177,
+        "max": 178
+      },
+      "standardScore2": {
+        "value": 88
+      },
+      "sumRange3": {
+        "min": 238,
+        "max": 239
+      },
+      "standardScore3": {
+        "value": 122
+      }
+    },
+    {
+      "csvRow": 8,
+      "sumRange1": {
+        "min": 110,
+        "max": 111
+      },
+      "standardScore1": {
+        "value": 55
+      },
+      "sumRange2": {
+        "min": 179,
+        "max": 180
+      },
+      "standardScore2": {
+        "value": 89
+      },
+      "sumRange3": {
+        "min": 240,
+        "max": 241
+      },
+      "standardScore3": {
+        "value": 123
+      }
+    },
+    {
+      "csvRow": 9,
+      "sumRange1": {
+        "min": 112,
+        "max": 113
+      },
+      "standardScore1": {
+        "value": 56
+      },
+      "sumRange2": {
+        "min": 181,
+        "max": 182
+      },
+      "standardScore2": {
+        "value": 90
+      },
+      "sumRange3": {
+        "min": 242,
+        "max": 243
+      },
+      "standardScore3": {
+        "value": 124
+      }
+    },
+    {
+      "csvRow": 10,
+      "sumRange1": {
+        "min": 114,
+        "max": 115
+      },
+      "standardScore1": {
+        "value": 57
+      },
+      "sumRange2": {
+        "min": 183,
+        "max": 184
+      },
+      "standardScore2": {
+        "value": 91
+      },
+      "sumRange3": {
+        "min": 244,
+        "max": 245
+      },
+      "standardScore3": {
+        "value": 125
+      }
+    },
+    {
+      "csvRow": 11,
+      "sumRange1": {
+        "min": 116,
+        "max": 117
+      },
+      "standardScore1": {
+        "value": 58
+      },
+      "sumRange2": {
+        "min": 185,
+        "max": 186
+      },
+      "standardScore2": {
+        "value": 92
+      },
+      "sumRange3": {
+        "min": 246,
+        "max": 247
+      },
+      "standardScore3": {
+        "value": 126
+      }
+    },
+    {
+      "csvRow": 12,
+      "sumRange1": {
+        "min": 118,
+        "max": 119
+      },
+      "standardScore1": {
+        "value": 59
+      },
+      "sumRange2": {
+        "min": 187,
+        "max": 188
+      },
+      "standardScore2": {
+        "value": 93
+      },
+      "sumRange3": {
+        "min": 248,
+        "max": 249
+      },
+      "standardScore3": {
+        "value": 127
+      }
+    },
+    {
+      "csvRow": 13,
+      "sumRange1": {
+        "min": 120,
+        "max": 121
+      },
+      "standardScore1": {
+        "value": 60
+      },
+      "sumRange2": {
+        "min": 189,
+        "max": 190
+      },
+      "standardScore2": {
+        "value": 94
+      },
+      "sumRange3": {
+        "min": 250,
+        "max": 251
+      },
+      "standardScore3": {
+        "value": 128
+      }
+    },
+    {
+      "csvRow": 14,
+      "sumRange1": {
+        "min": 122,
+        "max": 123
+      },
+      "standardScore1": {
+        "value": 61
+      },
+      "sumRange2": {
+        "min": 191,
+        "max": 192
+      },
+      "standardScore2": {
+        "value": 95
+      },
+      "sumRange3": {
+        "min": 252,
+        "max": 253
+      },
+      "standardScore3": {
+        "value": 129
+      }
+    },
+    {
+      "csvRow": 15,
+      "sumRange1": {
+        "min": 124,
+        "max": 125
+      },
+      "standardScore1": {
+        "value": 62
+      },
+      "sumRange2": {
+        "min": 193,
+        "max": 195
+      },
+      "standardScore2": {
+        "value": 96
+      },
+      "sumRange3": {
+        "min": 254,
+        "max": 255
+      },
+      "standardScore3": {
+        "value": 130
+      }
+    },
+    {
+      "csvRow": 16,
+      "sumRange1": {
+        "min": 126,
+        "max": 127
+      },
+      "standardScore1": {
+        "value": 63
+      },
+      "sumRange2": {
+        "min": 196,
+        "max": 197
+      },
+      "standardScore2": {
+        "value": 97
+      },
+      "sumRange3": {
+        "value": 256
+      },
+      "standardScore3": {
+        "value": 131
+      }
+    },
+    {
+      "csvRow": 17,
+      "sumRange1": {
+        "min": 128,
+        "max": 129
+      },
+      "standardScore1": {
+        "value": 64
+      },
+      "sumRange2": {
+        "value": 198
+      },
+      "standardScore2": {
+        "value": 98
+      },
+      "sumRange3": {
+        "min": 257,
+        "max": 258
+      },
+      "standardScore3": {
+        "value": 132
+      }
+    },
+    {
+      "csvRow": 18,
+      "sumRange1": {
+        "min": 130,
+        "max": 131
+      },
+      "standardScore1": {
+        "value": 65
+      },
+      "sumRange2": {
+        "value": 199
+      },
+      "standardScore2": {
+        "value": 99
+      },
+      "sumRange3": {
+        "min": 259,
+        "max": 260
+      },
+      "standardScore3": {
+        "value": 133
+      }
+    },
+    {
+      "csvRow": 19,
+      "sumRange1": {
+        "min": 132,
+        "max": 133
+      },
+      "standardScore1": {
+        "value": 66
+      },
+      "sumRange2": {
+        "value": 200
+      },
+      "standardScore2": {
+        "value": 100
+      },
+      "sumRange3": {
+        "min": 261,
+        "max": 262
+      },
+      "standardScore3": {
+        "value": 134
+      }
+    },
+    {
+      "csvRow": 20,
+      "sumRange1": {
+        "min": 134,
+        "max": 135
+      },
+      "standardScore1": {
+        "value": 67
+      },
+      "sumRange2": {
+        "value": 201
+      },
+      "standardScore2": {
+        "value": 101
+      },
+      "sumRange3": {
+        "min": 263,
+        "max": 264
+      },
+      "standardScore3": {
+        "value": 135
+      }
+    },
+    {
+      "csvRow": 21,
+      "sumRange1": {
+        "min": 136,
+        "max": 137
+      },
+      "standardScore1": {
+        "value": 68
+      },
+      "sumRange2": {
+        "value": 202
+      },
+      "standardScore2": {
+        "value": 102
+      },
+      "sumRange3": {
+        "min": 265,
+        "max": 266
+      },
+      "standardScore3": {
+        "value": 136
+      }
+    },
+    {
+      "csvRow": 22,
+      "sumRange1": {
+        "min": 138,
+        "max": 139
+      },
+      "standardScore1": {
+        "value": 69
+      },
+      "sumRange2": {
+        "min": 203,
+        "max": 204
+      },
+      "standardScore2": {
+        "value": 103
+      },
+      "sumRange3": {
+        "min": 267,
+        "max": 268
+      },
+      "standardScore3": {
+        "value": 137
+      }
+    },
+    {
+      "csvRow": 23,
+      "sumRange1": {
+        "min": 140,
+        "max": 141
+      },
+      "standardScore1": {
+        "value": 70
+      },
+      "sumRange2": {
+        "value": 205
+      },
+      "standardScore2": {
+        "value": 104
+      },
+      "sumRange3": {
+        "min": 269,
+        "max": 270
+      },
+      "standardScore3": {
+        "value": 138
+      }
+    },
+    {
+      "csvRow": 24,
+      "sumRange1": {
+        "min": 142,
+        "max": 143
+      },
+      "standardScore1": {
+        "value": 71
+      },
+      "sumRange2": {
+        "min": 206,
+        "max": 207
+      },
+      "standardScore2": {
+        "value": 105
+      },
+      "sumRange3": {
+        "min": 271,
+        "max": 272
+      },
+      "standardScore3": {
+        "value": 139
+      }
+    },
+    {
+      "csvRow": 25,
+      "sumRange1": {
+        "value": 144
+      },
+      "standardScore1": {
+        "value": 72
+      },
+      "sumRange2": {
+        "min": 208,
+        "max": 209
+      },
+      "standardScore2": {
+        "value": 106
+      },
+      "sumRange3": {
+        "min": 273,
+        "max": 274
+      },
+      "standardScore3": {
+        "value": 140
+      }
+    },
+    {
+      "csvRow": 26,
+      "sumRange1": {
+        "min": 145,
+        "max": 146
+      },
+      "standardScore1": {
+        "value": 73
+      },
+      "sumRange2": {
+        "min": 210,
+        "max": 211
+      },
+      "standardScore2": {
+        "value": 107
+      },
+      "sumRange3": {
+        "min": 275,
+        "max": 276
+      },
+      "standardScore3": {
+        "value": 141
+      }
+    },
+    {
+      "csvRow": 27,
+      "sumRange1": {
+        "min": 147,
+        "max": 148
+      },
+      "standardScore1": {
+        "value": 74
+      },
+      "sumRange2": {
+        "value": 212
+      },
+      "standardScore2": {
+        "value": 108
+      },
+      "sumRange3": {
+        "min": 277,
+        "max": 278
+      },
+      "standardScore3": {
+        "value": 142
+      }
+    },
+    {
+      "csvRow": 28,
+      "sumRange1": {
+        "min": 149,
+        "max": 150
+      },
+      "standardScore1": {
+        "value": 75
+      },
+      "sumRange2": {
+        "min": 213,
+        "max": 214
+      },
+      "standardScore2": {
+        "value": 109
+      },
+      "sumRange3": {
+        "min": 279,
+        "max": 280
+      },
+      "standardScore3": {
+        "value": 143
+      }
+    },
+    {
+      "csvRow": 29,
+      "sumRange1": {
+        "value": 151
+      },
+      "standardScore1": {
+        "value": 76
+      },
+      "sumRange2": {
+        "min": 215,
+        "max": 216
+      },
+      "standardScore2": {
+        "value": 110
+      },
+      "sumRange3": {
+        "min": 281,
+        "max": 282
+      },
+      "standardScore3": {
+        "value": 144
+      }
+    },
+    {
+      "csvRow": 30,
+      "sumRange1": {
+        "min": 152,
+        "max": 153
+      },
+      "standardScore1": {
+        "value": 77
+      },
+      "sumRange2": {
+        "min": 217,
+        "max": 218
+      },
+      "standardScore2": {
+        "value": 111
+      },
+      "sumRange3": {
+        "min": 283,
+        "max": 284
+      },
+      "standardScore3": {
+        "value": 145
+      }
+    },
+    {
+      "csvRow": 31,
+      "sumRange1": {
+        "min": 154,
+        "max": 155
+      },
+      "standardScore1": {
+        "value": 78
+      },
+      "sumRange2": {
+        "value": 219
+      },
+      "standardScore2": {
+        "value": 112
+      },
+      "sumRange3": {
+        "min": 285,
+        "max": 286
+      },
+      "standardScore3": {
+        "value": 146
+      }
+    },
+    {
+      "csvRow": 32,
+      "sumRange1": {
+        "min": 156,
+        "max": 158
+      },
+      "standardScore1": {
+        "value": 79
+      },
+      "sumRange2": {
+        "min": 220,
+        "max": 221
+      },
+      "standardScore2": {
+        "value": 113
+      },
+      "sumRange3": {
+        "min": 287,
+        "max": 288
+      },
+      "standardScore3": {
+        "value": 147
+      }
+    },
+    {
+      "csvRow": 33,
+      "sumRange1": {
+        "min": 159,
+        "max": 160
+      },
+      "standardScore1": {
+        "value": 80
+      },
+      "sumRange2": {
+        "min": 222,
+        "max": 223
+      },
+      "standardScore2": {
+        "value": 114
+      },
+      "sumRange3": {
+        "min": 289,
+        "max": 292
+      },
+      "standardScore3": {
+        "value": 148
+      }
+    },
+    {
+      "csvRow": 34,
+      "sumRange1": {
+        "min": 161,
+        "max": 163
+      },
+      "standardScore1": {
+        "value": 81
+      },
+      "sumRange2": {
+        "value": 224
+      },
+      "standardScore2": {
+        "value": 115
+      },
+      "sumRange3": {
+        "min": 293,
+        "max": 296
+      },
+      "standardScore3": {
+        "value": 149
+      }
+    },
+    {
+      "csvRow": 35,
+      "sumRange1": {
+        "min": 164,
+        "max": 165
+      },
+      "standardScore1": {
+        "value": 82
+      },
+      "sumRange2": {
+        "min": 225,
+        "max": 226
+      },
+      "standardScore2": {
+        "value": 116
+      },
+      "sumRange3": {
+        "min": 297,
+        "max": 300
+      },
+      "standardScore3": {
+        "value": 150
+      }
+    }
+  ]
+}

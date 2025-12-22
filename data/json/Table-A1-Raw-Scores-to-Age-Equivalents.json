@@ -1,0 +1,1960 @@
+{
+  "tableId": "A1",
+  "source": {
+    "tableId": "A1",
+    "csvFilename": "Table-A1-Raw-Scores-to-Age-Equivalents.csv",
+    "csvSha256": "dfc0b0365e0ba1c3a2cc3ead24a851bdc111a3019a0b539cde8105680b95e851",
+    "generatedAt": "2025-12-22T20:08:56.040Z",
+    "generatorVersion": "dayc2-csv2json@1.0.0"
+  },
+  "rows": [
+    {
+      "csvRow": 2,
+      "ageMonths": {
+        "bound": "lt",
+        "value": 1
+      },
+      "cognitive": {
+        "min": 0,
+        "max": 4
+      },
+      "communication": {
+        "min": 0,
+        "max": 7
+      },
+      "receptiveLanguage": {
+        "min": 0,
+        "max": 4
+      },
+      "expressiveLanguage": {
+        "min": 0,
+        "max": 3
+      },
+      "socialEmotional": {
+        "min": 0,
+        "max": 6
+      },
+      "physicalDevelopment": {
+        "min": 0,
+        "max": 8
+      },
+      "grossMotor": {
+        "min": 0,
+        "max": 5
+      },
+      "fineMotor": {
+        "min": 0,
+        "max": 3
+      },
+      "adaptiveBehavior": {
+        "min": 0,
+        "max": 6
+      }
+    },
+    {
+      "csvRow": 3,
+      "ageMonths": {
+        "value": 1
+      },
+      "cognitive": {
+        "min": 5,
+        "max": 6
+      },
+      "communication": {
+        "min": 8,
+        "max": 9
+      },
+      "receptiveLanguage": {
+        "value": 5
+      },
+      "expressiveLanguage": {
+        "value": 4
+      },
+      "socialEmotional": {
+        "value": 7
+      },
+      "physicalDevelopment": {
+        "min": 9,
+        "max": 10
+      },
+      "grossMotor": {
+        "value": 6
+      },
+      "fineMotor": {
+        "value": 4
+      },
+      "adaptiveBehavior": {
+        "value": 7
+      }
+    },
+    {
+      "csvRow": 4,
+      "ageMonths": {
+        "value": 2
+      },
+      "cognitive": {
+        "min": 7,
+        "max": 8
+      },
+      "communication": {
+        "value": 10
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 5
+      },
+      "socialEmotional": {
+        "value": 8
+      },
+      "physicalDevelopment": {
+        "min": 11,
+        "max": 13
+      },
+      "grossMotor": {
+        "min": 7,
+        "max": 8
+      },
+      "fineMotor": {
+        "value": 5
+      },
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 5,
+      "ageMonths": {
+        "value": 3
+      },
+      "cognitive": {
+        "value": 9
+      },
+      "communication": {
+        "value": 11
+      },
+      "receptiveLanguage": {
+        "value": 6
+      },
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 9
+      },
+      "physicalDevelopment": {
+        "min": 14,
+        "max": 16
+      },
+      "grossMotor": {
+        "min": 9,
+        "max": 10
+      },
+      "fineMotor": {
+        "value": 6
+      },
+      "adaptiveBehavior": {
+        "value": 8
+      }
+    },
+    {
+      "csvRow": 6,
+      "ageMonths": {
+        "value": 4
+      },
+      "cognitive": {
+        "min": 10,
+        "max": 11
+      },
+      "communication": {
+        "value": 12
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 6
+      },
+      "socialEmotional": {
+        "value": 10
+      },
+      "physicalDevelopment": {
+        "min": 17,
+        "max": 20
+      },
+      "grossMotor": {
+        "min": 11,
+        "max": 13
+      },
+      "fineMotor": {
+        "value": 7
+      },
+      "adaptiveBehavior": {
+        "value": 9
+      }
+    },
+    {
+      "csvRow": 7,
+      "ageMonths": {
+        "value": 5
+      },
+      "cognitive": {
+        "min": 12,
+        "max": 13
+      },
+      "communication": {
+        "value": 13
+      },
+      "receptiveLanguage": {
+        "value": 7
+      },
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "min": 11,
+        "max": 12
+      },
+      "physicalDevelopment": {
+        "min": 21,
+        "max": 24
+      },
+      "grossMotor": {
+        "min": 14,
+        "max": 15
+      },
+      "fineMotor": {
+        "min": 8,
+        "max": 9
+      },
+      "adaptiveBehavior": {
+        "value": 10
+      }
+    },
+    {
+      "csvRow": 8,
+      "ageMonths": {
+        "value": 6
+      },
+      "cognitive": {
+        "min": 14,
+        "max": 15
+      },
+      "communication": {
+        "value": 14
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 7
+      },
+      "socialEmotional": {
+        "value": 13
+      },
+      "physicalDevelopment": {
+        "min": 25,
+        "max": 28
+      },
+      "grossMotor": {
+        "min": 16,
+        "max": 17
+      },
+      "fineMotor": {
+        "min": 10,
+        "max": 11
+      },
+      "adaptiveBehavior": {
+        "value": 11
+      }
+    },
+    {
+      "csvRow": 9,
+      "ageMonths": {
+        "value": 7
+      },
+      "cognitive": {
+        "value": 16
+      },
+      "communication": {
+        "min": 15,
+        "max": 16
+      },
+      "receptiveLanguage": {
+        "value": 8
+      },
+      "expressiveLanguage": {
+        "value": 8
+      },
+      "socialEmotional": {
+        "min": 14,
+        "max": 15
+      },
+      "physicalDevelopment": {
+        "min": 29,
+        "max": 32
+      },
+      "grossMotor": {
+        "min": 18,
+        "max": 20
+      },
+      "fineMotor": {
+        "value": 12
+      },
+      "adaptiveBehavior": {
+        "min": 12,
+        "max": 13
+      }
+    },
+    {
+      "csvRow": 10,
+      "ageMonths": {
+        "value": 8
+      },
+      "cognitive": {
+        "value": 17
+      },
+      "communication": {
+        "value": 17
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 9
+      },
+      "socialEmotional": {
+        "value": 16
+      },
+      "physicalDevelopment": {
+        "min": 33,
+        "max": 36
+      },
+      "grossMotor": {
+        "min": 21,
+        "max": 23
+      },
+      "fineMotor": {
+        "value": 13
+      },
+      "adaptiveBehavior": {
+        "value": 14
+      }
+    },
+    {
+      "csvRow": 11,
+      "ageMonths": {
+        "value": 9
+      },
+      "cognitive": {
+        "min": 18,
+        "max": 19
+      },
+      "communication": {
+        "min": 18,
+        "max": 19
+      },
+      "receptiveLanguage": {
+        "value": 9
+      },
+      "expressiveLanguage": {
+        "value": 10
+      },
+      "socialEmotional": {
+        "min": 17,
+        "max": 18
+      },
+      "physicalDevelopment": {
+        "min": 37,
+        "max": 39
+      },
+      "grossMotor": {
+        "min": 24,
+        "max": 25
+      },
+      "fineMotor": {
+        "value": 14
+      },
+      "adaptiveBehavior": {
+        "value": 15
+      }
+    },
+    {
+      "csvRow": 12,
+      "ageMonths": {
+        "value": 10
+      },
+      "cognitive": {
+        "min": 20,
+        "max": 21
+      },
+      "communication": {
+        "min": 20,
+        "max": 22
+      },
+      "receptiveLanguage": {
+        "min": 10,
+        "max": 11
+      },
+      "expressiveLanguage": {
+        "value": 11
+      },
+      "socialEmotional": {
+        "min": 19,
+        "max": 20
+      },
+      "physicalDevelopment": {
+        "min": 40,
+        "max": 43
+      },
+      "grossMotor": {
+        "min": 26,
+        "max": 28
+      },
+      "fineMotor": {
+        "value": 15
+      },
+      "adaptiveBehavior": {
+        "min": 16,
+        "max": 17
+      }
+    },
+    {
+      "csvRow": 13,
+      "ageMonths": {
+        "value": 11
+      },
+      "cognitive": {
+        "min": 22,
+        "max": 23
+      },
+      "communication": {
+        "value": 23
+      },
+      "receptiveLanguage": {
+        "value": 12
+      },
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 21
+      },
+      "physicalDevelopment": {
+        "min": 44,
+        "max": 45
+      },
+      "grossMotor": {
+        "min": 29,
+        "max": 30
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 18
+      }
+    },
+    {
+      "csvRow": 14,
+      "ageMonths": {
+        "value": 12
+      },
+      "cognitive": {
+        "value": 24
+      },
+      "communication": {
+        "min": 24,
+        "max": 25
+      },
+      "receptiveLanguage": {
+        "value": 13
+      },
+      "expressiveLanguage": {
+        "value": 12
+      },
+      "socialEmotional": {
+        "value": 22
+      },
+      "physicalDevelopment": {
+        "min": 46,
+        "max": 47
+      },
+      "grossMotor": {
+        "value": 31
+      },
+      "fineMotor": {
+        "value": 16
+      },
+      "adaptiveBehavior": {
+        "value": 19
+      }
+    },
+    {
+      "csvRow": 15,
+      "ageMonths": {
+        "value": 13
+      },
+      "cognitive": {
+        "min": 25,
+        "max": 26
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 23
+      },
+      "physicalDevelopment": {
+        "value": 48
+      },
+      "grossMotor": {
+        "value": 32
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 20
+      }
+    },
+    {
+      "csvRow": 16,
+      "ageMonths": {
+        "value": 14
+      },
+      "cognitive": {
+        "value": 27
+      },
+      "communication": {
+        "min": 26,
+        "max": 27
+      },
+      "receptiveLanguage": {
+        "value": 14
+      },
+      "expressiveLanguage": {
+        "value": 13
+      },
+      "socialEmotional": {
+        "value": 24
+      },
+      "physicalDevelopment": {
+        "value": 49
+      },
+      "grossMotor": {
+        "value": 33
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 17,
+      "ageMonths": {
+        "value": 15
+      },
+      "cognitive": {
+        "value": 28
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 25
+      },
+      "physicalDevelopment": {
+        "min": 50,
+        "max": 51
+      },
+      "grossMotor": {
+        "value": 34
+      },
+      "fineMotor": {
+        "value": 17
+      },
+      "adaptiveBehavior": {
+        "value": 21
+      }
+    },
+    {
+      "csvRow": 18,
+      "ageMonths": {
+        "value": 16
+      },
+      "cognitive": null,
+      "communication": {
+        "min": 28,
+        "max": 29
+      },
+      "receptiveLanguage": {
+        "value": 15
+      },
+      "expressiveLanguage": {
+        "value": 14
+      },
+      "socialEmotional": {
+        "value": 26
+      },
+      "physicalDevelopment": {
+        "value": 52
+      },
+      "grossMotor": {
+        "value": 35
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 19,
+      "ageMonths": {
+        "value": 17
+      },
+      "cognitive": {
+        "value": 29
+      },
+      "communication": {
+        "min": 30,
+        "max": 31
+      },
+      "receptiveLanguage": {
+        "value": 16
+      },
+      "expressiveLanguage": {
+        "value": 15
+      },
+      "socialEmotional": {
+        "value": 27
+      },
+      "physicalDevelopment": {
+        "min": 53,
+        "max": 54
+      },
+      "grossMotor": {
+        "value": 36
+      },
+      "fineMotor": {
+        "value": 18
+      },
+      "adaptiveBehavior": {
+        "value": 22
+      }
+    },
+    {
+      "csvRow": 20,
+      "ageMonths": {
+        "value": 18
+      },
+      "cognitive": {
+        "value": 30
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 28
+      },
+      "physicalDevelopment": {
+        "value": 55
+      },
+      "grossMotor": {
+        "value": 37
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 23
+      }
+    },
+    {
+      "csvRow": 21,
+      "ageMonths": {
+        "value": 19
+      },
+      "cognitive": null,
+      "communication": {
+        "value": 32
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 16
+      },
+      "socialEmotional": {
+        "value": 28
+      },
+      "physicalDevelopment": {
+        "value": 56
+      },
+      "grossMotor": {
+        "value": 38
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 22,
+      "ageMonths": {
+        "value": 20
+      },
+      "cognitive": {
+        "value": 31
+      },
+      "communication": {
+        "min": 33,
+        "max": 34
+      },
+      "receptiveLanguage": {
+        "value": 17
+      },
+      "expressiveLanguage": {
+        "value": 17
+      },
+      "socialEmotional": {
+        "value": 29
+      },
+      "physicalDevelopment": {
+        "min": 57,
+        "max": 58
+      },
+      "grossMotor": {
+        "value": 39
+      },
+      "fineMotor": {
+        "value": 19
+      },
+      "adaptiveBehavior": {
+        "value": 24
+      }
+    },
+    {
+      "csvRow": 23,
+      "ageMonths": {
+        "value": 21
+      },
+      "cognitive": {
+        "value": 32
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 30
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 25
+      }
+    },
+    {
+      "csvRow": 24,
+      "ageMonths": {
+        "value": 22
+      },
+      "cognitive": null,
+      "communication": {
+        "value": 35
+      },
+      "receptiveLanguage": {
+        "value": 18
+      },
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 31
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 26
+      }
+    },
+    {
+      "csvRow": 25,
+      "ageMonths": {
+        "value": 23
+      },
+      "cognitive": {
+        "value": 33
+      },
+      "communication": {
+        "min": 36,
+        "max": 37
+      },
+      "receptiveLanguage": {
+        "value": 19
+      },
+      "expressiveLanguage": {
+        "value": 18
+      },
+      "socialEmotional": {
+        "value": 32
+      },
+      "physicalDevelopment": {
+        "min": 59,
+        "max": 60
+      },
+      "grossMotor": {
+        "value": 40
+      },
+      "fineMotor": {
+        "value": 20
+      },
+      "adaptiveBehavior": {
+        "value": 27
+      }
+    },
+    {
+      "csvRow": 26,
+      "ageMonths": {
+        "value": 24
+      },
+      "cognitive": {
+        "value": 34
+      },
+      "communication": {
+        "value": 38
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 19
+      },
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 28
+      }
+    },
+    {
+      "csvRow": 27,
+      "ageMonths": {
+        "value": 25
+      },
+      "cognitive": {
+        "value": 35
+      },
+      "communication": {
+        "min": 39,
+        "max": 40
+      },
+      "receptiveLanguage": {
+        "value": 20
+      },
+      "expressiveLanguage": {
+        "value": 20
+      },
+      "socialEmotional": {
+        "value": 33
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 29
+      }
+    },
+    {
+      "csvRow": 28,
+      "ageMonths": {
+        "value": 26
+      },
+      "cognitive": {
+        "value": 36
+      },
+      "communication": {
+        "min": 41,
+        "max": 42
+      },
+      "receptiveLanguage": {
+        "value": 21
+      },
+      "expressiveLanguage": {
+        "value": 21
+      },
+      "socialEmotional": {
+        "value": 34
+      },
+      "physicalDevelopment": {
+        "value": 61
+      },
+      "grossMotor": {
+        "value": 41
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 30
+      }
+    },
+    {
+      "csvRow": 29,
+      "ageMonths": {
+        "value": 27
+      },
+      "cognitive": {
+        "value": 37
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 35
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 31
+      }
+    },
+    {
+      "csvRow": 30,
+      "ageMonths": {
+        "value": 28
+      },
+      "cognitive": null,
+      "communication": {
+        "min": 43,
+        "max": 44
+      },
+      "receptiveLanguage": {
+        "value": 22
+      },
+      "expressiveLanguage": {
+        "value": 22
+      },
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 32
+      }
+    },
+    {
+      "csvRow": 31,
+      "ageMonths": {
+        "value": 29
+      },
+      "cognitive": {
+        "value": 38
+      },
+      "communication": {
+        "min": 45,
+        "max": 46
+      },
+      "receptiveLanguage": {
+        "value": 23
+      },
+      "expressiveLanguage": {
+        "value": 23
+      },
+      "socialEmotional": {
+        "value": 36
+      },
+      "physicalDevelopment": {
+        "min": 62,
+        "max": 63
+      },
+      "grossMotor": {
+        "value": 42
+      },
+      "fineMotor": {
+        "value": 21
+      },
+      "adaptiveBehavior": {
+        "value": 33
+      }
+    },
+    {
+      "csvRow": 32,
+      "ageMonths": {
+        "value": 30
+      },
+      "cognitive": {
+        "value": 39
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 37
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 33,
+      "ageMonths": {
+        "value": 31
+      },
+      "cognitive": {
+        "value": 40
+      },
+      "communication": {
+        "value": 47
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 24
+      },
+      "socialEmotional": {
+        "value": 38
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 34
+      }
+    },
+    {
+      "csvRow": 34,
+      "ageMonths": {
+        "value": 32
+      },
+      "cognitive": {
+        "value": 41
+      },
+      "communication": {
+        "min": 48,
+        "max": 49
+      },
+      "receptiveLanguage": {
+        "value": 24
+      },
+      "expressiveLanguage": {
+        "value": 25
+      },
+      "socialEmotional": {
+        "value": 39
+      },
+      "physicalDevelopment": {
+        "value": 64
+      },
+      "grossMotor": {
+        "value": 43
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 35
+      }
+    },
+    {
+      "csvRow": 35,
+      "ageMonths": {
+        "value": 33
+      },
+      "cognitive": {
+        "value": 42
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 36
+      }
+    },
+    {
+      "csvRow": 36,
+      "ageMonths": {
+        "value": 34
+      },
+      "cognitive": {
+        "value": 43
+      },
+      "communication": {
+        "min": 50,
+        "max": 51
+      },
+      "receptiveLanguage": {
+        "value": 25
+      },
+      "expressiveLanguage": {
+        "value": 26
+      },
+      "socialEmotional": {
+        "value": 40
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 37
+      }
+    },
+    {
+      "csvRow": 37,
+      "ageMonths": {
+        "value": 35
+      },
+      "cognitive": {
+        "value": 44
+      },
+      "communication": {
+        "min": 52,
+        "max": 53
+      },
+      "receptiveLanguage": {
+        "value": 26
+      },
+      "expressiveLanguage": {
+        "value": 27
+      },
+      "socialEmotional": {
+        "value": 41
+      },
+      "physicalDevelopment": {
+        "value": 65
+      },
+      "grossMotor": null,
+      "fineMotor": {
+        "value": 22
+      },
+      "adaptiveBehavior": {
+        "value": 38
+      }
+    },
+    {
+      "csvRow": 38,
+      "ageMonths": {
+        "value": 36
+      },
+      "cognitive": {
+        "value": 45
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 42
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 39,
+      "ageMonths": {
+        "value": 37
+      },
+      "cognitive": {
+        "value": 46
+      },
+      "communication": {
+        "value": 54
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 28
+      },
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 39
+      }
+    },
+    {
+      "csvRow": 40,
+      "ageMonths": {
+        "value": 38
+      },
+      "cognitive": {
+        "value": 47
+      },
+      "communication": {
+        "min": 55,
+        "max": 56
+      },
+      "receptiveLanguage": {
+        "value": 27
+      },
+      "expressiveLanguage": {
+        "value": 29
+      },
+      "socialEmotional": {
+        "value": 43
+      },
+      "physicalDevelopment": {
+        "value": 66
+      },
+      "grossMotor": {
+        "value": 44
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 40
+      }
+    },
+    {
+      "csvRow": 41,
+      "ageMonths": {
+        "value": 39
+      },
+      "cognitive": {
+        "value": 48
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 44
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 41
+      }
+    },
+    {
+      "csvRow": 42,
+      "ageMonths": {
+        "value": 40
+      },
+      "cognitive": {
+        "value": 49
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 45
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 42
+      }
+    },
+    {
+      "csvRow": 43,
+      "ageMonths": {
+        "value": 41
+      },
+      "cognitive": {
+        "min": 50,
+        "max": 51
+      },
+      "communication": {
+        "min": 57,
+        "max": 58
+      },
+      "receptiveLanguage": {
+        "value": 28
+      },
+      "expressiveLanguage": {
+        "value": 30
+      },
+      "socialEmotional": {
+        "value": 46
+      },
+      "physicalDevelopment": {
+        "value": 67
+      },
+      "grossMotor": null,
+      "fineMotor": {
+        "value": 23
+      },
+      "adaptiveBehavior": {
+        "value": 43
+      }
+    },
+    {
+      "csvRow": 44,
+      "ageMonths": {
+        "value": 42
+      },
+      "cognitive": {
+        "value": 52
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 45,
+      "ageMonths": {
+        "value": 43
+      },
+      "cognitive": {
+        "value": 53
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 47
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 44
+      }
+    },
+    {
+      "csvRow": 46,
+      "ageMonths": {
+        "value": 44
+      },
+      "cognitive": {
+        "min": 54,
+        "max": 55
+      },
+      "communication": {
+        "min": 59,
+        "max": 60
+      },
+      "receptiveLanguage": {
+        "value": 29
+      },
+      "expressiveLanguage": {
+        "value": 31
+      },
+      "socialEmotional": {
+        "value": 48
+      },
+      "physicalDevelopment": {
+        "min": 68,
+        "max": 69
+      },
+      "grossMotor": {
+        "value": 45
+      },
+      "fineMotor": {
+        "value": 24
+      },
+      "adaptiveBehavior": {
+        "value": 45
+      }
+    },
+    {
+      "csvRow": 47,
+      "ageMonths": {
+        "value": 45
+      },
+      "cognitive": {
+        "value": 56
+      },
+      "communication": {
+        "value": 61
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 32
+      },
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 46
+      }
+    },
+    {
+      "csvRow": 48,
+      "ageMonths": {
+        "value": 46
+      },
+      "cognitive": {
+        "value": 57
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 49
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 47
+      }
+    },
+    {
+      "csvRow": 49,
+      "ageMonths": {
+        "value": 47
+      },
+      "cognitive": {
+        "value": 58
+      },
+      "communication": {
+        "min": 62,
+        "max": 63
+      },
+      "receptiveLanguage": {
+        "value": 30
+      },
+      "expressiveLanguage": {
+        "value": 33
+      },
+      "socialEmotional": {
+        "value": 50
+      },
+      "physicalDevelopment": {
+        "min": 70,
+        "max": 71
+      },
+      "grossMotor": {
+        "value": 46
+      },
+      "fineMotor": {
+        "value": 25
+      },
+      "adaptiveBehavior": {
+        "value": 48
+      }
+    },
+    {
+      "csvRow": 50,
+      "ageMonths": {
+        "value": 48
+      },
+      "cognitive": {
+        "value": 59
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 51,
+      "ageMonths": {
+        "value": 49
+      },
+      "cognitive": {
+        "value": 60
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 51
+      },
+      "physicalDevelopment": {
+        "value": 72
+      },
+      "grossMotor": null,
+      "fineMotor": {
+        "value": 26
+      },
+      "adaptiveBehavior": {
+        "value": 49
+      }
+    },
+    {
+      "csvRow": 52,
+      "ageMonths": {
+        "value": 50
+      },
+      "cognitive": {
+        "value": 61
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 53,
+      "ageMonths": {
+        "value": 51
+      },
+      "cognitive": {
+        "value": 62
+      },
+      "communication": {
+        "min": 64,
+        "max": 65
+      },
+      "receptiveLanguage": {
+        "value": 31
+      },
+      "expressiveLanguage": {
+        "value": 34
+      },
+      "socialEmotional": {
+        "value": 52
+      },
+      "physicalDevelopment": {
+        "min": 73,
+        "max": 74
+      },
+      "grossMotor": {
+        "value": 47
+      },
+      "fineMotor": {
+        "value": 27
+      },
+      "adaptiveBehavior": {
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 54,
+      "ageMonths": {
+        "value": 52
+      },
+      "cognitive": {
+        "value": 63
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 55,
+      "ageMonths": {
+        "value": 53
+      },
+      "cognitive": {
+        "value": 64
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": {
+        "value": 75
+      },
+      "grossMotor": {
+        "value": 48
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 51
+      }
+    },
+    {
+      "csvRow": 56,
+      "ageMonths": {
+        "value": 54
+      },
+      "cognitive": {
+        "value": 65
+      },
+      "communication": {
+        "value": 66
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "value": 35
+      },
+      "socialEmotional": {
+        "value": 53
+      },
+      "physicalDevelopment": {
+        "value": 76
+      },
+      "grossMotor": null,
+      "fineMotor": {
+        "value": 28
+      },
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 57,
+      "ageMonths": {
+        "value": 55
+      },
+      "cognitive": {
+        "value": 66
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 58,
+      "ageMonths": {
+        "value": 56
+      },
+      "cognitive": {
+        "value": 67
+      },
+      "communication": {
+        "min": 67,
+        "max": 68
+      },
+      "receptiveLanguage": {
+        "value": 32
+      },
+      "expressiveLanguage": {
+        "value": 36
+      },
+      "socialEmotional": {
+        "value": 54
+      },
+      "physicalDevelopment": {
+        "min": 77,
+        "max": 78
+      },
+      "grossMotor": {
+        "value": 49
+      },
+      "fineMotor": {
+        "value": 29
+      },
+      "adaptiveBehavior": {
+        "value": 52
+      }
+    },
+    {
+      "csvRow": 59,
+      "ageMonths": {
+        "value": 57
+      },
+      "cognitive": {
+        "value": 68
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 60,
+      "ageMonths": {
+        "value": 58
+      },
+      "cognitive": null,
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 61,
+      "ageMonths": {
+        "value": 59
+      },
+      "cognitive": {
+        "value": 69
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 55
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 53
+      }
+    },
+    {
+      "csvRow": 62,
+      "ageMonths": {
+        "value": 60
+      },
+      "cognitive": {
+        "value": 70
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 63,
+      "ageMonths": {
+        "value": 61
+      },
+      "cognitive": {
+        "value": 71
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 64,
+      "ageMonths": {
+        "value": 62
+      },
+      "cognitive": {
+        "value": 72
+      },
+      "communication": {
+        "min": 69,
+        "max": 70
+      },
+      "receptiveLanguage": {
+        "value": 33
+      },
+      "expressiveLanguage": {
+        "value": 37
+      },
+      "socialEmotional": {
+        "value": 56
+      },
+      "physicalDevelopment": {
+        "min": 79,
+        "max": 80
+      },
+      "grossMotor": {
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 30
+      },
+      "adaptiveBehavior": {
+        "value": 54
+      }
+    },
+    {
+      "csvRow": 65,
+      "ageMonths": {
+        "value": 63
+      },
+      "cognitive": {
+        "value": 73
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 66,
+      "ageMonths": {
+        "value": 64
+      },
+      "cognitive": {
+        "value": 74
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 67,
+      "ageMonths": {
+        "value": 65
+      },
+      "cognitive": {
+        "value": 75
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 68,
+      "ageMonths": {
+        "value": 66
+      },
+      "cognitive": {
+        "value": 76
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 69,
+      "ageMonths": {
+        "value": 67
+      },
+      "cognitive": {
+        "value": 77
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 70,
+      "ageMonths": {
+        "value": 68
+      },
+      "cognitive": {
+        "value": 78
+      },
+      "communication": {
+        "min": 71,
+        "max": 72
+      },
+      "receptiveLanguage": {
+        "value": 34
+      },
+      "expressiveLanguage": {
+        "value": 38
+      },
+      "socialEmotional": {
+        "value": 57
+      },
+      "physicalDevelopment": {
+        "value": 81
+      },
+      "grossMotor": null,
+      "fineMotor": {
+        "value": 31
+      },
+      "adaptiveBehavior": {
+        "value": 55
+      }
+    },
+    {
+      "csvRow": 71,
+      "ageMonths": {
+        "value": 69
+      },
+      "cognitive": {
+        "value": 79
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 72,
+      "ageMonths": {
+        "value": 70
+      },
+      "cognitive": {
+        "value": 80
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": null,
+      "physicalDevelopment": null,
+      "grossMotor": {
+        "value": 51
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": null
+    },
+    {
+      "csvRow": 73,
+      "ageMonths": {
+        "value": 71
+      },
+      "cognitive": {
+        "value": 81
+      },
+      "communication": null,
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 58
+      },
+      "physicalDevelopment": null,
+      "grossMotor": null,
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 56
+      }
+    },
+    {
+      "csvRow": 74,
+      "ageMonths": {
+        "bound": "gt",
+        "value": 71
+      },
+      "cognitive": {
+        "bound": "gt",
+        "value": 81
+      },
+      "communication": {
+        "bound": "gt",
+        "value": 72
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 34
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 38
+      },
+      "socialEmotional": {
+        "bound": "gt",
+        "value": 58
+      },
+      "physicalDevelopment": {
+        "bound": "gt",
+        "value": 81
+      },
+      "grossMotor": {
+        "bound": "gt",
+        "value": 51
+      },
+      "fineMotor": {
+        "bound": "gt",
+        "value": 31
+      },
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 56
+      }
+    }
+  ]
+}

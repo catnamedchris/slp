@@ -1,0 +1,1374 @@
+{
+  "tableId": "B15",
+  "source": {
+    "tableId": "B15",
+    "csvFilename": "Table-B15-Raw-Scores-to-Standard-Scores-Age-16-18-Months.csv",
+    "csvSha256": "01fbd2943611b0f69e4bdc19a05c9f359753563bd980a83e0c89f0be9d277a03",
+    "generatedAt": "2025-12-22T20:08:56.046Z",
+    "generatorVersion": "dayc2-csv2json@1.0.0",
+    "ageBand": {
+      "minMonths": 16,
+      "maxMonths": 18,
+      "label": "16-18 Months"
+    }
+  },
+  "rows": [
+    {
+      "csvRow": 2,
+      "rawScore": 0,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "expressiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "socialEmotional": {
+        "bound": "lt",
+        "value": 50
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 50
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 3,
+      "rawScore": 1,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "expressiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "socialEmotional": {
+        "bound": "lt",
+        "value": 50
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 53
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 4,
+      "rawScore": 2,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "expressiveLanguage": {
+        "value": 50
+      },
+      "socialEmotional": {
+        "bound": "lt",
+        "value": 50
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 55
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 5,
+      "rawScore": 3,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "bound": "lt",
+        "value": 50
+      },
+      "expressiveLanguage": {
+        "value": 54
+      },
+      "socialEmotional": {
+        "bound": "lt",
+        "value": 50
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 58
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 6,
+      "rawScore": 4,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 50
+      },
+      "expressiveLanguage": {
+        "value": 59
+      },
+      "socialEmotional": {
+        "value": 50
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 60
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 7,
+      "rawScore": 5,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 54
+      },
+      "expressiveLanguage": {
+        "value": 63
+      },
+      "socialEmotional": {
+        "value": 52
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 63
+      },
+      "adaptiveBehavior": {
+        "bound": "lt",
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 8,
+      "rawScore": 6,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 59
+      },
+      "expressiveLanguage": {
+        "value": 67
+      },
+      "socialEmotional": {
+        "value": 55
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 66
+      },
+      "adaptiveBehavior": {
+        "value": 50
+      }
+    },
+    {
+      "csvRow": 9,
+      "rawScore": 7,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 63
+      },
+      "expressiveLanguage": {
+        "value": 71
+      },
+      "socialEmotional": {
+        "value": 55
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 68
+      },
+      "adaptiveBehavior": {
+        "value": 53
+      }
+    },
+    {
+      "csvRow": 10,
+      "rawScore": 8,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 67
+      },
+      "expressiveLanguage": {
+        "value": 74
+      },
+      "socialEmotional": {
+        "value": 57
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 71
+      },
+      "adaptiveBehavior": {
+        "value": 55
+      }
+    },
+    {
+      "csvRow": 11,
+      "rawScore": 9,
+      "cognitive": {
+        "bound": "lt",
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 72
+      },
+      "expressiveLanguage": {
+        "value": 78
+      },
+      "socialEmotional": {
+        "value": 59
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 74
+      },
+      "adaptiveBehavior": {
+        "value": 58
+      }
+    },
+    {
+      "csvRow": 12,
+      "rawScore": 10,
+      "cognitive": {
+        "value": 50
+      },
+      "receptiveLanguage": {
+        "value": 76
+      },
+      "expressiveLanguage": {
+        "value": 82
+      },
+      "socialEmotional": {
+        "value": 62
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 76
+      },
+      "adaptiveBehavior": {
+        "value": 60
+      }
+    },
+    {
+      "csvRow": 13,
+      "rawScore": 11,
+      "cognitive": {
+        "value": 51
+      },
+      "receptiveLanguage": {
+        "value": 80
+      },
+      "expressiveLanguage": {
+        "value": 86
+      },
+      "socialEmotional": {
+        "value": 64
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 79
+      },
+      "adaptiveBehavior": {
+        "value": 63
+      }
+    },
+    {
+      "csvRow": 14,
+      "rawScore": 12,
+      "cognitive": {
+        "value": 54
+      },
+      "receptiveLanguage": {
+        "value": 85
+      },
+      "expressiveLanguage": {
+        "value": 89
+      },
+      "socialEmotional": {
+        "value": 66
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 81
+      },
+      "adaptiveBehavior": {
+        "value": 65
+      }
+    },
+    {
+      "csvRow": 15,
+      "rawScore": 13,
+      "cognitive": {
+        "value": 57
+      },
+      "receptiveLanguage": {
+        "value": 89
+      },
+      "expressiveLanguage": {
+        "value": 93
+      },
+      "socialEmotional": {
+        "value": 68
+      },
+      "grossMotor": {
+        "bound": "lt",
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 84
+      },
+      "adaptiveBehavior": {
+        "value": 68
+      }
+    },
+    {
+      "csvRow": 16,
+      "rawScore": 14,
+      "cognitive": {
+        "value": 59
+      },
+      "receptiveLanguage": {
+        "value": 93
+      },
+      "expressiveLanguage": {
+        "value": 97
+      },
+      "socialEmotional": {
+        "value": 69
+      },
+      "grossMotor": {
+        "value": 50
+      },
+      "fineMotor": {
+        "value": 87
+      },
+      "adaptiveBehavior": {
+        "value": 71
+      }
+    },
+    {
+      "csvRow": 17,
+      "rawScore": 15,
+      "cognitive": {
+        "value": 62
+      },
+      "receptiveLanguage": {
+        "value": 97
+      },
+      "expressiveLanguage": {
+        "value": 101
+      },
+      "socialEmotional": {
+        "value": 72
+      },
+      "grossMotor": {
+        "value": 52
+      },
+      "fineMotor": {
+        "value": 89
+      },
+      "adaptiveBehavior": {
+        "value": 74
+      }
+    },
+    {
+      "csvRow": 18,
+      "rawScore": 16,
+      "cognitive": {
+        "value": 65
+      },
+      "receptiveLanguage": {
+        "value": 102
+      },
+      "expressiveLanguage": {
+        "value": 104
+      },
+      "socialEmotional": {
+        "value": 74
+      },
+      "grossMotor": {
+        "value": 54
+      },
+      "fineMotor": {
+        "value": 92
+      },
+      "adaptiveBehavior": {
+        "value": 76
+      }
+    },
+    {
+      "csvRow": 19,
+      "rawScore": 17,
+      "cognitive": {
+        "value": 67
+      },
+      "receptiveLanguage": {
+        "value": 106
+      },
+      "expressiveLanguage": {
+        "value": 108
+      },
+      "socialEmotional": {
+        "value": 76
+      },
+      "grossMotor": {
+        "value": 57
+      },
+      "fineMotor": {
+        "value": 95
+      },
+      "adaptiveBehavior": {
+        "value": 79
+      }
+    },
+    {
+      "csvRow": 20,
+      "rawScore": 18,
+      "cognitive": {
+        "value": 70
+      },
+      "receptiveLanguage": {
+        "value": 110
+      },
+      "expressiveLanguage": {
+        "value": 112
+      },
+      "socialEmotional": {
+        "value": 78
+      },
+      "grossMotor": {
+        "value": 59
+      },
+      "fineMotor": {
+        "value": 99
+      },
+      "adaptiveBehavior": {
+        "value": 81
+      }
+    },
+    {
+      "csvRow": 21,
+      "rawScore": 19,
+      "cognitive": {
+        "value": 73
+      },
+      "receptiveLanguage": {
+        "value": 115
+      },
+      "expressiveLanguage": {
+        "value": 115
+      },
+      "socialEmotional": {
+        "value": 80
+      },
+      "grossMotor": {
+        "value": 61
+      },
+      "fineMotor": {
+        "value": 104
+      },
+      "adaptiveBehavior": {
+        "value": 84
+      }
+    },
+    {
+      "csvRow": 22,
+      "rawScore": 20,
+      "cognitive": {
+        "value": 76
+      },
+      "receptiveLanguage": {
+        "value": 119
+      },
+      "expressiveLanguage": {
+        "value": 120
+      },
+      "socialEmotional": {
+        "value": 83
+      },
+      "grossMotor": {
+        "value": 63
+      },
+      "fineMotor": {
+        "value": 106
+      },
+      "adaptiveBehavior": {
+        "value": 87
+      }
+    },
+    {
+      "csvRow": 23,
+      "rawScore": 21,
+      "cognitive": {
+        "value": 78
+      },
+      "receptiveLanguage": {
+        "value": 124
+      },
+      "expressiveLanguage": {
+        "value": 124
+      },
+      "socialEmotional": {
+        "value": 85
+      },
+      "grossMotor": {
+        "value": 66
+      },
+      "fineMotor": {
+        "value": 109
+      },
+      "adaptiveBehavior": {
+        "value": 93
+      }
+    },
+    {
+      "csvRow": 24,
+      "rawScore": 22,
+      "cognitive": {
+        "value": 81
+      },
+      "receptiveLanguage": {
+        "value": 127
+      },
+      "expressiveLanguage": {
+        "value": 127
+      },
+      "socialEmotional": {
+        "value": 87
+      },
+      "grossMotor": {
+        "value": 68
+      },
+      "fineMotor": {
+        "value": 112
+      },
+      "adaptiveBehavior": {
+        "value": 99
+      }
+    },
+    {
+      "csvRow": 25,
+      "rawScore": 23,
+      "cognitive": {
+        "value": 84
+      },
+      "receptiveLanguage": {
+        "value": 132
+      },
+      "expressiveLanguage": {
+        "value": 130
+      },
+      "socialEmotional": {
+        "value": 89
+      },
+      "grossMotor": {
+        "value": 70
+      },
+      "fineMotor": {
+        "value": 114
+      },
+      "adaptiveBehavior": {
+        "value": 102
+      }
+    },
+    {
+      "csvRow": 26,
+      "rawScore": 24,
+      "cognitive": {
+        "value": 86
+      },
+      "receptiveLanguage": {
+        "value": 136
+      },
+      "expressiveLanguage": {
+        "value": 134
+      },
+      "socialEmotional": {
+        "value": 92
+      },
+      "grossMotor": {
+        "value": 72
+      },
+      "fineMotor": {
+        "value": 117
+      },
+      "adaptiveBehavior": {
+        "value": 107
+      }
+    },
+    {
+      "csvRow": 27,
+      "rawScore": 25,
+      "cognitive": {
+        "value": 89
+      },
+      "receptiveLanguage": {
+        "value": 140
+      },
+      "expressiveLanguage": {
+        "value": 137
+      },
+      "socialEmotional": {
+        "value": 94
+      },
+      "grossMotor": {
+        "value": 75
+      },
+      "fineMotor": {
+        "value": 120
+      },
+      "adaptiveBehavior": {
+        "value": 110
+      }
+    },
+    {
+      "csvRow": 28,
+      "rawScore": 26,
+      "cognitive": {
+        "value": 92
+      },
+      "receptiveLanguage": {
+        "value": 143
+      },
+      "expressiveLanguage": {
+        "value": 140
+      },
+      "socialEmotional": {
+        "value": 96
+      },
+      "grossMotor": {
+        "value": 77
+      },
+      "fineMotor": {
+        "value": 122
+      },
+      "adaptiveBehavior": {
+        "value": 113
+      }
+    },
+    {
+      "csvRow": 29,
+      "rawScore": 27,
+      "cognitive": {
+        "value": 95
+      },
+      "receptiveLanguage": {
+        "value": 147
+      },
+      "expressiveLanguage": {
+        "value": 144
+      },
+      "socialEmotional": {
+        "value": 100
+      },
+      "grossMotor": {
+        "value": 79
+      },
+      "fineMotor": {
+        "value": 125
+      },
+      "adaptiveBehavior": {
+        "value": 116
+      }
+    },
+    {
+      "csvRow": 30,
+      "rawScore": 28,
+      "cognitive": {
+        "value": 97
+      },
+      "receptiveLanguage": {
+        "value": 149
+      },
+      "expressiveLanguage": {
+        "value": 148
+      },
+      "socialEmotional": {
+        "value": 104
+      },
+      "grossMotor": {
+        "value": 81
+      },
+      "fineMotor": {
+        "value": 127
+      },
+      "adaptiveBehavior": {
+        "value": 119
+      }
+    },
+    {
+      "csvRow": 31,
+      "rawScore": 29,
+      "cognitive": {
+        "value": 101
+      },
+      "receptiveLanguage": {
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 107
+      },
+      "grossMotor": {
+        "value": 84
+      },
+      "fineMotor": {
+        "value": 130
+      },
+      "adaptiveBehavior": {
+        "value": 124
+      }
+    },
+    {
+      "csvRow": 32,
+      "rawScore": 30,
+      "cognitive": {
+        "value": 105
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 109
+      },
+      "grossMotor": {
+        "value": 86
+      },
+      "fineMotor": {
+        "value": 133
+      },
+      "adaptiveBehavior": {
+        "value": 126
+      }
+    },
+    {
+      "csvRow": 33,
+      "rawScore": 31,
+      "cognitive": {
+        "value": 107
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 111
+      },
+      "grossMotor": {
+        "value": 88
+      },
+      "fineMotor": {
+        "value": 135
+      },
+      "adaptiveBehavior": {
+        "value": 129
+      }
+    },
+    {
+      "csvRow": 34,
+      "rawScore": 32,
+      "cognitive": {
+        "value": 110
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 113
+      },
+      "grossMotor": {
+        "value": 90
+      },
+      "fineMotor": {
+        "value": 138
+      },
+      "adaptiveBehavior": {
+        "value": 131
+      }
+    },
+    {
+      "csvRow": 35,
+      "rawScore": 33,
+      "cognitive": {
+        "value": 113
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 116
+      },
+      "grossMotor": {
+        "value": 92
+      },
+      "fineMotor": {
+        "value": 140
+      },
+      "adaptiveBehavior": {
+        "value": 134
+      }
+    },
+    {
+      "csvRow": 36,
+      "rawScore": 34,
+      "cognitive": {
+        "value": 116
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 118
+      },
+      "grossMotor": {
+        "value": 95
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 137
+      }
+    },
+    {
+      "csvRow": 37,
+      "rawScore": 35,
+      "cognitive": {
+        "value": 118
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 120
+      },
+      "grossMotor": {
+        "value": 97
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 139
+      }
+    },
+    {
+      "csvRow": 38,
+      "rawScore": 36,
+      "cognitive": {
+        "value": 121
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 122
+      },
+      "grossMotor": {
+        "value": 99
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 141
+      }
+    },
+    {
+      "csvRow": 39,
+      "rawScore": 37,
+      "cognitive": {
+        "value": 124
+      },
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 124
+      },
+      "grossMotor": {
+        "value": 101
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 143
+      }
+    },
+    {
+      "csvRow": 40,
+      "rawScore": 38,
+      "cognitive": {
+        "value": 126
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 127
+      },
+      "grossMotor": {
+        "value": 104
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 145
+      }
+    },
+    {
+      "csvRow": 41,
+      "rawScore": 39,
+      "cognitive": {
+        "value": 129
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 129
+      },
+      "grossMotor": {
+        "value": 106
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 147
+      }
+    },
+    {
+      "csvRow": 42,
+      "rawScore": 40,
+      "cognitive": {
+        "value": 132
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 132
+      },
+      "grossMotor": {
+        "value": 108
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 43,
+      "rawScore": 41,
+      "cognitive": {
+        "value": 134
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
+      "socialEmotional": {
+        "value": 134
+      },
+      "grossMotor": {
+        "value": 110
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 44,
+      "rawScore": 42,
+      "cognitive": {
+        "value": 137
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 136
+      },
+      "grossMotor": {
+        "value": 113
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 45,
+      "rawScore": 43,
+      "cognitive": {
+        "value": 140
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 138
+      },
+      "grossMotor": {
+        "value": 115
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 46,
+      "rawScore": 44,
+      "cognitive": {
+        "value": 143
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 140
+      },
+      "grossMotor": {
+        "value": 117
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 47,
+      "rawScore": 45,
+      "cognitive": {
+        "value": 145
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 141
+      },
+      "grossMotor": {
+        "value": 122
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 48,
+      "rawScore": 46,
+      "cognitive": {
+        "value": 146
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 143
+      },
+      "grossMotor": {
+        "value": 124
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 49,
+      "rawScore": 47,
+      "cognitive": {
+        "value": 149
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 145
+      },
+      "grossMotor": {
+        "value": 126
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 50,
+      "rawScore": 48,
+      "cognitive": {
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 147
+      },
+      "grossMotor": {
+        "value": 128
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 51,
+      "rawScore": 49,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 149
+      },
+      "grossMotor": {
+        "value": 130
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 52,
+      "rawScore": 50,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "value": 150
+      },
+      "grossMotor": {
+        "value": 132
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 53,
+      "rawScore": 51,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "bound": "gt",
+        "value": 150
+      },
+      "grossMotor": {
+        "value": 136
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 54,
+      "rawScore": 52,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "bound": "gt",
+        "value": 150
+      },
+      "grossMotor": {
+        "value": 138
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 55,
+      "rawScore": 53,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "bound": "gt",
+        "value": 150
+      },
+      "grossMotor": {
+        "value": 140
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    },
+    {
+      "csvRow": 56,
+      "rawScore": 54,
+      "cognitive": {
+        "bound": "gt",
+        "value": 150
+      },
+      "receptiveLanguage": null,
+      "expressiveLanguage": null,
+      "socialEmotional": {
+        "bound": "gt",
+        "value": 150
+      },
+      "grossMotor": {
+        "value": 142
+      },
+      "fineMotor": null,
+      "adaptiveBehavior": {
+        "bound": "gt",
+        "value": 150
+      }
+    }
+  ]
+}
