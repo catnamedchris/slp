@@ -12,7 +12,6 @@ describe('useCalculation', () => {
       })
     );
     expect(result.current.result).toBeNull();
-    expect(result.current.isComplete).toBe(false);
   });
 
   it('returns null result when ageMonths is below minimum', () => {
@@ -35,7 +34,7 @@ describe('useCalculation', () => {
     expect(result.current.result).toBeNull();
   });
 
-  it('returns null result when not all raw scores are filled', () => {
+  it('returns partial result when only some raw scores are filled', () => {
     const scores = {
       ...createEmptyRawScores(),
       cognitive: 25,
@@ -47,8 +46,10 @@ describe('useCalculation', () => {
         rawScores: scores,
       })
     );
-    expect(result.current.result).toBeNull();
-    expect(result.current.isComplete).toBe(false);
+    expect(result.current.result).not.toBeNull();
+    expect(result.current.result?.subtests.cognitive.rawScore).toBe(25);
+    expect(result.current.result?.subtests.cognitive.standardScore.value).not.toBeNull();
+    expect(result.current.result?.subtests.expressiveLanguage.rawScore).toBeNull();
   });
 
   it('returns calculation result when all inputs are valid', () => {
@@ -68,7 +69,6 @@ describe('useCalculation', () => {
       })
     );
     expect(result.current.result).not.toBeNull();
-    expect(result.current.isComplete).toBe(true);
     expect(result.current.result?.ageMonths).toBe(24);
     expect(result.current.result?.subtests.cognitive.rawScore).toBe(25);
   });

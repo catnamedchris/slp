@@ -154,9 +154,8 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    // fineMotor should be null
-    expect(result.subtests.fineMotor.standardScore.value).toBeNull();
-    expect(result.subtests.fineMotor.standardScore.note).toBeDefined();
+    // fineMotor at rawScore 30 is null, but rawScore 20 has 110
+    expect(result.subtests.fineMotor.standardScore.value).toEqual({ value: 110 });
 
     // receptiveLanguage is bounded (>150), percentile lookup should fail
     expect(result.subtests.receptiveLanguage.standardScore.value).toEqual({ bound: 'gt', value: 150 });

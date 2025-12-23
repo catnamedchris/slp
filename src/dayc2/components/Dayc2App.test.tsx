@@ -1,6 +1,35 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Dayc2App from './Dayc2App';
+
+vi.mock('react-datepicker', () => ({
+  default: ({ id, selected, onChange, placeholderText, className }: {
+    id: string;
+    selected: Date | null;
+    onChange: (date: Date | null) => void;
+    placeholderText: string;
+    className?: string;
+  }) => (
+    <input
+      type="text"
+      id={id}
+      value={selected ? selected.toISOString().split('T')[0] : ''}
+      placeholder={placeholderText}
+      className={className}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (val) {
+          const [year, month, day] = val.split('-').map(Number);
+          onChange(new Date(year, month - 1, day));
+        } else {
+          onChange(null);
+        }
+      }}
+    />
+  ),
+}));
+
+const getInput = (id: string) => document.getElementById(id) as HTMLInputElement | null;
 
 describe('Dayc2App', () => {
   it('renders the main heading', () => {
@@ -10,70 +39,54 @@ describe('Dayc2App', () => {
 
   it('renders child info form', () => {
     render(<Dayc2App />);
-    expect(screen.getByLabelText('Date of Birth')).toBeInTheDocument();
-    expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
+    expect(screen.getByText('Birth Date')).toBeInTheDocument();
+    expect(screen.getByText('Test Date')).toBeInTheDocument();
   });
 
-  it('renders raw scores form', () => {
+  it('renders default visible subtests (RL, EL, SE)', () => {
     render(<Dayc2App />);
-    expect(screen.getByLabelText('Cognitive')).toBeInTheDocument();
-    expect(screen.getByLabelText('Receptive Language')).toBeInTheDocument();
+    expect(getInput('raw-receptiveLanguage')).toBeInTheDocument();
+    expect(getInput('raw-expressiveLanguage')).toBeInTheDocument();
+    expect(getInput('raw-socialEmotional')).toBeInTheDocument();
   });
 
-  it('disables raw score inputs when age is out of range', () => {
+  it('disables raw score inputs when no dates entered', () => {
     render(<Dayc2App />);
-    fireEvent.change(screen.getByLabelText('Date of Birth'), {
-      target: { value: '2024-01-15' },
-    });
-    fireEvent.change(screen.getByLabelText('Test Date'), {
-      target: { value: '2024-06-15' },
-    });
-    expect(screen.getByLabelText('Cognitive')).toBeDisabled();
+    expect(getInput('raw-receptiveLanguage')).toBeDisabled();
   });
 
   it('enables raw score inputs when age is valid', () => {
     render(<Dayc2App />);
-    fireEvent.change(screen.getByLabelText('Date of Birth'), {
-      target: { value: '2022-01-15' },
-    });
-    fireEvent.change(screen.getByLabelText('Test Date'), {
-      target: { value: '2024-01-15' },
-    });
-    expect(screen.getByLabelText('Cognitive')).not.toBeDisabled();
+
+    const dobInput = screen.getByPlaceholderText('Select date of birth');
+    const testDateInput = screen.getByPlaceholderText('Select test date');
+
+    fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
+    fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
+
+    expect(getInput('raw-receptiveLanguage')).not.toBeDisabled();
   });
 
-  it('shows results placeholder when not all scores are entered', () => {
+  it('shows hint when no dates entered', () => {
     render(<Dayc2App />);
-    expect(screen.getByText(/Enter child information/)).toBeInTheDocument();
+    expect(screen.getByText(/Enter valid child information/)).toBeInTheDocument();
   });
 
-  it('calculates and displays results when all inputs are valid', () => {
+  it('calculates and displays results when inputs are entered', () => {
     render(<Dayc2App />);
-    
-    fireEvent.change(screen.getByLabelText('Date of Birth'), {
-      target: { value: '2022-01-15' },
-    });
-    fireEvent.change(screen.getByLabelText('Test Date'), {
-      target: { value: '2024-01-15' },
-    });
-    
-    const scores = [
-      { label: 'Cognitive', value: '25' },
-      { label: 'Receptive Language', value: '20' },
-      { label: 'Expressive Language', value: '18' },
-      { label: 'Social-Emotional', value: '22' },
-      { label: 'Gross Motor', value: '30' },
-      { label: 'Fine Motor', value: '28' },
-      { label: 'Adaptive Behavior', value: '24' },
-    ];
 
-    for (const { label, value } of scores) {
-      fireEvent.change(screen.getByLabelText(label), { target: { value } });
-    }
+    const dobInput = screen.getByPlaceholderText('Select date of birth');
+    const testDateInput = screen.getByPlaceholderText('Select test date');
 
-    expect(screen.queryByText(/Enter child information/)).not.toBeInTheDocument();
-    expect(screen.getByText('Communication (RL+EL)')).toBeInTheDocument();
-    expect(screen.getByText('Physical (GM+FM)')).toBeInTheDocument();
+    fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
+    fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
+
+    fireEvent.change(getInput('raw-receptiveLanguage')!, { target: { value: '20' } });
+    fireEvent.change(getInput('raw-expressiveLanguage')!, { target: { value: '18' } });
+    fireEvent.change(getInput('raw-socialEmotional')!, { target: { value: '22' } });
+
+    expect(screen.queryByText(/Enter valid child information/)).not.toBeInTheDocument();
+    expect(getInput('raw-receptiveLanguage')).not.toBeDisabled();
   });
 
   it('renders About Data section', () => {

@@ -27,15 +27,15 @@ const SUBTESTS: SubtestKey[] = [
   'adaptiveBehavior',
 ];
 
-/** Input for score calculation */
+/** Input for score calculation - now supports partial scores */
 export interface CalculationInput {
   ageMonths: number;
-  rawScores: Record<SubtestKey, number>;
+  rawScores: Record<SubtestKey, number | null>;
 }
 
 /** Result for a single subtest */
 export interface SubtestResult {
-  rawScore: number;
+  rawScore: number | null;
   standardScore: ValueWithProvenance<ParsedScore>;
   percentile: ValueWithProvenance<ParsedPercentile>;
   ageEquivalent: ValueWithProvenance<ParsedAgeMonths>;
@@ -58,9 +58,66 @@ export interface CalculationResult {
   };
 }
 
+const emptyResult = <T>(): ValueWithProvenance<T> => ({
+  value: null,
+  steps: [],
+});
+
+/**
+ * Calculates scores for a single subtest.
+ * Returns empty results if rawScore is null.
+ */
+const calculateSubtestResult = (
+  rawScore: number | null,
+  subtest: SubtestKey,
+  ageMonths: number,
+  ctx: LookupContext
+): SubtestResult => {
+  if (rawScore === null) {
+    return {
+      rawScore: null,
+      standardScore: emptyResult(),
+      percentile: emptyResult(),
+      ageEquivalent: emptyResult(),
+    };
+  }
+
+  const standardScore = lookupStandardScore(rawScore, subtest, ageMonths, ctx);
+
+  let percentile: ValueWithProvenance<ParsedPercentile>;
+  if (standardScore.value && isExact(standardScore.value)) {
+    percentile = lookupPercentile(standardScore.value, ctx);
+    percentile = {
+      ...percentile,
+      steps: [...standardScore.steps, ...percentile.steps],
+    };
+  } else if (standardScore.value) {
+    percentile = {
+      value: null,
+      steps: standardScore.steps,
+      note: 'Cannot look up percentile for bounded standard score',
+    };
+  } else {
+    percentile = {
+      value: null,
+      steps: [],
+      note: 'No standard score available',
+    };
+  }
+
+  const ageEquivalent = lookupAgeEquivalent(rawScore, subtest, ctx);
+
+  return {
+    rawScore,
+    standardScore,
+    percentile,
+    ageEquivalent,
+  };
+};
+
 /**
  * Calculates all scores for a child given their age and raw scores.
- * Returns complete results with provenance for every lookup.
+ * Supports partial results - subtests with null raw scores return empty results.
  */
 export const calculateAllScores = (
   input: CalculationInput,
@@ -68,48 +125,17 @@ export const calculateAllScores = (
 ): CalculationResult => {
   const { ageMonths, rawScores } = input;
 
-  // Calculate subtest results
   const subtests = {} as Record<SubtestKey, SubtestResult>;
 
   for (const subtest of SUBTESTS) {
-    const rawScore = rawScores[subtest];
-    const standardScore = lookupStandardScore(rawScore, subtest, ageMonths, ctx);
-
-    // Look up percentile only if we have an exact standard score
-    let percentile: ValueWithProvenance<ParsedPercentile>;
-    if (standardScore.value && isExact(standardScore.value)) {
-      percentile = lookupPercentile(standardScore.value, ctx);
-      // Chain provenance steps
-      percentile = {
-        ...percentile,
-        steps: [...standardScore.steps, ...percentile.steps],
-      };
-    } else if (standardScore.value) {
-      // Bounded SS - can't look up percentile
-      percentile = {
-        value: null,
-        steps: standardScore.steps,
-        note: 'Cannot look up percentile for bounded standard score',
-      };
-    } else {
-      percentile = {
-        value: null,
-        steps: [],
-        note: 'No standard score available',
-      };
-    }
-
-    const ageEquivalent = lookupAgeEquivalent(rawScore, subtest, ctx);
-
-    subtests[subtest] = {
-      rawScore,
-      standardScore,
-      percentile,
-      ageEquivalent,
-    };
+    subtests[subtest] = calculateSubtestResult(
+      rawScores[subtest],
+      subtest,
+      ageMonths,
+      ctx
+    );
   }
 
-  // Calculate domain composites
   const communication = calculateDomainComposite(
     subtests.receptiveLanguage,
     subtests.expressiveLanguage,
@@ -143,7 +169,6 @@ const calculateDomainComposite = (
   const ss1 = subtest1.standardScore.value;
   const ss2 = subtest2.standardScore.value;
 
-  // Need exact values from both subtests to calculate sum
   if (!ss1 || !isExact(ss1) || !ss2 || !isExact(ss2)) {
     return {
       sum: null,
@@ -163,14 +188,12 @@ const calculateDomainComposite = (
   const sum = ss1.value + ss2.value;
   const standardScore = lookupDomainComposite(sum, ctx);
 
-  // Chain provenance: subtest1 SS + subtest2 SS → sum → domain SS
   const combinedSteps = [
     ...subtest1.standardScore.steps,
     ...subtest2.standardScore.steps,
     ...standardScore.steps,
   ];
 
-  // Look up percentile for domain SS
   let percentile: ValueWithProvenance<ParsedPercentile>;
   if (standardScore.value && isExact(standardScore.value)) {
     percentile = lookupPercentile(standardScore.value, ctx);

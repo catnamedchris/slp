@@ -25,13 +25,14 @@ export const lookupStandardScoreFromPercentile = (
 
     for (const { ss, pr } of pairs) {
       if (pr && isExact(pr) && pr.value === targetPercentile && ss !== null) {
+        const ssValue = isExact(ss) ? ss.value : '?';
         return {
           value: ss,
           steps: [{
             tableId: c1.tableId,
             csvRow: row.csvRow,
             source: c1.source,
-            description: `percentile ${targetPercentile} → SS`,
+            description: `${targetPercentile}th percentile → Standard Score ${ssValue}`,
           }],
         };
       }
@@ -95,7 +96,7 @@ export const lookupRawScoreFromStandardScore = (
       tableId: bTable.tableId,
       csvRow: bestRow.csvRow,
       source: bTable.source,
-      description: `SS ${targetSS} → raw score`,
+      description: `Standard Score ${targetSS} → Raw Score ${bestRow.rawScore}`,
     }],
   };
 };

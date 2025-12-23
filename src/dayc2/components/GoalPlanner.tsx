@@ -9,7 +9,7 @@ import type { ProvenanceStep } from '@/shared/lib/types';
 
 interface GoalPlannerProps {
   ageMonths: number | null;
-  onProvenanceClick?: (steps: ProvenanceStep[]) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
 }
 
 const SUBTEST_LABELS: Record<SubtestKey, string> = {
@@ -31,8 +31,6 @@ const SUBTESTS: SubtestKey[] = [
   'fineMotor',
   'adaptiveBehavior',
 ];
-
-const COMMON_PERCENTILES = [5, 10, 16, 25, 37, 50, 63, 75, 84, 90, 95];
 
 interface GoalResult {
   subtest: SubtestKey;
@@ -96,51 +94,57 @@ const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
   }
 
   return (
-    <div className="card goal-planner">
-      <h2>Goal Planner</h2>
-      <p>Find the raw scores needed to reach a target percentile.</p>
+    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <h2 className="mt-0 mb-4 text-slate-800 font-semibold text-lg flex items-center gap-2">
+        <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
+        Goal Planner
+      </h2>
+      <p className="text-slate-600 text-sm mb-4">Find the raw scores needed to reach a target percentile.</p>
 
-      <div className="form-row">
-        <label htmlFor="targetPercentile">Target Percentile</label>
-        <select
-          id="targetPercentile"
-          value={targetPercentile ?? ''}
-          onChange={(e) => handlePercentileChange(e.target.value)}
-        >
-          <option value="">Select...</option>
-          {COMMON_PERCENTILES.map((p) => (
-            <option key={p} value={p}>
-              {p}th percentile
-            </option>
-          ))}
-        </select>
+      <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+        <label htmlFor="targetPercentile" className="font-medium text-gray-600">Target Percentile</label>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            id="targetPercentile"
+            min={1}
+            max={99}
+            value={targetPercentile ?? ''}
+            onChange={(e) => handlePercentileChange(e.target.value)}
+            placeholder="1–99"
+            className="px-3 py-2 border border-gray-300 rounded text-base w-24 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          />
+          <span className="text-gray-500 text-sm">%ile</span>
+        </div>
       </div>
 
       {goalResults && (
-        <div className="goal-results">
+        <div className="mt-4">
           {goalResults.note ? (
-            <p className="error">{goalResults.note}</p>
+            <p className="text-red-500 text-sm">{goalResults.note}</p>
           ) : (
             <>
-              <p className="target-ss">
-                Target Standard Score: <strong>{goalResults.standardScore}</strong>
+              <p className="bg-gradient-to-r from-indigo-50 to-blue-50 px-4 py-3 rounded-lg mb-4 border border-indigo-100">
+                Target Standard Score: <strong className="text-indigo-600">{goalResults.standardScore}</strong>
               </p>
-              <table>
+              <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr>
-                    <th>Subtest</th>
-                    <th>Minimum Raw Score Needed</th>
+                    <th className="p-3 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">Subtest</th>
+                    <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">Min. Raw Score</th>
                   </tr>
                 </thead>
                 <tbody>
                   {goalResults.subtests?.map((result) => (
-                    <tr key={result.subtest}>
-                      <td className="subtest-name">{SUBTEST_LABELS[result.subtest]}</td>
+                    <tr key={result.subtest} className="hover:bg-gray-50">
+                      <td className="p-2.5 text-left font-medium border-b border-gray-100">{SUBTEST_LABELS[result.subtest]}</td>
                       <td
-                        className={result.steps.length > 0 && onProvenanceClick ? 'clickable' : ''}
+                        className={`p-2.5 text-center border-b border-gray-100 ${result.steps.length > 0 && onProvenanceClick ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
                         onClick={
                           result.steps.length > 0 && onProvenanceClick
-                            ? () => onProvenanceClick(result.steps)
+                            ? (e: React.MouseEvent<HTMLTableCellElement>) => {
+                                onProvenanceClick(result.steps, e.currentTarget);
+                              }
                             : undefined
                         }
                         title={result.note ?? undefined}

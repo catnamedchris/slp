@@ -28,7 +28,7 @@ describe('GoalPlanner', () => {
 
   it('does not show results table when no percentile is selected', () => {
     render(<GoalPlanner ageMonths={24} />);
-    expect(screen.queryByText('Minimum Raw Score Needed')).not.toBeInTheDocument();
+    expect(screen.queryByText('Min. Raw Score')).not.toBeInTheDocument();
   });
 
   it('shows results when a percentile is selected', () => {
@@ -37,7 +37,7 @@ describe('GoalPlanner', () => {
       target: { value: '50' },
     });
     expect(screen.getByText('Target Standard Score:')).toBeInTheDocument();
-    expect(screen.getByText('Minimum Raw Score Needed')).toBeInTheDocument();
+    expect(screen.getByText('Min. Raw Score')).toBeInTheDocument();
   });
 
   it('shows all 7 subtests in results', () => {

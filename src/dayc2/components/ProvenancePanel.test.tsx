@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 
@@ -41,15 +41,17 @@ describe('ProvenancePanel', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders lookup path header', () => {
+  it('renders panel header', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
-    expect(screen.getByText('Lookup Path')).toBeInTheDocument();
+    expect(screen.getByText('How was this calculated?')).toBeInTheDocument();
   });
 
   it('renders all provenance steps', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
-    expect(screen.getByText('Table B17, Row 25')).toBeInTheDocument();
-    expect(screen.getByText('Table C1, Row 50')).toBeInTheDocument();
+    expect(screen.getByText('Table B17')).toBeInTheDocument();
+    expect(screen.getByText('Table C1')).toBeInTheDocument();
+    expect(screen.getByText('Row 25')).toBeInTheDocument();
+    expect(screen.getByText('Row 50')).toBeInTheDocument();
   });
 
   it('renders step descriptions', () => {
@@ -69,6 +71,59 @@ describe('ProvenancePanel', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={onClose} />);
     fireEvent.click(screen.getByText('✕'));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  describe('resize handling', () => {
+    let originalInnerWidth: number;
+
+    beforeEach(() => {
+      originalInnerWidth = window.innerWidth;
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      Object.defineProperty(window, 'innerWidth', {
+        value: originalInnerWidth,
+        writable: true,
+      });
+      vi.useRealTimers();
+    });
+
+    it('updates windowWidth on resize', async () => {
+      const mockAnchor = document.createElement('div');
+      mockAnchor.getBoundingClientRect = vi.fn(() => ({
+        top: 100,
+        left: 50,
+        right: 150,
+        bottom: 120,
+        width: 100,
+        height: 20,
+        x: 50,
+        y: 100,
+        toJSON: () => {},
+      }));
+
+      Object.defineProperty(window, 'innerWidth', { value: 1200, writable: true });
+
+      render(
+        <ProvenancePanel
+          selectedSteps={mockSteps}
+          anchorElement={mockAnchor}
+          onClose={() => {}}
+        />
+      );
+
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+
+      Object.defineProperty(window, 'innerWidth', { value: 800, writable: true });
+      act(() => {
+        window.dispatchEvent(new Event('resize'));
+      });
+
+      expect(screen.queryByRole('img', { hidden: true })).toBeNull();
+    });
   });
 });
 

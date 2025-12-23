@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from 'react';
 import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
-import RawScoresForm, { createEmptyRawScores } from './RawScoresForm';
+import { createEmptyRawScores } from './RawScoresForm';
 import type { RawScores } from './RawScoresForm';
-import ResultsTable from './ResultsTable';
+import ScoresTable from './ScoresTable';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import GoalPlanner from './GoalPlanner';
 import { useCalculation } from '../hooks/useCalculation';
@@ -23,11 +23,14 @@ const getAllSources = (): SourceMeta[] => {
 const Dayc2App = () => {
   const [dob, setDob] = useState('');
   const [testDate, setTestDate] = useState('');
+  const [useAgeOverride, setUseAgeOverride] = useState(false);
+  const [ageOverride, setAgeOverride] = useState<number | null>(null);
   const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
+  const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
 
-  const ageInfo = calculateAgeInfo(dob, testDate);
-  const ageMonths = ageInfo?.error ? null : ageInfo?.ageMonths ?? null;
+  const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
+  const ageMonths = useAgeOverride ? ageOverride : (ageInfo?.error ? null : ageInfo?.ageMonths ?? null);
 
   const { result } = useCalculation({ ageMonths, rawScores });
 
@@ -35,44 +38,59 @@ const Dayc2App = () => {
     setRawScores((prev) => ({ ...prev, [subtest]: value }));
   }, []);
 
-  const handleProvenanceClick = useCallback((steps: ProvenanceStep[]) => {
+  const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement) => {
     setSelectedProvenance(steps);
+    setProvenanceAnchor(anchorElement);
   }, []);
 
   const handleProvenanceClose = useCallback(() => {
     setSelectedProvenance(null);
+    setProvenanceAnchor(null);
   }, []);
 
-  const isInputDisabled = !ageInfo || !!ageInfo.error;
+  const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
 
   return (
-    <div className="dayc2-app">
-      <h1>DAYC-2 Score Calculator</h1>
-      <p className="subtitle">Developmental Assessment of Young Children, Second Edition</p>
+    <div className={`font-sans min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 transition-[margin] duration-200 ${isPanelOpen ? 'lg:mr-[420px]' : ''}`}>
+      {/* Header */}
+      <header className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-6 px-5 shadow-lg mb-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-1">DAYC-2 Score Calculator</h1>
+          <p className="text-indigo-200 text-sm md:text-base">Developmental Assessment of Young Children, Second Edition</p>
+        </div>
+      </header>
+
+      <main className="max-w-4xl mx-auto px-5 pb-10 space-y-6">
 
       <ChildInfoForm
         dob={dob}
         testDate={testDate}
         onDobChange={setDob}
         onTestDateChange={setTestDate}
+        useAgeOverride={useAgeOverride}
+        ageOverride={ageOverride}
+        onUseAgeOverrideChange={setUseAgeOverride}
+        onAgeOverrideChange={setAgeOverride}
       />
 
-      <RawScoresForm
+      <ScoresTable
+        ageMonths={ageMonths}
         rawScores={rawScores}
+        result={result}
         onRawScoreChange={handleRawScoreChange}
-        disabled={isInputDisabled}
+        onProvenanceClick={handleProvenanceClick}
       />
-
-      <ResultsTable result={result} onProvenanceClick={handleProvenanceClick} />
 
       <GoalPlanner ageMonths={ageMonths} onProvenanceClick={handleProvenanceClick} />
 
+        <AboutData sources={getAllSources()} />
+      </main>
+
       <ProvenancePanel
         selectedSteps={selectedProvenance}
+        anchorElement={provenanceAnchor}
         onClose={handleProvenanceClose}
       />
-
-      <AboutData sources={getAllSources()} />
     </div>
   );
 };

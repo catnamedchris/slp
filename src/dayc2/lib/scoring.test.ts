@@ -38,11 +38,10 @@ describe('lookupStandardScore', () => {
     expect(result.value).toEqual({ bound: 'gt', value: 150 });
   });
 
-  it('returns null value when cell is null', () => {
-    // From mockB13: rawScore 30, fineMotor = null
+  it('returns value from lower raw score when cell is null', () => {
+    // From mockB13: rawScore 30 fineMotor = null, rawScore 20 fineMotor = 110
     const result = lookupStandardScore(30, 'fineMotor', 12, ctx);
-    expect(result.value).toBeNull();
-    expect(result.note).toContain('not available');
+    expect(result.value).toEqual({ value: 110 });
   });
 
   it('returns null when age has no B table', () => {
@@ -129,16 +128,23 @@ describe('lookupAgeEquivalent', () => {
     expect(result.value).toEqual({ bound: 'lt', value: 1 });
   });
 
-  it('returns null when raw score not found', () => {
-    // Raw score 100 is not in any A1 row for cognitive
+  it('matches bounded gt for high raw score', () => {
+    // Raw score 100 > 81, so matches the gt row and returns >71 months
     const result = lookupAgeEquivalent(100, 'cognitive', ctx);
-    expect(result.value).toBeNull();
+    expect(result.value).toEqual({ bound: 'gt', value: 71 });
   });
 
   it('looks up domain key (communication)', () => {
     // From mockA1: ageMonths 24, communication = { value: 40 }
     const result = lookupAgeEquivalent(40, 'communication', ctx);
     expect(result.value).toEqual({ value: 24 });
+  });
+
+  it('matches bounded gt values (raw score exceeds threshold)', () => {
+    // From mockA1: ageMonths { bound: 'gt', value: 71 }, expressiveLanguage = { bound: 'gt', value: 38 }
+    // Raw score 40 > 38, so should match
+    const result = lookupAgeEquivalent(40, 'expressiveLanguage', ctx);
+    expect(result.value).toEqual({ bound: 'gt', value: 71 });
   });
 });
 

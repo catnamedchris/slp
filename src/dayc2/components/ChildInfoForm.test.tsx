@@ -2,6 +2,33 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
 
+vi.mock('react-datepicker', () => ({
+  default: ({ id, selected, onChange, placeholderText, className }: {
+    id: string;
+    selected: Date | null;
+    onChange: (date: Date | null) => void;
+    placeholderText: string;
+    className?: string;
+  }) => (
+    <input
+      type="text"
+      id={id}
+      value={selected ? selected.toISOString().split('T')[0] : ''}
+      placeholder={placeholderText}
+      className={className}
+      onChange={(e) => {
+        const val = e.target.value;
+        if (val) {
+          const [year, month, day] = val.split('-').map(Number);
+          onChange(new Date(year, month - 1, day));
+        } else {
+          onChange(null);
+        }
+      }}
+    />
+  ),
+}));
+
 describe('calculateAgeInfo', () => {
   it('returns null when dob is empty', () => {
     expect(calculateAgeInfo('', '2024-01-15')).toBeNull();
@@ -43,72 +70,103 @@ describe('calculateAgeInfo', () => {
 });
 
 describe('ChildInfoForm component', () => {
-  it('renders date inputs', () => {
-    render(
-      <ChildInfoForm
-        dob=""
-        testDate=""
-        onDobChange={() => {}}
-        onTestDateChange={() => {}}
-      />
-    );
-    expect(screen.getByLabelText('Date of Birth')).toBeInTheDocument();
-    expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
+  const defaultProps = {
+    dob: '',
+    testDate: '',
+    onDobChange: () => {},
+    onTestDateChange: () => {},
+    useAgeOverride: false,
+    ageOverride: null,
+    onUseAgeOverrideChange: () => {},
+    onAgeOverrideChange: () => {},
+  };
+
+  it('renders date inputs with labels', () => {
+    render(<ChildInfoForm {...defaultProps} />);
+    expect(screen.getByText('Birth Date')).toBeInTheDocument();
+    expect(screen.getByText('Test Date')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Select date of birth')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Select test date')).toBeInTheDocument();
   });
 
   it('calls onDobChange when DOB input changes', () => {
     const onDobChange = vi.fn();
-    render(
-      <ChildInfoForm
-        dob=""
-        testDate=""
-        onDobChange={onDobChange}
-        onTestDateChange={() => {}}
-      />
-    );
-    fireEvent.change(screen.getByLabelText('Date of Birth'), {
-      target: { value: '2022-01-15' },
-    });
+    render(<ChildInfoForm {...defaultProps} onDobChange={onDobChange} />);
+    const dobInput = screen.getByPlaceholderText('Select date of birth');
+    fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     expect(onDobChange).toHaveBeenCalledWith('2022-01-15');
   });
 
   it('calls onTestDateChange when test date input changes', () => {
     const onTestDateChange = vi.fn();
-    render(
-      <ChildInfoForm
-        dob=""
-        testDate=""
-        onDobChange={() => {}}
-        onTestDateChange={onTestDateChange}
-      />
-    );
-    fireEvent.change(screen.getByLabelText('Test Date'), {
-      target: { value: '2024-01-15' },
-    });
+    render(<ChildInfoForm {...defaultProps} onTestDateChange={onTestDateChange} />);
+    const testDateInput = screen.getByPlaceholderText('Select test date');
+    fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
     expect(onTestDateChange).toHaveBeenCalledWith('2024-01-15');
   });
 
   it('displays age when both dates are entered', () => {
-    render(
-      <ChildInfoForm
-        dob="2022-01-15"
-        testDate="2024-01-15"
-        onDobChange={() => {}}
-        onTestDateChange={() => {}}
-      />
-    );
+    render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
     expect(screen.getByText('24 months')).toBeInTheDocument();
   });
 
   it('displays error when age is out of range', () => {
-    render(
-      <ChildInfoForm
-        dob="2024-01-15"
-        testDate="2024-06-15"
-        onDobChange={() => {}}
-        onTestDateChange={() => {}}
-      />
-    );
+    render(<ChildInfoForm {...defaultProps} dob="2024-01-15" testDate="2024-06-15" />);
     expect(screen.getByText(/below DAYC-2 minimum/)).toBeInTheDocument();
+  });
+
+  it('displays selected dates in the inputs', () => {
+    render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
+    const dobInput = screen.getByPlaceholderText('Select date of birth') as HTMLInputElement;
+    const testDateInput = screen.getByPlaceholderText('Select test date') as HTMLInputElement;
+    expect(dobInput.value).toBe('2022-01-15');
+    expect(testDateInput.value).toBe('2024-01-15');
+  });
+
+  it('shows age override checkbox', () => {
+    render(<ChildInfoForm {...defaultProps} />);
+    expect(screen.getByText('Enter age directly')).toBeInTheDocument();
+  });
+
+  it('shows age input when useAgeOverride is true', () => {
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={24} />);
+    expect(screen.getByLabelText('Age (months)')).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Select date of birth')).not.toBeInTheDocument();
+  });
+
+  it('displays age from ageOverride', () => {
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={36} />);
+    expect(screen.getByText('36 months')).toBeInTheDocument();
+  });
+
+  it('calls onAgeOverrideChange when age input changes', () => {
+    const onAgeOverrideChange = vi.fn();
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={24} onAgeOverrideChange={onAgeOverrideChange} />);
+    const ageInput = screen.getByLabelText('Age (months)');
+    fireEvent.change(ageInput, { target: { value: '30' } });
+    expect(onAgeOverrideChange).toHaveBeenCalledWith(30);
+  });
+
+  it('toggles to age override mode when checkbox clicked', () => {
+    const onUseAgeOverrideChange = vi.fn();
+    render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" onUseAgeOverrideChange={onUseAgeOverrideChange} />);
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+    expect(onUseAgeOverrideChange).toHaveBeenCalledWith(true);
+  });
+
+  it('toggles back to date mode when checkbox unchecked', () => {
+    const onUseAgeOverrideChange = vi.fn();
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={24} onUseAgeOverrideChange={onUseAgeOverrideChange} />);
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
+    expect(onUseAgeOverrideChange).toHaveBeenCalledWith(false);
+  });
+
+  it('shows empty age input when useAgeOverride is true but ageOverride is null', () => {
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={null} />);
+    const ageInput = screen.getByLabelText('Age (months)') as HTMLInputElement;
+    expect(ageInput.value).toBe('');
+    expect(screen.queryByText('months')).not.toBeInTheDocument();
   });
 });

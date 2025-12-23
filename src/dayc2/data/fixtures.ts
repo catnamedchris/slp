@@ -64,6 +64,19 @@ export const mockA1: AgeEquivalentsTableJson = {
       fineMotor: { value: 22 },
       adaptiveBehavior: { value: 33 },
     },
+    {
+      csvRow: 74,
+      ageMonths: { bound: 'gt', value: 71 },
+      cognitive: { bound: 'gt', value: 81 },
+      communication: { bound: 'gt', value: 72 },
+      receptiveLanguage: { bound: 'gt', value: 34 },
+      expressiveLanguage: { bound: 'gt', value: 38 },
+      socialEmotional: { bound: 'gt', value: 58 },
+      physicalDevelopment: { bound: 'gt', value: 81 },
+      grossMotor: { bound: 'gt', value: 51 },
+      fineMotor: { bound: 'gt', value: 31 },
+      adaptiveBehavior: { bound: 'gt', value: 56 },
+    },
   ],
 };
 

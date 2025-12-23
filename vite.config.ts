@@ -12,5 +12,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist-web',
+    // Bundle includes ~330KB of scoring tables - expected for offline clinical tool
+    chunkSizeWarningLimit: 600,
   },
 });

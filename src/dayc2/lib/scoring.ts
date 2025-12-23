@@ -11,7 +11,8 @@ import type {
   AgeEquivalentRow,
 } from '../types';
 import type { LookupContext } from '../data/context';
-import { isExact, isRange } from './tables';
+import { isExact, isRange, isBounded } from './tables';
+import { SUBTEST_LABELS, AGE_EQUIV_LABELS, formatScoreValue, formatPercentileValue, formatAgeMonthsValue } from './labels';
 
 /**
  * Looks up standard score from raw score using the appropriate B table for the child's age.
@@ -42,22 +43,40 @@ export const lookupStandardScore = (
     };
   }
 
-  const score = row[subtest];
-
-  const step: ProvenanceStep = {
-    tableId: bTable.tableId,
-    csvRow: row.csvRow,
-    source: bTable.source,
-    description: `raw ${rawScore} → SS`,
-  };
+  let score = row[subtest];
+  let usedRow = row;
 
   if (score === null) {
+    for (let r = rawScore - 1; r >= 0; r--) {
+      const fallbackRow = bTable.rows.find((rw: RawToStandardRow) => rw.rawScore === r);
+      if (fallbackRow && fallbackRow[subtest] !== null) {
+        score = fallbackRow[subtest];
+        usedRow = fallbackRow;
+        break;
+      }
+    }
+  }
+
+  if (score === null) {
+    const step: ProvenanceStep = {
+      tableId: bTable.tableId,
+      csvRow: usedRow.csvRow,
+      source: bTable.source,
+      description: `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} → Standard Score (not available)`,
+    };
     return {
       value: null,
       steps: [step],
       note: `Standard score not available for ${subtest} at raw ${rawScore}`,
     };
   }
+
+  const step: ProvenanceStep = {
+    tableId: bTable.tableId,
+    csvRow: usedRow.csvRow,
+    source: bTable.source,
+    description: `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} → Standard Score ${formatScoreValue(score)}`,
+  };
 
   return {
     value: score,
@@ -100,7 +119,7 @@ export const lookupPercentile = (
             tableId: c1.tableId,
             csvRow: row.csvRow,
             source: c1.source,
-            description: `SS ${ssValue} → percentile`,
+            description: `Standard Score ${ssValue} → Percentile ${formatPercentileValue(pr)}`,
           }],
         };
       }
@@ -135,6 +154,11 @@ export const lookupAgeEquivalent = (
     if (isRange(domainValue)) {
       // Raw score falls within range
       matches = rawScore >= domainValue.min && rawScore <= domainValue.max;
+    } else if (isBounded(domainValue)) {
+      // Bounded value: >X means rawScore > X, <X means rawScore < X
+      matches = domainValue.bound === 'gt'
+        ? rawScore > domainValue.value
+        : rawScore < domainValue.value;
     } else if (isExact(domainValue)) {
       // Exact match
       matches = rawScore === domainValue.value;
@@ -147,7 +171,7 @@ export const lookupAgeEquivalent = (
           tableId: a1.tableId,
           csvRow: row.csvRow,
           source: a1.source,
-          description: `raw ${rawScore} → age equiv`,
+          description: `${AGE_EQUIV_LABELS[domain]}: Raw Score ${rawScore} → Age Equivalent ${formatAgeMonthsValue(row.ageMonths)}`,
         }],
       };
     }
@@ -196,7 +220,7 @@ export const lookupDomainComposite = (
             tableId: d1.tableId,
             csvRow: row.csvRow,
             source: d1.source,
-            description: `sum ${sum} → domain SS`,
+            description: `Sum of Standard Scores ${sum} → Composite ${formatScoreValue(ss)}`,
           }],
         };
       }
