@@ -1,5 +1,9 @@
 // DAYC-2 CSV to JSON Type Definitions
 
+// Re-export SourceMeta from shared for convenience
+export type { SourceMeta } from '@/shared/lib/types';
+import type { SourceMeta } from '@/shared/lib/types';
+
 // === Numeric Value Types (No 'kind' discriminator) ===
 
 export interface ExactNumber {
@@ -23,15 +27,19 @@ export type ParsedAgeMonths = ExactNumber | BoundedNumber; // No ranges in A1 ag
 export type ParsedScore = ParsedNumeric;
 export type ParsedPercentile = ExactNumber | BoundedNumber;
 
-// === Source Metadata ===
+// === Subtest Keys (for lookup functions) ===
 
-export interface SourceMeta {
-  tableId: string;
-  csvFilename: string;
-  csvSha256: string;
-  generatedAt: string;
-  generatorVersion: string;
-}
+export type SubtestKey =
+  | 'cognitive'
+  | 'receptiveLanguage'
+  | 'expressiveLanguage'
+  | 'socialEmotional'
+  | 'grossMotor'
+  | 'fineMotor'
+  | 'adaptiveBehavior';
+
+// Domain keys for age equivalents (includes composite domains)
+export type AgeEquivalentKey = SubtestKey | 'communication' | 'physicalDevelopment';
 
 // === Table A1: Age Equivalents ===
 
