@@ -1,0 +1,393 @@
+/* DAYC-2 Score Calculator Styles */
+
+* { box-sizing: border-box; }
+
+.dayc2-app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.dayc2-app h1 {
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.dayc2-app .subtitle {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  margin-top: 0;
+  color: #34495e;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+/* Form Row */
+.form-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.form-row label {
+  font-weight: 500;
+  color: #555;
+}
+
+.form-row input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.form-row input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+/* Age Display */
+.age-display {
+  background: #e8f4fd;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+.age-display .age-months {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2980b9;
+}
+
+.age-display .age-band {
+  color: #555;
+  margin-top: 5px;
+}
+
+/* Raw Scores Grid */
+.raw-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.raw-score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.raw-score-item label {
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+}
+
+.raw-score-item input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+}
+
+.raw-score-item input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+.raw-score-item input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Results Table */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.card th, .card td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.card th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+}
+
+.card tr:hover {
+  background: #f8f9fa;
+}
+
+.subtest-name {
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Composite Rows */
+.composite-row {
+  background: #fff3cd;
+  font-weight: 600;
+}
+
+.composite-row:hover {
+  background: #fff3cd;
+}
+
+/* Score Coloring */
+.score-low { color: #e74c3c; }
+.score-avg { color: #27ae60; }
+.score-high { color: #3498db; }
+
+/* Clickable cells */
+.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.clickable:hover {
+  background: #e8f4fd;
+}
+
+/* Error */
+.error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Provenance Panel */
+.provenance-panel {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  width: 350px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.provenance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.provenance-header h3 {
+  margin: 0;
+  color: #34495e;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #7f8c8d;
+  padding: 5px;
+}
+
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.provenance-steps {
+  padding: 15px 20px;
+}
+
+.provenance-step {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.provenance-step:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  background: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.step-details {
+  flex: 1;
+}
+
+.step-table {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.step-description {
+  color: #555;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.step-source {
+  color: #7f8c8d;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* About Data Section */
+.about-data h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.about-data-content {
+  margin-top: 10px;
+}
+
+.about-data-content p {
+  color: #555;
+  line-height: 1.6;
+}
+
+.sources-table {
+  font-size: 14px;
+  margin: 15px 0;
+}
+
+.sources-table th {
+  text-align: left;
+}
+
+.sha-cell {
+  font-family: monospace;
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.generator-version {
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+/* Goal Planner */
+.goal-planner select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  min-width: 200px;
+  background: white;
+}
+
+.goal-planner select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+.goal-results {
+  margin-top: 15px;
+}
+
+.target-ss {
+  background: #e8f4fd;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.target-ss strong {
+  color: #2980b9;
+}
+
+/* Print Styles */
+@media print {
+  .dayc2-app {
+    background: white;
+    padding: 0;
+  }
+  
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  
+  .provenance-panel {
+    display: none;
+  }
+  
+  input {
+    border: none;
+    background: transparent;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dayc2-app {
+    padding: 10px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row input {
+    max-width: 100%;
+  }
+  
+  .raw-scores {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .provenance-panel {
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}

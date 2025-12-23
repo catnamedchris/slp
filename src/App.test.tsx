@@ -5,6 +5,6 @@ import App from './App';
 describe('App', () => {
   it('renders DAYC-2 heading', () => {
     render(<App />);
-    expect(screen.getByText('Hello DAYC-2')).toBeInTheDocument();
+    expect(screen.getByText('DAYC-2 Score Calculator')).toBeInTheDocument();
   });
 });

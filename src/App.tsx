@@ -1,10 +1,8 @@
+import { Dayc2App } from './dayc2/components';
+import './dayc2/styles.css';
+
 const App = () => {
-  return (
-    <div>
-      <h1>Hello DAYC-2</h1>
-      <p>DAYC-2 Score Calculator - Coming Soon</p>
-    </div>
-  );
+  return <Dayc2App />;
 };
 
 export default App;
