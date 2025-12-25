@@ -71,4 +71,5 @@ export default defineConfig({
     outDir: 'dist-web',
     chunkSizeWarningLimit: 800,
   },
+  base: process.env.GITHUB_ACTIONS ? '/slp/' : '/',
 });
