@@ -23,7 +23,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm install --registry https://registry.npmjs.org
+      - run: echo "registry=https://registry.npmjs.org" > .npmrc
+      - run: rm package-lock.json && npm install
       - run: npm run build:web
         env:
           GITHUB_ACTIONS: true
