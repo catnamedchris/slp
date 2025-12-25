@@ -19,11 +19,12 @@ describe('GoalPlanner', () => {
     expect(screen.getByLabelText('Target Percentile')).toBeInTheDocument();
   });
 
-  it('shows common percentile options', () => {
+  it('accepts percentile values between 1-99', () => {
     render(<GoalPlanner ageMonths={24} />);
-    expect(screen.getByText('50th percentile')).toBeInTheDocument();
-    expect(screen.getByText('25th percentile')).toBeInTheDocument();
-    expect(screen.getByText('75th percentile')).toBeInTheDocument();
+    const input = screen.getByLabelText('Target Percentile');
+    expect(input).toHaveAttribute('min', '1');
+    expect(input).toHaveAttribute('max', '99');
+    expect(input).toHaveAttribute('placeholder', '1–99');
   });
 
   it('does not show results table when no percentile is selected', () => {

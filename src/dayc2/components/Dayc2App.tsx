@@ -86,6 +86,10 @@ const Dayc2App = () => {
         <AboutData sources={getAllSources()} />
       </main>
 
+      <footer className="max-w-4xl mx-auto px-5 pb-6 text-center text-xs text-slate-400">
+        <p>DAYC-2 Score Calculator v{APP_VERSION}</p>
+      </footer>
+
       <ProvenancePanel
         selectedSteps={selectedProvenance}
         anchorElement={provenanceAnchor}
@@ -94,5 +98,7 @@ const Dayc2App = () => {
     </div>
   );
 };
+
+const APP_VERSION = __APP_VERSION__;
 
 export default Dayc2App;

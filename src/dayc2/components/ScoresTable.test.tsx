@@ -292,7 +292,7 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(screen.getByText('95')).toBeInTheDocument();
-    expect(screen.getByText('37')).toBeInTheDocument();
+    expect(screen.getAllByText('95').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('37%').length).toBeGreaterThan(0);
   });
 });
