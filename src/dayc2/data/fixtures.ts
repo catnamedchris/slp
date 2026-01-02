@@ -253,10 +253,10 @@ export const mockC1: C1TableJson = {
       csvRow: 72,
       standardScore1: { value: 90 },
       percentileRank1: { value: 25 },
-      standardScore2: { value: 49 },
-      percentileRank2: { bound: 'lt', value: 1 },
-      standardScore3: null,
-      percentileRank3: null,
+      standardScore2: { value: 50 },
+      percentileRank2: { bound: 'lt', value: 0.1 },
+      standardScore3: { value: 49 },
+      percentileRank3: { bound: 'lt', value: 0.1 },
     },
     {
       csvRow: 82,
@@ -275,6 +275,16 @@ export const mockD1: D1TableJson = {
   tableId: 'D1',
   source: mockSource('D1'),
   rows: [
+    {
+      // Bounded low: sum < 100 → SS 40
+      csvRow: 1,
+      sumRange1: { bound: 'lt', value: 100 },
+      standardScore1: { value: 40 },
+      sumRange2: null,
+      standardScore2: null,
+      sumRange3: null,
+      standardScore3: null,
+    },
     {
       csvRow: 2,
       sumRange1: { min: 100, max: 101 },
@@ -310,6 +320,16 @@ export const mockD1: D1TableJson = {
       standardScore2: { value: 110 },
       sumRange3: { min: 280, max: 282 },
       standardScore3: { value: 143 },
+    },
+    {
+      // Bounded high: sum > 300 → SS 160
+      csvRow: 42,
+      sumRange1: { bound: 'gt', value: 300 },
+      standardScore1: { value: 160 },
+      sumRange2: null,
+      standardScore2: null,
+      sumRange3: null,
+      standardScore3: null,
     },
   ],
 };

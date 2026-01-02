@@ -5,10 +5,12 @@ import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
 import { createEmptyRawScores } from './RawScoresForm';
 import type { RawScores } from './RawScoresForm';
 import ScoresTable from './ScoresTable';
+import SubtestSettings from './SubtestSettings';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import GoalPlanner from './GoalPlanner';
 import { useCalculation } from '../hooks/useCalculation';
 import type { SubtestKey } from '../types';
+import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from './scoresDisplay';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 import { A1, C1, D1, BTables } from '../data';
 
@@ -26,6 +28,13 @@ const Dayc2App = () => {
   const [useAgeOverride, setUseAgeOverride] = useState(false);
   const [ageOverride, setAgeOverride] = useState<number | null>(null);
   const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
+  const [visibleSubtests, setVisibleSubtests] = useState<Set<SubtestKey>>(
+    () => new Set(DEFAULT_VISIBLE_SUBTESTS)
+  );
+  const [visibleDomains, setVisibleDomains] = useState<Set<DomainKey>>(
+    () => new Set(DEFAULT_VISIBLE_DOMAINS)
+  );
+  const [targetPercentile, setTargetPercentile] = useState(6);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
 
@@ -36,6 +45,30 @@ const Dayc2App = () => {
 
   const handleRawScoreChange = useCallback((subtest: SubtestKey, value: number | null) => {
     setRawScores((prev) => ({ ...prev, [subtest]: value }));
+  }, []);
+
+  const handleSubtestToggle = useCallback((subtest: SubtestKey) => {
+    setVisibleSubtests((prev) => {
+      const next = new Set(prev);
+      if (next.has(subtest)) {
+        next.delete(subtest);
+      } else {
+        next.add(subtest);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleDomainToggle = useCallback((domain: DomainKey) => {
+    setVisibleDomains((prev) => {
+      const next = new Set(prev);
+      if (next.has(domain)) {
+        next.delete(domain);
+      } else {
+        next.add(domain);
+      }
+      return next;
+    });
   }, []);
 
   const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement) => {
@@ -73,15 +106,30 @@ const Dayc2App = () => {
         onAgeOverrideChange={setAgeOverride}
       />
 
+      <SubtestSettings
+        visibleSubtests={visibleSubtests}
+        visibleDomains={visibleDomains}
+        onSubtestToggle={handleSubtestToggle}
+        onDomainToggle={handleDomainToggle}
+      />
+
       <ScoresTable
         ageMonths={ageMonths}
         rawScores={rawScores}
         result={result}
+        visibleSubtests={visibleSubtests}
+        visibleDomains={visibleDomains}
         onRawScoreChange={handleRawScoreChange}
         onProvenanceClick={handleProvenanceClick}
       />
 
-      <GoalPlanner ageMonths={ageMonths} onProvenanceClick={handleProvenanceClick} />
+      <GoalPlanner
+        ageMonths={ageMonths}
+        targetPercentile={targetPercentile}
+        visibleSubtests={visibleSubtests}
+        onTargetPercentileChange={setTargetPercentile}
+        onProvenanceClick={handleProvenanceClick}
+      />
 
         <AboutData sources={getAllSources()} />
       </main>

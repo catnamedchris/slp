@@ -3,33 +3,38 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ScoresTable from './ScoresTable';
 import { createEmptyRawScores } from './RawScoresForm';
 import type { CalculationResult } from '../lib/calculate';
+import type { SubtestKey } from '../types';
+import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from './scoresDisplay';
+
+const defaultVisibleSubtests = new Set<SubtestKey>(DEFAULT_VISIBLE_SUBTESTS);
+const defaultVisibleDomains = new Set<DomainKey>(DEFAULT_VISIBLE_DOMAINS);
 
 const mockResult: CalculationResult = {
   ageMonths: 24,
   subtests: {
     cognitive: {
       rawScore: 25,
-      standardScore: { value: { type: 'exact', value: 100 }, steps: [] },
-      percentile: { value: { type: 'exact', value: 50 }, steps: [] },
-      ageEquivalent: { value: { type: 'exact', value: 24 }, steps: [] },
+      standardScore: { value: { value: 100 }, steps: [] },
+      percentile: { value: { value: 50 }, steps: [] },
+      ageEquivalent: { value: { value: 24 }, steps: [] },
     },
     receptiveLanguage: {
       rawScore: 20,
-      standardScore: { value: { type: 'exact', value: 95 }, steps: [] },
-      percentile: { value: { type: 'exact', value: 37 }, steps: [] },
-      ageEquivalent: { value: { type: 'exact', value: 22 }, steps: [] },
+      standardScore: { value: { value: 95 }, steps: [] },
+      percentile: { value: { value: 37 }, steps: [] },
+      ageEquivalent: { value: { value: 22 }, steps: [] },
     },
     expressiveLanguage: {
       rawScore: 18,
-      standardScore: { value: { type: 'exact', value: 90 }, steps: [] },
-      percentile: { value: { type: 'exact', value: 25 }, steps: [] },
-      ageEquivalent: { value: { type: 'exact', value: 20 }, steps: [] },
+      standardScore: { value: { value: 90 }, steps: [] },
+      percentile: { value: { value: 25 }, steps: [] },
+      ageEquivalent: { value: { value: 20 }, steps: [] },
     },
     socialEmotional: {
       rawScore: 22,
-      standardScore: { value: { type: 'exact', value: 105 }, steps: [] },
-      percentile: { value: { type: 'exact', value: 63 }, steps: [] },
-      ageEquivalent: { value: { type: 'exact', value: 26 }, steps: [] },
+      standardScore: { value: { value: 105 }, steps: [] },
+      percentile: { value: { value: 63 }, steps: [] },
+      ageEquivalent: { value: { value: 26 }, steps: [] },
     },
     grossMotor: {
       rawScore: null,
@@ -52,9 +57,9 @@ const mockResult: CalculationResult = {
   },
   domains: {
     communication: {
-      sum: 185,
-      standardScore: { value: { type: 'exact', value: 92 }, steps: [] },
-      percentile: { value: { type: 'exact', value: 30 }, steps: [] },
+      sum: { type: 'exact', value: 185 },
+      standardScore: { value: { value: 92 }, steps: [] },
+      percentile: { value: { value: 30 }, steps: [] },
     },
     physical: {
       sum: null,
@@ -73,6 +78,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
@@ -85,6 +92,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
@@ -97,57 +106,29 @@ describe('ScoresTable', () => {
     expect(getInput('raw-adaptiveBehavior')).not.toBeInTheDocument();
   });
 
-  it('renders toggle checkboxes for all subtests and domains', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={null}
-        onRawScoreChange={() => {}}
-      />
-    );
-    const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes.length).toBe(9); // 7 subtests + 2 domains
-  });
-
-  it('hides Communication domain row by default', () => {
+  it('hides domain rows when not in visibleDomains', () => {
     render(
       <ScoresTable
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={mockResult}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={new Set()}
         onRawScoreChange={() => {}}
       />
     );
     const compositeRows = document.querySelectorAll('.composite-row');
-    const commRow = Array.from(compositeRows).find((row) =>
-      row.textContent?.includes('Communication')
-    );
-    expect(commRow).toBeFalsy();
+    expect(compositeRows.length).toBe(0);
   });
 
-  it('hides Physical domain row by default', () => {
+  it('shows Physical domain row when in visibleDomains', () => {
     render(
       <ScoresTable
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={mockResult}
-        onRawScoreChange={() => {}}
-      />
-    );
-    const compositeRows = document.querySelectorAll('.composite-row');
-    const physRow = Array.from(compositeRows).find((row) =>
-      row.textContent?.includes('Physical')
-    );
-    expect(physRow).toBeFalsy();
-  });
-
-  it('shows Physical domain row when toggled on', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={mockResult}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={new Set<DomainKey>(['physical'])}
         onRawScoreChange={() => {}}
       />
     );
@@ -155,75 +136,25 @@ describe('ScoresTable', () => {
       Array.from(document.querySelectorAll('.composite-row')).find((row) =>
         row.textContent?.includes('Physical')
       )
-    ).toBeFalsy();
-
-    const physicalCheckbox = screen.getByRole('checkbox', { name: /Physical \(GM\+FM\)/i });
-    fireEvent.click(physicalCheckbox);
-
-    expect(
-      Array.from(document.querySelectorAll('.composite-row')).find((row) =>
-        row.textContent?.includes('Physical')
-      )
     ).toBeTruthy();
   });
 
-  it('shows Communication domain row when toggled on', () => {
+  it('shows Communication domain row when in visibleDomains', () => {
     render(
       <ScoresTable
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={mockResult}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={new Set<DomainKey>(['communication'])}
         onRawScoreChange={() => {}}
       />
     );
-    expect(
-      Array.from(document.querySelectorAll('.composite-row')).find((row) =>
-        row.textContent?.includes('Communication')
-      )
-    ).toBeFalsy();
-
-    const commCheckbox = screen.getByRole('checkbox', { name: /Communication \(RL\+EL\)/i });
-    fireEvent.click(commCheckbox);
-
     expect(
       Array.from(document.querySelectorAll('.composite-row')).find((row) =>
         row.textContent?.includes('Communication')
       )
     ).toBeTruthy();
-  });
-
-  it('shows Cognitive row when toggled on', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={null}
-        onRawScoreChange={() => {}}
-      />
-    );
-    expect(getInput('raw-cognitive')).not.toBeInTheDocument();
-
-    const cognitiveCheckbox = screen.getByRole('checkbox', { name: /Cognitive/i });
-    fireEvent.click(cognitiveCheckbox);
-
-    expect(getInput('raw-cognitive')).toBeInTheDocument();
-  });
-
-  it('hides subtest row when toggled off', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={null}
-        onRawScoreChange={() => {}}
-      />
-    );
-    expect(getInput('raw-receptiveLanguage')).toBeInTheDocument();
-
-    const rlCheckbox = screen.getByRole('checkbox', { name: /Receptive Language/i });
-    fireEvent.click(rlCheckbox);
-
-    expect(getInput('raw-receptiveLanguage')).not.toBeInTheDocument();
   });
 
   it('disables inputs when ageMonths is null', () => {
@@ -232,6 +163,8 @@ describe('ScoresTable', () => {
         ageMonths={null}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
@@ -244,6 +177,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
@@ -256,6 +191,8 @@ describe('ScoresTable', () => {
         ageMonths={null}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
@@ -269,6 +206,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={onRawScoreChange}
       />
     );
@@ -289,10 +228,144 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={rawScores}
         result={mockResult}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
       />
     );
     expect(screen.getAllByText('95').length).toBeGreaterThan(0);
     expect(screen.getAllByText('37%').length).toBeGreaterThan(0);
+  });
+
+  it('displays warning icon when subtest has a note', () => {
+    const resultWithNote: CalculationResult = {
+      ...mockResult,
+      subtests: {
+        ...mockResult.subtests,
+        receptiveLanguage: {
+          ...mockResult.subtests.receptiveLanguage,
+          standardScore: {
+            value: { value: 120 },
+            steps: [],
+            note: 'Raw score 50 exceeds table max (30). Using 30 instead.',
+          },
+        },
+      },
+    };
+    render(
+      <ScoresTable
+        ageMonths={24}
+        rawScores={createEmptyRawScores()}
+        result={resultWithNote}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
+        onRawScoreChange={() => {}}
+      />
+    );
+    // Warning icon should be visible in RL row
+    const warningIcons = screen.getAllByText('⚠');
+    expect(warningIcons.length).toBeGreaterThan(0);
+  });
+
+  it('displays bounded sum with < prefix', () => {
+    const resultWithBoundedSum: CalculationResult = {
+      ...mockResult,
+      domains: {
+        ...mockResult.domains,
+        communication: {
+          sum: { type: 'lt', value: 145 },
+          standardScore: { value: { bound: 'lt', value: 41 }, steps: [] },
+          percentile: { value: null, steps: [] },
+        },
+      },
+    };
+    render(
+      <ScoresTable
+        ageMonths={24}
+        rawScores={createEmptyRawScores()}
+        result={resultWithBoundedSum}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={new Set<DomainKey>(['communication'])}
+        onRawScoreChange={() => {}}
+      />
+    );
+
+    expect(screen.getAllByText('<145').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('<41').length).toBeGreaterThan(0);
+  });
+
+  it('displays bounded sum with > prefix', () => {
+    const resultWithBoundedSum: CalculationResult = {
+      ...mockResult,
+      domains: {
+        ...mockResult.domains,
+        communication: {
+          sum: { type: 'gt', value: 300 },
+          standardScore: { value: { bound: 'gt', value: 159 }, steps: [] },
+          percentile: { value: null, steps: [] },
+        },
+      },
+    };
+    render(
+      <ScoresTable
+        ageMonths={24}
+        rawScores={createEmptyRawScores()}
+        result={resultWithBoundedSum}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={new Set<DomainKey>(['communication'])}
+        onRawScoreChange={() => {}}
+      />
+    );
+
+    expect(screen.getAllByText('>300').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('>159').length).toBeGreaterThan(0);
+  });
+
+  it('calls onProvenanceClick when score cell with steps is clicked', () => {
+    const onProvenanceClick = vi.fn();
+    const mockStep = {
+      tableId: 'B13',
+      csvRow: 12,
+      source: {
+        tableId: 'B13',
+        csvFilename: 'test.csv',
+        csvSha256: 'abc123',
+        generatedAt: '2025-01-01',
+        generatorVersion: 'test',
+      },
+      description: 'Receptive Language: Raw Score 20 → Standard Score 95',
+    };
+    const resultWithSteps: CalculationResult = {
+      ...mockResult,
+      subtests: {
+        ...mockResult.subtests,
+        receptiveLanguage: {
+          ...mockResult.subtests.receptiveLanguage,
+          standardScore: {
+            value: { value: 95 },
+            steps: [mockStep],
+          },
+        },
+      },
+    };
+    render(
+      <ScoresTable
+        ageMonths={24}
+        rawScores={createEmptyRawScores()}
+        result={resultWithSteps}
+        onProvenanceClick={onProvenanceClick}
+        visibleSubtests={defaultVisibleSubtests}
+        visibleDomains={defaultVisibleDomains}
+        onRawScoreChange={() => {}}
+      />
+    );
+
+    // Click on the standard score cell (95)
+    const scoreCells = screen.getAllByText('95');
+    fireEvent.click(scoreCells[0]);
+
+    expect(onProvenanceClick).toHaveBeenCalledTimes(1);
+    expect(onProvenanceClick.mock.calls[0][0]).toHaveLength(1);
+    expect(onProvenanceClick.mock.calls[0][0][0].tableId).toBe('B13');
   });
 });

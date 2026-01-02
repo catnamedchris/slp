@@ -1,36 +1,20 @@
 // GoalPlanner: Reverse lookup to find raw scores needed for target percentile
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { SubtestKey } from '../types';
 import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } from '../lib/goals';
 import { createLookupContext } from '../data/context';
 import { isExact } from '../lib/tables';
 import type { ProvenanceStep } from '@/shared/lib/types';
+import { SUBTEST_LABELS, SUBTESTS } from './scoresDisplay';
 
 interface GoalPlannerProps {
   ageMonths: number | null;
+  targetPercentile: number;
+  visibleSubtests: Set<SubtestKey>;
+  onTargetPercentileChange: (value: number) => void;
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
 }
-
-const SUBTEST_LABELS: Record<SubtestKey, string> = {
-  cognitive: 'Cognitive',
-  receptiveLanguage: 'Receptive Language',
-  expressiveLanguage: 'Expressive Language',
-  socialEmotional: 'Social-Emotional',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
-};
-
-const SUBTESTS: SubtestKey[] = [
-  'cognitive',
-  'receptiveLanguage',
-  'expressiveLanguage',
-  'socialEmotional',
-  'grossMotor',
-  'fineMotor',
-  'adaptiveBehavior',
-];
 
 interface GoalResult {
   subtest: SubtestKey;
@@ -39,8 +23,13 @@ interface GoalResult {
   note?: string;
 }
 
-const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
-  const [targetPercentile, setTargetPercentile] = useState<number | null>(null);
+const GoalPlanner = ({
+  ageMonths,
+  targetPercentile,
+  visibleSubtests,
+  onTargetPercentileChange,
+  onProvenanceClick,
+}: GoalPlannerProps) => {
 
   const goalResults = useMemo(() => {
     if (ageMonths === null || targetPercentile === null) return null;
@@ -79,15 +68,13 @@ const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
   }, [ageMonths, targetPercentile]);
 
   const handlePercentileChange = (value: string) => {
-    if (value === '') {
-      setTargetPercentile(null);
-    } else {
-      const parsed = parseInt(value, 10);
-      if (!isNaN(parsed) && parsed >= 1 && parsed <= 99) {
-        setTargetPercentile(parsed);
-      }
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= 99) {
+      onTargetPercentileChange(parsed);
     }
   };
+
+  const visibleResults = goalResults?.subtests?.filter((r) => visibleSubtests.has(r.subtest)) ?? [];
 
   if (ageMonths === null) {
     return null;
@@ -97,7 +84,7 @@ const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <h2 className="mt-0 mb-4 text-slate-800 font-semibold text-lg flex items-center gap-2">
         <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
-        Goal Planner
+        Reverse Lookup
       </h2>
       <p className="text-slate-600 text-sm mb-4">Find the raw scores needed to reach a target percentile.</p>
 
@@ -109,7 +96,7 @@ const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
             id="targetPercentile"
             min={1}
             max={99}
-            value={targetPercentile ?? ''}
+            value={targetPercentile}
             onChange={(e) => handlePercentileChange(e.target.value)}
             placeholder="1–99"
             className="px-3 py-2 border border-gray-300 rounded text-base w-24 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
@@ -135,7 +122,7 @@ const GoalPlanner = ({ ageMonths, onProvenanceClick }: GoalPlannerProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {goalResults.subtests?.map((result) => (
+                  {visibleResults.map((result) => (
                     <tr key={result.subtest} className="hover:bg-gray-50">
                       <td className="p-2.5 text-left font-medium border-b border-gray-100">{SUBTEST_LABELS[result.subtest]}</td>
                       <td

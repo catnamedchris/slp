@@ -18,7 +18,7 @@ export interface SourceMeta {
  */
 export interface ProvenanceStep {
   tableId: string;
-  csvRow: number;
+  csvRow: number | null;
   source: SourceMeta;
   description?: string;
 }

@@ -50,11 +50,28 @@ describe('lookupStandardScore', () => {
     expect(result.note).toContain('No table');
   });
 
-  it('returns null when raw score not found in table', () => {
-    // mockB13 only has rawScores 0, 5, 10, 20, 30
+  it('returns null when raw score not found in table (between rows)', () => {
+    // mockB13 only has rawScores 0, 5, 10, 20, 30 - 15 is between 10 and 20
     const result = lookupStandardScore(15, 'cognitive', 12, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
+  });
+
+  it('uses max raw score when input exceeds table maximum', () => {
+    // mockB13 max rawScore is 30 with cognitive = { value: 130 }
+    const result = lookupStandardScore(50, 'cognitive', 12, ctx);
+    expect(result.value).toEqual({ value: 130 });
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].description).toContain('entered 50, using max 30');
+    expect(result.note).toContain('exceeds table max');
+  });
+
+  it('handles very large raw scores by using max', () => {
+    // Test with a very large raw score like 343
+    const result = lookupStandardScore(343, 'receptiveLanguage', 12, ctx);
+    expect(result.value).toEqual({ bound: 'gt', value: 150 });
+    expect(result.steps[0].description).toContain('entered 343, using max 30');
+    expect(result.note).toContain('exceeds table max');
   });
 
   it('uses B17 for age 24 months', () => {
@@ -92,10 +109,19 @@ describe('lookupPercentile', () => {
     expect(result.value).toEqual({ bound: 'lt', value: 1 });
   });
 
-  it('returns null for bounded input (cannot look up)', () => {
+  it('handles bounded standard score by applying bound to percentile', () => {
+    // SS <50 should look up SS=50 (percentile <0.1) and return with 'lt' bound
     const result = lookupPercentile({ bound: 'lt', value: 50 }, ctx);
-    expect(result.value).toBeNull();
-    expect(result.note).toContain('bounded');
+    expect(result.value).toEqual({ bound: 'lt', value: 0.1 });
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].description).toContain('<50');
+  });
+
+  it('handles greater-than bounded standard score', () => {
+    // SS >140 should look up SS=140 and return with 'gt' bound
+    const result = lookupPercentile({ bound: 'gt', value: 140 }, ctx);
+    expect(result.value).toEqual({ bound: 'gt', value: 99.9 });
+    expect(result.steps[0].description).toContain('>140');
   });
 
   it('returns null when standard score not found', () => {
@@ -103,6 +129,13 @@ describe('lookupPercentile', () => {
     const result = lookupPercentile({ value: 200 }, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
+  });
+
+  it('rejects NumberRange inputs (requires exact or bounded)', () => {
+    // NumberRange is not valid for percentile lookup
+    const result = lookupPercentile({ min: 80, max: 100 }, ctx);
+    expect(result.value).toBeNull();
+    expect(result.note).toContain('exact or bounded');
   });
 });
 
@@ -146,6 +179,15 @@ describe('lookupAgeEquivalent', () => {
     const result = lookupAgeEquivalent(40, 'expressiveLanguage', ctx);
     expect(result.value).toEqual({ bound: 'gt', value: 71 });
   });
+
+  it('returns null when raw score not found in A1', () => {
+    // mockA1 cognitive ranges: 0-4, 24 (exact), 39 (exact), >81
+    // Raw score 10 falls between 4 and 24, not matching any row
+    const result = lookupAgeEquivalent(10, 'cognitive', ctx);
+    expect(result.value).toBeNull();
+    expect(result.note).toContain('not found');
+    expect(result.note).toContain('cognitive');
+  });
 });
 
 describe('lookupDomainComposite', () => {
@@ -172,8 +214,36 @@ describe('lookupDomainComposite', () => {
   });
 
   it('returns null when sum not found in any range', () => {
-    // 50 is below the minimum in mockD1
+    // 150 is between ranges in mockD1
+    const result = lookupDomainComposite(150, ctx);
+    expect(result.value).toBeNull();
+    expect(result.note).toContain('not found');
+  });
+
+  it('matches bounded lt sumRange for low sums', () => {
+    // From mockD1: sumRange { bound: 'lt', value: 100 } → standardScore { value: 40 }
     const result = lookupDomainComposite(50, ctx);
+    expect(result.value).toEqual({ value: 40 });
+    expect(result.steps[0].description).toContain('Sum of Standard Scores 50');
+  });
+
+  it('matches bounded gt sumRange for high sums', () => {
+    // From mockD1: sumRange { bound: 'gt', value: 300 } → standardScore { value: 160 }
+    const result = lookupDomainComposite(350, ctx);
+    expect(result.value).toEqual({ value: 160 });
+    expect(result.steps[0].description).toContain('Sum of Standard Scores 350');
+  });
+
+  it('does not match bounded lt when sum equals boundary', () => {
+    // sum = 100 should NOT match { bound: 'lt', value: 100 } (100 is not < 100)
+    // It should match { min: 100, max: 101 } → { value: 49 }
+    const result = lookupDomainComposite(100, ctx);
+    expect(result.value).toEqual({ value: 49 });
+  });
+
+  it('does not match bounded gt when sum equals boundary', () => {
+    // sum = 300 should NOT match { bound: 'gt', value: 300 } (300 is not > 300)
+    const result = lookupDomainComposite(300, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
   });

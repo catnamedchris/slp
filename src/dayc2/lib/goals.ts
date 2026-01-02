@@ -66,29 +66,47 @@ export const lookupRawScoreFromStandardScore = (
     };
   }
 
-  // Find all rows where the subtest SS matches the target
-  // Return the minimum raw score (first occurrence when sorted by rawScore)
+  // Find the minimum raw score that achieves at most the target SS
+  // (For qualification: you qualify if your score is at or below the threshold)
+  // If exact match not found, use the next highest available SS that's still ≤ target
   let bestRow: RawToStandardRow | null = null;
+  let bestSS: number | null = null;
 
   for (const row of bTable.rows) {
     const score = row[subtest];
     if (score === null) continue;
 
-    // Only match exact values, not bounded ones
-    if (isExact(score) && score.value === targetSS) {
-      if (!bestRow || row.rawScore < bestRow.rawScore) {
+    // Only consider exact values, not bounded ones
+    if (!isExact(score)) continue;
+
+    const ss = score.value;
+
+    // We want scores <= targetSS (at or below the threshold)
+    // Among those, find the highest SS (closest to target)
+    // Among rows with that SS, find the minimum raw score
+    if (ss <= targetSS) {
+      if (bestSS === null || ss > bestSS || (ss === bestSS && row.rawScore < bestRow!.rawScore)) {
+        bestSS = ss;
         bestRow = row;
       }
     }
   }
 
-  if (!bestRow) {
+  if (!bestRow || bestSS === null) {
+    const { minMonths, maxMonths } = bTable.source.ageBand;
     return {
       value: null,
-      steps: [],
-      note: `Standard score ${targetSS} not found for ${subtest} in ${bTable.tableId}`,
+      steps: [{
+        tableId: bTable.tableId,
+        csvRow: null,
+        source: bTable.source,
+        description: `No raw score produces Standard Score ≤${targetSS} for this subtest at ages ${minMonths}–${maxMonths} months`,
+      }],
+      note: `Standard score ${targetSS} not achievable for this subtest at this age`,
     };
   }
+
+  const ssNote = bestSS !== targetSS ? ` (closest available: ${bestSS})` : '';
 
   return {
     value: bestRow.rawScore,
@@ -96,7 +114,7 @@ export const lookupRawScoreFromStandardScore = (
       tableId: bTable.tableId,
       csvRow: bestRow.csvRow,
       source: bTable.source,
-      description: `Standard Score ${targetSS} → Raw Score ${bestRow.rawScore}`,
+      description: `Standard Score ≤${targetSS}${ssNote} → Raw Score ${bestRow.rawScore}`,
     }],
   };
 };

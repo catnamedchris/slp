@@ -67,6 +67,18 @@ describe('calculateAgeInfo', () => {
     expect(result?.ageBandLabel).toBeTruthy();
     expect(result?.error).toBeNull();
   });
+
+  it('allows age exactly at DAYC2_MIN_AGE (12 months) without error', () => {
+    const result = calculateAgeInfo('2023-01-15', '2024-01-15');
+    expect(result?.ageMonths).toBe(12);
+    expect(result?.error).toBeNull();
+  });
+
+  it('allows age exactly at DAYC2_MAX_AGE (71 months) without error', () => {
+    const result = calculateAgeInfo('2018-02-15', '2024-01-15');
+    expect(result?.ageMonths).toBe(71);
+    expect(result?.error).toBeNull();
+  });
 });
 
 describe('ChildInfoForm component', () => {
@@ -168,5 +180,65 @@ describe('ChildInfoForm component', () => {
     const ageInput = screen.getByLabelText('Age (months)') as HTMLInputElement;
     expect(ageInput.value).toBe('');
     expect(screen.queryByText('months')).not.toBeInTheDocument();
+  });
+
+  it('does not display age info when only dob is set', () => {
+    render(<ChildInfoForm {...defaultProps} dob="2022-01-15" />);
+    expect(screen.queryByText(/months/)).not.toBeInTheDocument();
+  });
+
+  it('does not display age info when only testDate is set', () => {
+    render(<ChildInfoForm {...defaultProps} testDate="2024-01-15" />);
+    expect(screen.queryByText(/months/)).not.toBeInTheDocument();
+  });
+
+  it('renders the age band label when available', () => {
+    render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
+    expect(screen.getByText(/Age Band:/)).toBeInTheDocument();
+  });
+
+  it('shows below-min error in override mode', () => {
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={5} />);
+    expect(screen.getByText(/below DAYC-2 minimum/)).toBeInTheDocument();
+  });
+
+  it('shows above-max error in override mode', () => {
+    render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={80} />);
+    expect(screen.getByText(/above DAYC-2 maximum/)).toBeInTheDocument();
+  });
+
+  it('sets ageOverride to null when age input is cleared', () => {
+    const onAgeOverrideChange = vi.fn();
+    render(
+      <ChildInfoForm
+        {...defaultProps}
+        useAgeOverride={true}
+        ageOverride={24}
+        onAgeOverrideChange={onAgeOverrideChange}
+      />
+    );
+    const ageInput = screen.getByLabelText('Age (months)');
+    fireEvent.change(ageInput, { target: { value: '' } });
+    expect(onAgeOverrideChange).toHaveBeenCalledWith(null);
+  });
+
+  it('treats non-numeric input as clearing the field (browser behavior for type=number)', () => {
+    const onAgeOverrideChange = vi.fn();
+    render(
+      <ChildInfoForm
+        {...defaultProps}
+        useAgeOverride={true}
+        ageOverride={24}
+        onAgeOverrideChange={onAgeOverrideChange}
+      />
+    );
+    const ageInput = screen.getByLabelText('Age (months)');
+    fireEvent.change(ageInput, { target: { value: 'abc' } });
+    expect(onAgeOverrideChange).toHaveBeenCalledWith(null);
+  });
+
+  it('displays negative-age error when test date is before DOB', () => {
+    render(<ChildInfoForm {...defaultProps} dob="2024-01-15" testDate="2023-01-15" />);
+    expect(screen.getByText(/Test date cannot be before date of birth/)).toBeInTheDocument();
   });
 });

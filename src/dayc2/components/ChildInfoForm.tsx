@@ -130,7 +130,7 @@ const ChildInfoForm = ({
       
       <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex items-center gap-2 cursor-pointer w-fit">
           <input
             type="checkbox"
             checked={useAgeOverride}
@@ -166,8 +166,8 @@ const ChildInfoForm = ({
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
-              maxDate={today}
-              minDate={subYears(today, 7)}
+              maxDate={testDateDate ?? undefined}
+              minDate={testDateDate ? subYears(testDateDate, 6) : undefined}
               placeholderText="Select date of birth"
               className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
@@ -183,7 +183,7 @@ const ChildInfoForm = ({
               showYearDropdown
               dropdownMode="select"
               maxDate={today}
-              minDate={subYears(today, 1)}
+              minDate={dobDate ?? undefined}
               placeholderText="Select test date"
               className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />

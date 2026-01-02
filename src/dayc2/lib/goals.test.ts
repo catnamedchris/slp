@@ -63,11 +63,19 @@ describe('lookupRawScoreFromStandardScore', () => {
     expect(result.value).toBe(5);
   });
 
-  it('returns null when no row has the target standard score', () => {
-    // 75 is not a cognitive SS in mockB13
+  it('finds closest available SS when exact match not found', () => {
+    // 75 is not a cognitive SS in mockB13, but 60 is (at rawScore 10)
+    // Looking for SS ≤ 75, closest is 60
     const result = lookupRawScoreFromStandardScore(75, 'cognitive', 12, ctx);
+    expect(result.value).toBe(10);
+    expect(result.steps[0].description).toContain('closest available: 60');
+  });
+
+  it('returns null when no SS at or below target exists', () => {
+    // 45 is below all exact cognitive SS values in mockB13 (min exact is 50)
+    const result = lookupRawScoreFromStandardScore(45, 'cognitive', 12, ctx);
     expect(result.value).toBeNull();
-    expect(result.note).toContain('not found');
+    expect(result.note).toContain('not achievable');
   });
 
   it('returns null when age has no B table', () => {

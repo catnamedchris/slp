@@ -33,7 +33,18 @@ export const lookupStandardScore = (
     };
   }
 
-  const row = bTable.rows.find((r: RawToStandardRow) => r.rawScore === rawScore);
+  let row = bTable.rows.find((r: RawToStandardRow) => r.rawScore === rawScore);
+  let clampedRaw = rawScore;
+
+  // If raw score exceeds table max, clamp to highest available raw score
+  if (!row) {
+    const maxRow = bTable.rows.reduce((max: RawToStandardRow | null, r: RawToStandardRow) => 
+      !max || r.rawScore > max.rawScore ? r : max, null);
+    if (maxRow && rawScore > maxRow.rawScore) {
+      row = maxRow;
+      clampedRaw = maxRow.rawScore;
+    }
+  }
 
   if (!row) {
     return {
@@ -71,36 +82,44 @@ export const lookupStandardScore = (
     };
   }
 
+  const wasClamped = clampedRaw !== rawScore;
+  const clampNote = wasClamped ? ` (entered ${rawScore}, using max ${clampedRaw})` : '';
   const step: ProvenanceStep = {
     tableId: bTable.tableId,
     csvRow: usedRow.csvRow,
     source: bTable.source,
-    description: `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} → Standard Score ${formatScoreValue(score)}`,
+    description: `${SUBTEST_LABELS[subtest]}: Raw Score ${clampedRaw}${clampNote} → Standard Score ${formatScoreValue(score)}`,
   };
 
   return {
     value: score,
     steps: [step],
+    note: wasClamped
+      ? `Raw score ${rawScore} exceeds table max (${clampedRaw}). Using ${clampedRaw} instead.`
+      : undefined,
   };
 };
 
 /**
  * Looks up percentile rank from standard score using C1 table.
- * Only works for exact standard scores (not bounded).
+ * For bounded standard scores (e.g., <50 or >150), looks up the boundary value
+ * and returns the percentile with the same bound indicator.
  */
 export const lookupPercentile = (
   standardScore: ParsedScore,
   ctx: LookupContext
 ): ValueWithProvenance<ParsedPercentile> => {
-  if (!isExact(standardScore)) {
+  // Reject NumberRange inputs - percentile lookup requires exact or bounded scores
+  if (!isExact(standardScore) && !isBounded(standardScore)) {
     return {
       value: null,
       steps: [],
-      note: `Cannot look up percentile for bounded standard score`,
+      note: 'Percentile lookup requires an exact or bounded standard score',
     };
   }
 
   const ssValue = standardScore.value;
+  const bound = isBounded(standardScore) ? standardScore.bound : null;
   const c1 = ctx.standardToPercentile;
 
   // C1 has 3 columns of SS/percentile pairs per row
@@ -113,13 +132,18 @@ export const lookupPercentile = (
 
     for (const { ss, pr } of pairs) {
       if (ss && isExact(ss) && ss.value === ssValue && pr !== null) {
+        // If original standard score was bounded, apply same bound to percentile
+        const resultPercentile: ParsedPercentile = bound && isExact(pr)
+          ? { bound, value: pr.value }
+          : pr;
+        const boundPrefix = bound ? (bound === 'lt' ? '<' : '>') : '';
         return {
-          value: pr,
+          value: resultPercentile,
           steps: [{
             tableId: c1.tableId,
             csvRow: row.csvRow,
             source: c1.source,
-            description: `Standard Score ${ssValue} → Percentile ${formatPercentileValue(pr)}`,
+            description: `Standard Score ${boundPrefix}${ssValue} → Percentile ${formatPercentileValue(resultPercentile)}`,
           }],
         };
       }
@@ -209,6 +233,10 @@ export const lookupDomainComposite = (
 
       if (isRange(sumRange)) {
         matches = sum >= sumRange.min && sum <= sumRange.max;
+      } else if (isBounded(sumRange)) {
+        matches = sumRange.bound === 'gt'
+          ? sum > sumRange.value
+          : sum < sumRange.value;
       } else if (isExact(sumRange)) {
         matches = sum === sumRange.value;
       }
