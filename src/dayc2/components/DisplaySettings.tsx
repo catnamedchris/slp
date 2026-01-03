@@ -1,4 +1,4 @@
-// SubtestSettings: Shared visibility controls for subtests and domains
+// DisplaySettings: Visibility controls for subtests and domains
 
 import type { SubtestKey } from '../types';
 import {
@@ -9,19 +9,19 @@ import {
   type DomainKey,
 } from './scoresDisplay';
 
-interface SubtestSettingsProps {
+interface DisplaySettingsProps {
   visibleSubtests: Set<SubtestKey>;
   visibleDomains: Set<DomainKey>;
   onSubtestToggle: (subtest: SubtestKey) => void;
   onDomainToggle: (domain: DomainKey) => void;
 }
 
-const SubtestSettings = ({
+const DisplaySettings = ({
   visibleSubtests,
   visibleDomains,
   onSubtestToggle,
   onDomainToggle,
-}: SubtestSettingsProps) => (
+}: DisplaySettingsProps) => (
   <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
     <details className="text-sm group">
       <summary className="cursor-pointer text-slate-700 hover:text-slate-900 select-none inline-flex items-center gap-1 font-medium">
@@ -69,4 +69,4 @@ const SubtestSettings = ({
   </div>
 );
 
-export default SubtestSettings;
+export default DisplaySettings;

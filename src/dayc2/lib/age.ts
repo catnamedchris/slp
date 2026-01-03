@@ -23,7 +23,10 @@ export const calcAgeMonths = (
 
 /**
  * Finds the appropriate B table for a given age in months.
- * Delegates to the LookupContext's getBTableForAge function.
+ *
+ * This wrapper exists to provide a consistent function signature for age band
+ * lookups, abstracting away the LookupContext method call. It's used by
+ * ChildInfoForm to display age band information and validate age ranges.
  *
  * @param ageMonths - Age in months
  * @param ctx - LookupContext containing table data

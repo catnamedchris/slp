@@ -5,7 +5,7 @@ import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
 import { createEmptyRawScores } from './RawScoresForm';
 import type { RawScores } from './RawScoresForm';
 import ScoresTable from './ScoresTable';
-import SubtestSettings from './SubtestSettings';
+import DisplaySettings from './DisplaySettings';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import GoalPlanner from './GoalPlanner';
 import { useCalculation } from '../hooks/useCalculation';
@@ -106,7 +106,7 @@ const Dayc2App = () => {
         onAgeOverrideChange={setAgeOverride}
       />
 
-      <SubtestSettings
+      <DisplaySettings
         visibleSubtests={visibleSubtests}
         visibleDomains={visibleDomains}
         onSubtestToggle={handleSubtestToggle}

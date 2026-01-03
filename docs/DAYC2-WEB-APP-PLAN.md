@@ -212,7 +212,7 @@ Every lookup function returns not just the result, but the complete path of how 
 ```typescript
 interface ProvenanceStep {
   tableId: string;           // e.g., "B17", "C1", "D1"
-  csvRow: number;            // Row in original CSV
+  csvRow: number | null;     // Row in original CSV (null when no specific row applies)
   source: SourceMeta;        // SHA256, generator version, etc.
   description?: string;      // e.g., "raw→standard", "SS→percentile"
 }
