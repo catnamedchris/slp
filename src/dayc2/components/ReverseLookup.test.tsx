@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import GoalPlanner from './GoalPlanner';
+import ReverseLookup from './ReverseLookup';
 import type { SubtestKey } from '../types';
 import { DEFAULT_VISIBLE_SUBTESTS, SUBTESTS } from '../lib/scoresDisplay';
 
@@ -11,25 +11,25 @@ const defaultProps = {
   onTargetPercentileChange: vi.fn(),
 };
 
-describe('GoalPlanner', () => {
+describe('ReverseLookup', () => {
   it('returns null when ageMonths is null', () => {
-    const { container } = render(<GoalPlanner {...defaultProps} ageMonths={null} />);
+    const { container } = render(<ReverseLookup {...defaultProps} ageMonths={null} />);
     expect(container.firstChild).toBeNull();
   });
 
   it('renders heading and instructions when age is valid', () => {
-    render(<GoalPlanner {...defaultProps} />);
+    render(<ReverseLookup {...defaultProps} />);
     expect(screen.getByText('Reverse Lookup')).toBeInTheDocument();
     expect(screen.getByText(/Find the raw scores/)).toBeInTheDocument();
   });
 
   it('renders percentile input field', () => {
-    render(<GoalPlanner {...defaultProps} />);
+    render(<ReverseLookup {...defaultProps} />);
     expect(screen.getByLabelText('Target Percentile')).toBeInTheDocument();
   });
 
   it('accepts percentile values between 1-99', () => {
-    render(<GoalPlanner {...defaultProps} />);
+    render(<ReverseLookup {...defaultProps} />);
     const input = screen.getByLabelText('Target Percentile');
     expect(input).toHaveAttribute('min', '1');
     expect(input).toHaveAttribute('max', '99');
@@ -37,13 +37,13 @@ describe('GoalPlanner', () => {
   });
 
   it('shows results table with default percentile', () => {
-    render(<GoalPlanner {...defaultProps} />);
+    render(<ReverseLookup {...defaultProps} />);
     expect(screen.getByText('Target Standard Score:')).toBeInTheDocument();
     expect(screen.getByText('Min. Raw Score')).toBeInTheDocument();
   });
 
   it('shows only visible subtests in results', () => {
-    render(<GoalPlanner {...defaultProps} targetPercentile={50} />);
+    render(<ReverseLookup {...defaultProps} targetPercentile={50} />);
     expect(screen.getByText('Receptive Language')).toBeInTheDocument();
     expect(screen.getByText('Expressive Language')).toBeInTheDocument();
     expect(screen.getByText('Social-Emotional')).toBeInTheDocument();
@@ -55,7 +55,7 @@ describe('GoalPlanner', () => {
 
   it('shows all subtests when all are visible', () => {
     const allVisible = new Set<SubtestKey>(SUBTESTS);
-    render(<GoalPlanner {...defaultProps} visibleSubtests={allVisible} targetPercentile={50} />);
+    render(<ReverseLookup {...defaultProps} visibleSubtests={allVisible} targetPercentile={50} />);
     expect(screen.getByText('Cognitive')).toBeInTheDocument();
     expect(screen.getByText('Receptive Language')).toBeInTheDocument();
     expect(screen.getByText('Expressive Language')).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe('GoalPlanner', () => {
 
   it('calls onProvenanceClick when a result cell is clicked', () => {
     const onProvenanceClick = vi.fn();
-    render(<GoalPlanner {...defaultProps} targetPercentile={50} onProvenanceClick={onProvenanceClick} />);
+    render(<ReverseLookup {...defaultProps} targetPercentile={50} onProvenanceClick={onProvenanceClick} />);
 
     const clickableCells = document.querySelectorAll('.cursor-pointer');
     if (clickableCells.length > 0) {
@@ -78,7 +78,7 @@ describe('GoalPlanner', () => {
 
   it('calls onTargetPercentileChange when input changes', () => {
     const onTargetPercentileChange = vi.fn();
-    render(<GoalPlanner {...defaultProps} onTargetPercentileChange={onTargetPercentileChange} />);
+    render(<ReverseLookup {...defaultProps} onTargetPercentileChange={onTargetPercentileChange} />);
     fireEvent.change(screen.getByLabelText('Target Percentile'), {
       target: { value: '25' },
     });

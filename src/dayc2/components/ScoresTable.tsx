@@ -20,7 +20,7 @@ interface ScoresTableProps {
   visibleSubtests: Set<SubtestKey>;
   visibleDomains: Set<DomainKey>;
   onRawScoreChange: (subtest: SubtestKey, value: number | null) => void;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
 // Shared UI primitives
@@ -28,15 +28,16 @@ interface ScoresTableProps {
 interface ScoreCellProps {
   value: string;
   steps?: ProvenanceStep[];
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  title?: string;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-const ScoreCell = ({ value, steps, onProvenanceClick }: ScoreCellProps) => {
+const ScoreCell = ({ value, steps, title, onProvenanceClick }: ScoreCellProps) => {
   const hasProvenance = steps && steps.length > 0 && onProvenanceClick;
 
   const handleClick = (e: React.MouseEvent<HTMLTableCellElement>) => {
     if (hasProvenance) {
-      onProvenanceClick(steps, e.currentTarget);
+      onProvenanceClick(steps, e.currentTarget, title);
     }
   };
 
@@ -55,15 +56,16 @@ interface ScoreChipProps {
   label: string;
   value: string;
   steps?: ProvenanceStep[];
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  title?: string;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-const ScoreChip = ({ label, value, steps, onProvenanceClick }: ScoreChipProps) => {
+const ScoreChip = ({ label, value, steps, title, onProvenanceClick }: ScoreChipProps) => {
   const hasProvenance = steps && steps.length > 0 && onProvenanceClick;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (hasProvenance) {
-      onProvenanceClick(steps, e.currentTarget);
+      onProvenanceClick(steps, e.currentTarget, title);
     }
   };
 
@@ -101,10 +103,11 @@ const DomainSumBadge = ({ sum, note, showNote }: DomainSumBadgeProps) => (
 // Shared score chips renderer
 interface ScoreChipsProps {
   scores: SubtestScoreDisplay[];
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  title?: string;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-const ScoreChips = ({ scores, onProvenanceClick }: ScoreChipsProps) => (
+const ScoreChips = ({ scores, title, onProvenanceClick }: ScoreChipsProps) => (
   <>
     {scores.map((score) => (
       <ScoreChip
@@ -112,6 +115,7 @@ const ScoreChips = ({ scores, onProvenanceClick }: ScoreChipsProps) => (
         label={score.label}
         value={score.value}
         steps={score.steps}
+        title={title}
         onProvenanceClick={onProvenanceClick}
       />
     ))}
@@ -121,16 +125,18 @@ const ScoreChips = ({ scores, onProvenanceClick }: ScoreChipsProps) => (
 // Shared score cells renderer for table rows
 interface ScoreCellsProps {
   scores: SubtestScoreDisplay[];
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  title?: string;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-const ScoreCells = ({ scores, onProvenanceClick }: ScoreCellsProps) => (
+const ScoreCells = ({ scores, title, onProvenanceClick }: ScoreCellsProps) => (
   <>
     {scores.map((score) => (
       <ScoreCell
         key={score.key}
         value={score.value}
         steps={score.steps}
+        title={title}
         onProvenanceClick={onProvenanceClick}
       />
     ))}
@@ -167,7 +173,7 @@ interface SubtestCardProps {
   subtestResult: SubtestResult | null;
   disabled: boolean;
   onRawScoreChange: (subtest: SubtestKey, value: number | null) => void;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
 const SubtestCard = ({
@@ -196,6 +202,8 @@ const SubtestCard = ({
         </label>
         <input
           type="number"
+          inputMode="numeric"
+          pattern="[0-9]*"
           id={`raw-mobile-${subtest}`}
           min="0"
           value={rawScore ?? ''}
@@ -211,7 +219,7 @@ const SubtestCard = ({
       )}
 
       <div className="flex gap-2">
-        <ScoreChips scores={display.scores} onProvenanceClick={onProvenanceClick} />
+        <ScoreChips scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
       </div>
     </section>
   );
@@ -223,7 +231,7 @@ interface SubtestRowProps {
   subtestResult: SubtestResult | null;
   disabled: boolean;
   onRawScoreChange: (subtest: SubtestKey, value: number | null) => void;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
 const SubtestRow = ({
@@ -242,14 +250,16 @@ const SubtestRow = ({
       <td className="text-left font-medium p-2.5 border-b border-gray-100">
         <label htmlFor={`raw-${subtest}`}>
           {display.label}
-          {display.note && (
-            <span className="ml-1 text-amber-600 cursor-help" title={display.note}>⚠</span>
-          )}
         </label>
+        {display.note && (
+          <div className="text-xs text-amber-600 font-normal mt-0.5">⚠ {display.note}</div>
+        )}
       </td>
       <td className="p-2.5 text-center border-b border-gray-100">
         <input
           type="number"
+          inputMode="numeric"
+          pattern="[0-9]*"
           id={`raw-${subtest}`}
           min="0"
           value={rawScore ?? ''}
@@ -259,7 +269,7 @@ const SubtestRow = ({
           className="w-24 p-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-lg disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </td>
-      <ScoreCells scores={display.scores} onProvenanceClick={onProvenanceClick} />
+      <ScoreCells scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
     </tr>
   );
 };
@@ -269,7 +279,7 @@ const SubtestRow = ({
 interface DomainCardProps {
   label: string;
   result: DomainResult | null;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
 const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
@@ -283,7 +293,7 @@ const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
       </header>
 
       <div className="flex gap-2">
-        <ScoreChips scores={display.scores} onProvenanceClick={onProvenanceClick} />
+        <ScoreChips scores={display.scores} title={label} onProvenanceClick={onProvenanceClick} />
         <ScoreChip label="Age Equiv." value="N/A" />
       </div>
       {display.showNote && display.note && <DomainNoteParagraph note={display.note} />}
@@ -294,7 +304,7 @@ const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
 interface DomainRowProps {
   label: string;
   result: DomainResult | null;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
 const DomainRow = ({ label, result, onProvenanceClick }: DomainRowProps) => {
@@ -310,7 +320,7 @@ const DomainRow = ({ label, result, onProvenanceClick }: DomainRowProps) => {
             <span className="ml-1 text-amber-600 cursor-help" title={display.note ?? undefined}>⚠</span>
           )}
         </td>
-        <ScoreCells scores={display.scores} onProvenanceClick={onProvenanceClick} />
+        <ScoreCells scores={display.scores} title={label} onProvenanceClick={onProvenanceClick} />
         <td className="p-2.5 text-center border-b border-gray-100">N/A</td>
       </tr>
       {display.showNote && display.note && <DomainNoteRow note={display.note} />}
@@ -379,7 +389,7 @@ const ScoresTable = ({
         <table className="w-full border-collapse mt-2.5 min-w-[600px]">
         <thead>
           <tr>
-            <th className="p-3 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Sub-test</th>
+            <th className="p-3 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Subtest</th>
             <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Raw</th>
             <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Standard Score</th>
             <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Percentile</th>

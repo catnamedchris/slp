@@ -132,8 +132,9 @@ export const getSubtestDisplay = (
     };
   });
 
-  // Get note from standard score (e.g., when raw score exceeds table max)
-  const note = result?.standardScore.note ?? null;
+  // Get note from standard score only if a raw score was entered
+  // (e.g., when raw score exceeds table max)
+  const note = (result && result.rawScore !== null) ? (result.standardScore.note ?? null) : null;
 
   return {
     label: SUBTEST_LABELS[subtest],

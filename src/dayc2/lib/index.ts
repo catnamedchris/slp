@@ -33,11 +33,11 @@ export {
   lookupDomainComposite,
 } from './scoring';
 
-// Reverse lookups (for goal planning)
+// Reverse lookups
 export {
   lookupStandardScoreFromPercentile,
   lookupRawScoreFromStandardScore,
-} from './goals';
+} from './reverseLookup';
 
 // Orchestrator
 export {

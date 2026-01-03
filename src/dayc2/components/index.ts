@@ -7,4 +7,4 @@ export { default as RawScoresForm, createEmptyRawScores } from './RawScoresForm'
 export type { RawScores } from './RawScoresForm';
 export { default as ScoresTable } from './ScoresTable';
 export { default as ProvenancePanel, AboutData } from './ProvenancePanel';
-export { default as GoalPlanner } from './GoalPlanner';
+export { default as ReverseLookup } from './ReverseLookup';

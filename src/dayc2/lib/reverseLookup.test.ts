@@ -1,10 +1,10 @@
-// Reverse lookup tests for goal planning
+// Reverse lookup tests
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   lookupStandardScoreFromPercentile,
   lookupRawScoreFromStandardScore,
-} from './goals';
+} from './reverseLookup';
 import type { LookupContext } from '../data/context';
 import { createFixtureLookupContext } from '../data/fixtures';
 

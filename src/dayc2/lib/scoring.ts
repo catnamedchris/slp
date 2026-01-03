@@ -13,7 +13,7 @@ import type {
 } from '../types';
 import type { LookupContext } from '../data/context';
 import { isExact, isRange, isBounded } from './tables';
-import { SUBTEST_LABELS, AGE_EQUIV_LABELS, formatScoreValue, formatPercentileValue, formatAgeMonthsValue } from './labels';
+import { AGE_EQUIV_LABELS, formatScoreValue, formatPercentileValue, formatAgeMonthsValue } from './labels';
 
 /**
  * Looks up standard score from raw score using the appropriate B table for the child's age.
@@ -53,7 +53,7 @@ export const lookupStandardScore = (
       steps: [createFailureStep(
         bTable.tableId,
         bTable.source,
-        `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} not found in table`
+        `Raw Score ${rawScore} not found in table`
       )],
       note: `Raw score ${rawScore} not found in ${bTable.tableId}`,
     };
@@ -78,7 +78,7 @@ export const lookupStandardScore = (
       tableId: bTable.tableId,
       csvRow: usedRow.csvRow,
       source: bTable.source,
-      description: `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} → Standard Score (not available)`,
+      description: `Raw Score ${rawScore} → Standard Score (not available)`,
     };
     return {
       value: null,
@@ -93,7 +93,7 @@ export const lookupStandardScore = (
     tableId: bTable.tableId,
     csvRow: usedRow.csvRow,
     source: bTable.source,
-    description: `${SUBTEST_LABELS[subtest]}: Raw Score ${clampedRaw}${clampNote} → Standard Score ${formatScoreValue(score)}`,
+    description: `Raw Score ${clampedRaw}${clampNote} → Standard Score ${formatScoreValue(score)}`,
   };
 
   return {

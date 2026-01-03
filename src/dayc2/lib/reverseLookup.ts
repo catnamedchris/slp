@@ -1,4 +1,4 @@
-// Reverse lookup functions for goal planning
+// Reverse lookup functions
 
 import type { ValueWithProvenance } from '@/shared/lib/types';
 import { createFailureStep } from '@/shared/lib/provenance';
@@ -8,7 +8,7 @@ import { isExact } from './tables';
 
 /**
  * Reverse lookup: finds the standard score that corresponds to a target percentile.
- * Used for goal planning ("what SS do I need to reach the 50th percentile?").
+ * Used for reverse lookup ("what SS do I need to reach the 50th percentile?").
  */
 export const lookupStandardScoreFromPercentile = (
   targetPercentile: number,
@@ -53,7 +53,7 @@ export const lookupStandardScoreFromPercentile = (
 
 /**
  * Reverse lookup: finds the minimum raw score needed to achieve a target standard score.
- * Used for goal planning ("what raw score do I need to reach SS 100?").
+ * Used for reverse lookup ("what raw score do I need to reach SS 100?").
  */
 export const lookupRawScoreFromStandardScore = (
   targetSS: number,

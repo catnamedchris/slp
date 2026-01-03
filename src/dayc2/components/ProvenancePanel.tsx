@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 
 interface ProvenancePanelProps {
+  title?: string | null;
   selectedSteps: ProvenanceStep[] | null;
   anchorElement?: HTMLElement | null;
   onClose: () => void;
@@ -75,7 +76,7 @@ export const AboutData = ({ sources }: AboutDataProps) => {
 
 const HIGHLIGHT_CLASS = 'bg-indigo-50 shadow-[inset_0_0_0_2px_rgb(99,102,241)]';
 
-const ProvenancePanel = ({ selectedSteps, anchorElement, onClose }: ProvenancePanelProps) => {
+const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: ProvenancePanelProps) => {
   // Add highlight class directly to anchor element - no position tracking needed
   useEffect(() => {
     if (anchorElement) {
@@ -100,7 +101,10 @@ const ProvenancePanel = ({ selectedSteps, anchorElement, onClose }: ProvenancePa
         bottom-0 left-0 right-0 max-h-[60vh] rounded-t-2xl
         lg:top-0 lg:bottom-0 lg:right-0 lg:left-auto lg:w-[400px] lg:max-h-none lg:rounded-none lg:shadow-[-4px_0_20px_rgba(0,0,0,0.1)]">
         <div className="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white sticky top-0">
-          <h3 className="m-0 text-sm font-semibold">How was this calculated?</h3>
+          <div>
+            {title && <h3 className="m-0 text-base font-semibold">{title}</h3>}
+            <p className={`m-0 text-indigo-200 ${title ? 'text-xs' : 'text-sm font-semibold text-white'}`}>How was this calculated?</p>
+          </div>
           <button onClick={onClose} className="bg-white/20 hover:bg-white/30 border-none text-lg cursor-pointer text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors leading-none">
             ✕
           </button>
@@ -123,14 +127,21 @@ const ProvenancePanel = ({ selectedSteps, anchorElement, onClose }: ProvenancePa
               <div className="flex-1 pb-2">
                 {step.description && (
                   <div className="text-slate-800 font-medium text-sm lg:text-base">
-                    {step.description.split(':').length > 1 ? (
-                      <>
-                        <div className="text-indigo-600 font-semibold">{step.description.split(':')[0]}</div>
-                        <div className="text-slate-700 mt-0.5">{step.description.split(':').slice(1).join(':').trim()}</div>
-                      </>
-                    ) : (
-                      step.description
-                    )}
+                    {(() => {
+                      const colonIndex = step.description.indexOf(':');
+                      // Only split if colon exists and prefix is short (likely a label like "Cognitive")
+                      if (colonIndex > 0 && colonIndex <= 25) {
+                        const label = step.description.slice(0, colonIndex);
+                        const rest = step.description.slice(colonIndex + 1).trim();
+                        return (
+                          <>
+                            <span className="text-indigo-600 font-semibold">{label}:</span>{' '}
+                            <span className="text-slate-700">{rest}</span>
+                          </>
+                        );
+                      }
+                      return step.description;
+                    })()}
                   </div>
                 )}
                 <div className="text-slate-500 text-xs mt-2 flex items-center gap-2">

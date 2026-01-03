@@ -261,9 +261,8 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    // Warning icon should be visible in RL row
-    const warningIcons = screen.getAllByText('⚠');
-    expect(warningIcons.length).toBeGreaterThan(0);
+    // Warning message should be visible (mobile and desktop show full note text)
+    expect(screen.getAllByText(/Raw score 50 exceeds table max/).length).toBeGreaterThan(0);
   });
 
   it('displays bounded sum with < prefix', () => {

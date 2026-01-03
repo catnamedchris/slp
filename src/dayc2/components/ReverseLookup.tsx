@@ -1,37 +1,37 @@
-// GoalPlanner: Reverse lookup to find raw scores needed for target percentile
+// ReverseLookup: Find raw scores needed for target percentile
 
 import { useMemo } from 'react';
 import type { SubtestKey } from '../types';
-import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } from '../lib/goals';
+import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } from '../lib/reverseLookup';
 import { createLookupContext } from '../data/context';
 import { isExact } from '../lib/tables';
 import type { ProvenanceStep } from '@/shared/lib/types';
 import { SUBTEST_LABELS, SUBTESTS } from '../lib/scoresDisplay';
 
-interface GoalPlannerProps {
+interface ReverseLookupProps {
   ageMonths: number | null;
   targetPercentile: number;
   visibleSubtests: Set<SubtestKey>;
   onTargetPercentileChange: (value: number) => void;
-  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement) => void;
+  onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-interface GoalResult {
+interface LookupResult {
   subtest: SubtestKey;
   rawScore: number | null;
   steps: ProvenanceStep[];
   note?: string;
 }
 
-const GoalPlanner = ({
+const ReverseLookup = ({
   ageMonths,
   targetPercentile,
   visibleSubtests,
   onTargetPercentileChange,
   onProvenanceClick,
-}: GoalPlannerProps) => {
+}: ReverseLookupProps) => {
 
-  const goalResults = useMemo(() => {
+  const lookupResults = useMemo(() => {
     if (ageMonths === null || targetPercentile === null) return null;
 
     const ctx = createLookupContext();
@@ -47,7 +47,7 @@ const GoalPlanner = ({
     }
 
     const targetSS = ssResult.value.value;
-    const results: GoalResult[] = [];
+    const results: LookupResult[] = [];
 
     for (const subtest of SUBTESTS) {
       const rawResult = lookupRawScoreFromStandardScore(targetSS, subtest, ageMonths, ctx);
@@ -74,7 +74,7 @@ const GoalPlanner = ({
     }
   };
 
-  const visibleResults = goalResults?.subtests?.filter((r) => visibleSubtests.has(r.subtest)) ?? [];
+  const visibleResults = lookupResults?.subtests?.filter((r) => visibleSubtests.has(r.subtest)) ?? [];
 
   if (ageMonths === null) {
     return null;
@@ -101,18 +101,18 @@ const GoalPlanner = ({
             placeholder="1–99"
             className="px-3 py-2 border border-gray-300 rounded text-base w-24 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
-          <span className="text-gray-500 text-sm">%ile</span>
+          <span className="text-gray-500">%</span>
         </div>
       </div>
 
-      {goalResults && (
+      {lookupResults && (
         <div className="mt-4">
-          {goalResults.note ? (
-            <p className="text-red-500 text-sm">{goalResults.note}</p>
+          {lookupResults.note ? (
+            <p className="text-red-500 text-sm">{lookupResults.note}</p>
           ) : (
             <>
               <p className="bg-gradient-to-r from-indigo-50 to-blue-50 px-4 py-3 rounded-lg mb-4 border border-indigo-100">
-                Target Standard Score: <strong className="text-indigo-600">{goalResults.standardScore}</strong>
+                Target Standard Score: <strong className="text-indigo-600">{lookupResults.standardScore}</strong>
               </p>
               <table className="w-full border-collapse text-sm">
                 <thead>
@@ -130,7 +130,7 @@ const GoalPlanner = ({
                         onClick={
                           result.steps.length > 0 && onProvenanceClick
                             ? (e: React.MouseEvent<HTMLTableCellElement>) => {
-                                onProvenanceClick(result.steps, e.currentTarget);
+                                onProvenanceClick(result.steps, e.currentTarget, SUBTEST_LABELS[result.subtest]);
                               }
                             : undefined
                         }
@@ -150,4 +150,4 @@ const GoalPlanner = ({
   );
 };
 
-export default GoalPlanner;
+export default ReverseLookup;

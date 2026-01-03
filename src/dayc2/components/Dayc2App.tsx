@@ -7,7 +7,7 @@ import type { RawScores } from './RawScoresForm';
 import ScoresTable from './ScoresTable';
 import DisplaySettings from './DisplaySettings';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
-import GoalPlanner from './GoalPlanner';
+import ReverseLookup from './ReverseLookup';
 import { useCalculation } from '../hooks/useCalculation';
 import type { SubtestKey } from '../types';
 import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
@@ -37,6 +37,7 @@ const Dayc2App = () => {
   const [targetPercentile, setTargetPercentile] = useState(6);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
+  const [provenanceTitle, setProvenanceTitle] = useState<string | null>(null);
 
   const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
   const ageMonths = useAgeOverride ? ageOverride : (ageInfo?.error ? null : ageInfo?.ageMonths ?? null);
@@ -71,14 +72,16 @@ const Dayc2App = () => {
     });
   }, []);
 
-  const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement) => {
+  const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => {
     setSelectedProvenance(steps);
     setProvenanceAnchor(anchorElement);
+    setProvenanceTitle(title ?? null);
   }, []);
 
   const handleProvenanceClose = useCallback(() => {
     setSelectedProvenance(null);
     setProvenanceAnchor(null);
+    setProvenanceTitle(null);
   }, []);
 
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
@@ -102,7 +105,12 @@ const Dayc2App = () => {
         onTestDateChange={setTestDate}
         useAgeOverride={useAgeOverride}
         ageOverride={ageOverride}
-        onUseAgeOverrideChange={setUseAgeOverride}
+        onUseAgeOverrideChange={(use) => {
+          setUseAgeOverride(use);
+          if (!use) {
+            setRawScores(createEmptyRawScores());
+          }
+        }}
         onAgeOverrideChange={setAgeOverride}
       />
 
@@ -123,7 +131,7 @@ const Dayc2App = () => {
         onProvenanceClick={handleProvenanceClick}
       />
 
-      <GoalPlanner
+      <ReverseLookup
         ageMonths={ageMonths}
         targetPercentile={targetPercentile}
         visibleSubtests={visibleSubtests}
@@ -139,6 +147,7 @@ const Dayc2App = () => {
       </footer>
 
       <ProvenancePanel
+        title={provenanceTitle}
         selectedSteps={selectedProvenance}
         anchorElement={provenanceAnchor}
         onClose={handleProvenanceClose}
