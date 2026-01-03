@@ -2,32 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
 
-vi.mock('react-datepicker', () => ({
-  default: ({ id, selected, onChange, placeholderText, className }: {
-    id: string;
-    selected: Date | null;
-    onChange: (date: Date | null) => void;
-    placeholderText: string;
-    className?: string;
-  }) => (
-    <input
-      type="text"
-      id={id}
-      value={selected ? selected.toISOString().split('T')[0] : ''}
-      placeholder={placeholderText}
-      className={className}
-      onChange={(e) => {
-        const val = e.target.value;
-        if (val) {
-          const [year, month, day] = val.split('-').map(Number);
-          onChange(new Date(year, month - 1, day));
-        } else {
-          onChange(null);
-        }
-      }}
-    />
-  ),
-}));
+vi.mock('react-datepicker', () => import('@/test/__mocks__/react-datepicker'));
 
 describe('calculateAgeInfo', () => {
   it('returns null when dob is empty', () => {

@@ -2,34 +2,15 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Dayc2App from './Dayc2App';
 
-vi.mock('react-datepicker', () => ({
-  default: ({ id, selected, onChange, placeholderText, className }: {
-    id: string;
-    selected: Date | null;
-    onChange: (date: Date | null) => void;
-    placeholderText: string;
-    className?: string;
-  }) => (
-    <input
-      type="text"
-      id={id}
-      value={selected ? selected.toISOString().split('T')[0] : ''}
-      placeholder={placeholderText}
-      className={className}
-      onChange={(e) => {
-        const val = e.target.value;
-        if (val) {
-          const [year, month, day] = val.split('-').map(Number);
-          onChange(new Date(year, month - 1, day));
-        } else {
-          onChange(null);
-        }
-      }}
-    />
-  ),
-}));
+vi.mock('react-datepicker', () => import('@/test/__mocks__/react-datepicker'));
 
-const getInput = (id: string) => document.getElementById(id) as HTMLInputElement | null;
+// Helper to find raw score input by subtest in mobile layout (cards) or desktop (table row)
+const getRawScoreInput = (subtest: string) => {
+  // Mobile uses raw-mobile-{key}, desktop uses raw-{key}
+  const mobileInput = document.getElementById(`raw-mobile-${subtest}`);
+  const desktopInput = document.getElementById(`raw-${subtest}`);
+  return mobileInput || desktopInput;
+};
 
 describe('Dayc2App', () => {
   it('renders the main heading', () => {
@@ -45,14 +26,14 @@ describe('Dayc2App', () => {
 
   it('renders default visible subtests (RL, EL, SE)', () => {
     render(<Dayc2App />);
-    expect(getInput('raw-receptiveLanguage')).toBeInTheDocument();
-    expect(getInput('raw-expressiveLanguage')).toBeInTheDocument();
-    expect(getInput('raw-socialEmotional')).toBeInTheDocument();
+    expect(getRawScoreInput('receptiveLanguage')).toBeInTheDocument();
+    expect(getRawScoreInput('expressiveLanguage')).toBeInTheDocument();
+    expect(getRawScoreInput('socialEmotional')).toBeInTheDocument();
   });
 
   it('disables raw score inputs when no dates entered', () => {
     render(<Dayc2App />);
-    expect(getInput('raw-receptiveLanguage')).toBeDisabled();
+    expect(getRawScoreInput('receptiveLanguage')).toBeDisabled();
   });
 
   it('enables raw score inputs when age is valid', () => {
@@ -64,7 +45,7 @@ describe('Dayc2App', () => {
     fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
 
-    expect(getInput('raw-receptiveLanguage')).not.toBeDisabled();
+    expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
   });
 
   it('shows hint when no dates entered', () => {
@@ -81,12 +62,12 @@ describe('Dayc2App', () => {
     fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
 
-    fireEvent.change(getInput('raw-receptiveLanguage')!, { target: { value: '20' } });
-    fireEvent.change(getInput('raw-expressiveLanguage')!, { target: { value: '18' } });
-    fireEvent.change(getInput('raw-socialEmotional')!, { target: { value: '22' } });
+    fireEvent.change(getRawScoreInput('receptiveLanguage')!, { target: { value: '20' } });
+    fireEvent.change(getRawScoreInput('expressiveLanguage')!, { target: { value: '18' } });
+    fireEvent.change(getRawScoreInput('socialEmotional')!, { target: { value: '22' } });
 
     expect(screen.queryByText(/Enter valid child information/)).not.toBeInTheDocument();
-    expect(getInput('raw-receptiveLanguage')).not.toBeDisabled();
+    expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
   });
 
   it('renders About Data section', () => {

@@ -9,6 +9,13 @@ import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } fro
 const defaultVisibleSubtests = new Set<SubtestKey>(DEFAULT_VISIBLE_SUBTESTS);
 const defaultVisibleDomains = new Set<DomainKey>(DEFAULT_VISIBLE_DOMAINS);
 
+// Helper to find raw score input by subtest (mobile uses raw-mobile-{key}, desktop uses raw-{key})
+const getRawScoreInput = (subtest: string) => {
+  const mobileInput = document.getElementById(`raw-mobile-${subtest}`);
+  const desktopInput = document.getElementById(`raw-${subtest}`);
+  return mobileInput || desktopInput;
+};
+
 const mockResult: CalculationResult = {
   ageMonths: 24,
   subtests: {
@@ -69,8 +76,6 @@ const mockResult: CalculationResult = {
   },
 };
 
-const getInput = (id: string) => document.getElementById(id) as HTMLInputElement | null;
-
 describe('ScoresTable', () => {
   it('renders the Scores heading', () => {
     render(
@@ -97,13 +102,13 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(getInput('raw-receptiveLanguage')).toBeInTheDocument();
-    expect(getInput('raw-expressiveLanguage')).toBeInTheDocument();
-    expect(getInput('raw-socialEmotional')).toBeInTheDocument();
-    expect(getInput('raw-cognitive')).not.toBeInTheDocument();
-    expect(getInput('raw-grossMotor')).not.toBeInTheDocument();
-    expect(getInput('raw-fineMotor')).not.toBeInTheDocument();
-    expect(getInput('raw-adaptiveBehavior')).not.toBeInTheDocument();
+    expect(getRawScoreInput('receptiveLanguage')).toBeInTheDocument();
+    expect(getRawScoreInput('expressiveLanguage')).toBeInTheDocument();
+    expect(getRawScoreInput('socialEmotional')).toBeInTheDocument();
+    expect(getRawScoreInput('cognitive')).not.toBeInTheDocument();
+    expect(getRawScoreInput('grossMotor')).not.toBeInTheDocument();
+    expect(getRawScoreInput('fineMotor')).not.toBeInTheDocument();
+    expect(getRawScoreInput('adaptiveBehavior')).not.toBeInTheDocument();
   });
 
   it('hides domain rows when not in visibleDomains', () => {
@@ -117,8 +122,8 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    const compositeRows = document.querySelectorAll('.composite-row');
-    expect(compositeRows.length).toBe(0);
+    expect(screen.queryAllByText('Communication (RL+EL)')).toHaveLength(0);
+    expect(screen.queryAllByText('Physical (GM+FM)')).toHaveLength(0);
   });
 
   it('shows Physical domain row when in visibleDomains', () => {
@@ -132,11 +137,8 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(
-      Array.from(document.querySelectorAll('.composite-row')).find((row) =>
-        row.textContent?.includes('Physical')
-      )
-    ).toBeTruthy();
+    // May appear in both mobile (h3) and desktop (td) layouts
+    expect(screen.getAllByText('Physical (GM+FM)').length).toBeGreaterThan(0);
   });
 
   it('shows Communication domain row when in visibleDomains', () => {
@@ -150,11 +152,8 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(
-      Array.from(document.querySelectorAll('.composite-row')).find((row) =>
-        row.textContent?.includes('Communication')
-      )
-    ).toBeTruthy();
+    // May appear in both mobile (h3) and desktop (td) layouts
+    expect(screen.getAllByText('Communication (RL+EL)').length).toBeGreaterThan(0);
   });
 
   it('disables inputs when ageMonths is null', () => {
@@ -168,7 +167,7 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(getInput('raw-receptiveLanguage')).toBeDisabled();
+    expect(getRawScoreInput('receptiveLanguage')).toBeDisabled();
   });
 
   it('enables inputs when ageMonths is valid', () => {
@@ -182,7 +181,7 @@ describe('ScoresTable', () => {
         onRawScoreChange={() => {}}
       />
     );
-    expect(getInput('raw-receptiveLanguage')).not.toBeDisabled();
+    expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
   });
 
   it('shows hint when age is invalid', () => {
@@ -211,7 +210,7 @@ describe('ScoresTable', () => {
         onRawScoreChange={onRawScoreChange}
       />
     );
-    const input = getInput('raw-receptiveLanguage');
+    const input = getRawScoreInput('receptiveLanguage');
     fireEvent.change(input!, { target: { value: '20' } });
     expect(onRawScoreChange).toHaveBeenCalledWith('receptiveLanguage', 20);
   });
