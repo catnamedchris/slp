@@ -5,7 +5,7 @@ import {
   D1Row,
   AgeBand,
   BTableId,
-} from './types';
+} from '../../src/dayc2/types';
 import { parseValue, parseAgeMonths, parsePercentile } from './parseValue';
 
 export const parseA1Row = (record: Record<string, string>, csvRow: number): AgeEquivalentRow => ({

@@ -8,7 +8,7 @@ import {
   C1TableJson,
   D1TableJson,
   BTableId,
-} from './types';
+} from '../../src/dayc2/types';
 import {
   parseA1Row,
   parseBRow,

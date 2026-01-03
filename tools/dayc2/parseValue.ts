@@ -1,4 +1,4 @@
-import { ParsedNumeric, ParsedAgeMonths, ParsedPercentile, BoundedNumber, ExactNumber, NumberRange } from './types';
+import { ParsedNumeric, ParsedAgeMonths, ParsedPercentile, BoundedNumber, ExactNumber, NumberRange } from '../../src/dayc2/types';
 
 const RANGE_PATTERN = /^(\d+)-(\d+)$/;
 const BOUNDED_PATTERN = /^([<>])(\d+(?:\.\d+)?)$/;

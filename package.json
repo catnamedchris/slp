@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:node": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "build:dayc2-json": "npx ts-node tools/dayc2/csvToJson.ts"
   },
   "keywords": [],
   "author": "",
