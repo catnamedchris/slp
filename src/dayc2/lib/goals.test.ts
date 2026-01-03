@@ -38,6 +38,10 @@ describe('lookupStandardScoreFromPercentile', () => {
     // 99 is not directly in mockC1 (only >99.9 and 98)
     const result = lookupStandardScoreFromPercentile(99, ctx);
     expect(result.value).toBeNull();
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('C1');
+    expect(result.steps[0].csvRow).toBeNull();
+    expect(result.steps[0].description).toContain('99th percentile');
   });
 });
 
@@ -81,7 +85,8 @@ describe('lookupRawScoreFromStandardScore', () => {
   it('returns null when age has no B table', () => {
     const result = lookupRawScoreFromStandardScore(60, 'cognitive', 36, ctx);
     expect(result.value).toBeNull();
-    expect(result.note).toContain('No table');
+    expect(result.note).toContain('No B table available');
+    expect(result.steps).toHaveLength(0);
   });
 
   it('works with different subtest', () => {

@@ -173,7 +173,8 @@ describe('calculateAllScores', () => {
     const result = calculateAllScores(input, ctx);
 
     expect(result.subtests.cognitive.standardScore.value).toBeNull();
-    expect(result.subtests.cognitive.standardScore.note).toContain('No table');
+    expect(result.subtests.cognitive.standardScore.note).toContain('No B table available');
+    expect(result.subtests.cognitive.standardScore.steps).toHaveLength(0);
   });
 
   it('computes bounded sum when one subtest is at ceiling', () => {
@@ -305,9 +306,11 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    // EL is null → subtest result is empty
+    // EL is null → subtest result is empty with note
     expect(result.subtests.expressiveLanguage.rawScore).toBeNull();
     expect(result.subtests.expressiveLanguage.standardScore.value).toBeNull();
+    expect(result.subtests.expressiveLanguage.standardScore.note).toBe('No raw score entered');
+    expect(result.subtests.expressiveLanguage.standardScore.steps).toHaveLength(0);
 
     // Communication domain has no valid sum
     expect(result.domains.communication.sum).toBeNull();

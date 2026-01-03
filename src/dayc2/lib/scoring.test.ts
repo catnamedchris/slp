@@ -47,7 +47,8 @@ describe('lookupStandardScore', () => {
   it('returns null when age has no B table', () => {
     const result = lookupStandardScore(10, 'cognitive', 36, ctx);
     expect(result.value).toBeNull();
-    expect(result.note).toContain('No table');
+    expect(result.note).toContain('No B table available');
+    expect(result.steps).toHaveLength(0);
   });
 
   it('returns null when raw score not found in table (between rows)', () => {
@@ -55,6 +56,10 @@ describe('lookupStandardScore', () => {
     const result = lookupStandardScore(15, 'cognitive', 12, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('B13');
+    expect(result.steps[0].csvRow).toBeNull();
+    expect(result.steps[0].description).toContain('Raw Score 15');
   });
 
   it('uses max raw score when input exceeds table maximum', () => {
@@ -129,6 +134,10 @@ describe('lookupPercentile', () => {
     const result = lookupPercentile({ value: 200 }, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('C1');
+    expect(result.steps[0].csvRow).toBeNull();
+    expect(result.steps[0].description).toContain('200');
   });
 
   it('rejects NumberRange inputs (requires exact or bounded)', () => {
@@ -136,6 +145,9 @@ describe('lookupPercentile', () => {
     const result = lookupPercentile({ min: 80, max: 100 }, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('exact or bounded');
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('C1');
+    expect(result.steps[0].csvRow).toBeNull();
   });
 });
 
@@ -187,6 +199,10 @@ describe('lookupAgeEquivalent', () => {
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
     expect(result.note).toContain('cognitive');
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('A1');
+    expect(result.steps[0].csvRow).toBeNull();
+    expect(result.steps[0].description).toContain('Raw Score 10');
   });
 });
 
@@ -218,6 +234,10 @@ describe('lookupDomainComposite', () => {
     const result = lookupDomainComposite(150, ctx);
     expect(result.value).toBeNull();
     expect(result.note).toContain('not found');
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].tableId).toBe('D1');
+    expect(result.steps[0].csvRow).toBeNull();
+    expect(result.steps[0].description).toContain('Sum of Standard Scores 150');
   });
 
   it('matches bounded lt sumRange for low sums', () => {

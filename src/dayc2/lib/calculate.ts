@@ -57,6 +57,7 @@ export interface CalculationResult {
 const emptyResult = <T>(): ValueWithProvenance<T> => ({
   value: null,
   steps: [],
+  note: 'No raw score entered',
 });
 
 /**
@@ -294,7 +295,7 @@ const calculateDomainComposite = (
       }
       return result;
     }
-    return { value: null, steps: [] };
+    return { value: null, steps: [], note: 'Unexpected sum type in bounded composite lookup' };
   };
 
   const standardScore = lookupBoundedComposite(sumValue);

@@ -1,6 +1,7 @@
 // Reverse lookup functions for goal planning
 
 import type { ValueWithProvenance } from '@/shared/lib/types';
+import { createFailureStep } from '@/shared/lib/provenance';
 import type { ParsedScore, SubtestKey, RawToStandardRow } from '../types';
 import type { LookupContext } from '../data/context';
 import { isExact } from './tables';
@@ -41,7 +42,11 @@ export const lookupStandardScoreFromPercentile = (
 
   return {
     value: null,
-    steps: [],
+    steps: [createFailureStep(
+      c1.tableId,
+      c1.source,
+      `${targetPercentile}th percentile not found in table`
+    )],
     note: `Percentile ${targetPercentile} not found in C1`,
   };
 };
@@ -62,7 +67,7 @@ export const lookupRawScoreFromStandardScore = (
     return {
       value: null,
       steps: [],
-      note: `No table for age ${ageMonths} months`,
+      note: `No B table available for age ${ageMonths} months (valid range: 12-71 months)`,
     };
   }
 

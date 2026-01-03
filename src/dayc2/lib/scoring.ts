@@ -1,6 +1,7 @@
 // Scoring lookup functions with provenance tracking
 
 import type { ValueWithProvenance, ProvenanceStep } from '@/shared/lib/types';
+import { createFailureStep } from '@/shared/lib/provenance';
 import type {
   ParsedScore,
   ParsedPercentile,
@@ -29,7 +30,7 @@ export const lookupStandardScore = (
     return {
       value: null,
       steps: [],
-      note: `No table for age ${ageMonths} months`,
+      note: `No B table available for age ${ageMonths} months (valid range: 12-71 months)`,
     };
   }
 
@@ -49,7 +50,11 @@ export const lookupStandardScore = (
   if (!row) {
     return {
       value: null,
-      steps: [],
+      steps: [createFailureStep(
+        bTable.tableId,
+        bTable.source,
+        `${SUBTEST_LABELS[subtest]}: Raw Score ${rawScore} not found in table`
+      )],
       note: `Raw score ${rawScore} not found in ${bTable.tableId}`,
     };
   }
@@ -109,18 +114,23 @@ export const lookupPercentile = (
   standardScore: ParsedScore,
   ctx: LookupContext
 ): ValueWithProvenance<ParsedPercentile> => {
+  const c1 = ctx.standardToPercentile;
+
   // Reject NumberRange inputs - percentile lookup requires exact or bounded scores
   if (!isExact(standardScore) && !isBounded(standardScore)) {
     return {
       value: null,
-      steps: [],
+      steps: [createFailureStep(
+        c1.tableId,
+        c1.source,
+        'Percentile lookup requires an exact or bounded standard score'
+      )],
       note: 'Percentile lookup requires an exact or bounded standard score',
     };
   }
 
   const ssValue = standardScore.value;
   const bound = isBounded(standardScore) ? standardScore.bound : null;
-  const c1 = ctx.standardToPercentile;
 
   // C1 has 3 columns of SS/percentile pairs per row
   for (const row of c1.rows) {
@@ -150,9 +160,14 @@ export const lookupPercentile = (
     }
   }
 
+  const boundPrefix = bound ? (bound === 'lt' ? '<' : '>') : '';
   return {
     value: null,
-    steps: [],
+    steps: [createFailureStep(
+      c1.tableId,
+      c1.source,
+      `Standard Score ${boundPrefix}${ssValue} not found in table`
+    )],
     note: `Standard score ${ssValue} not found in C1`,
   };
 };
@@ -203,7 +218,11 @@ export const lookupAgeEquivalent = (
 
   return {
     value: null,
-    steps: [],
+    steps: [createFailureStep(
+      a1.tableId,
+      a1.source,
+      `${AGE_EQUIV_LABELS[domain]}: Raw Score ${rawScore} not found in table`
+    )],
     note: `Raw score ${rawScore} not found in A1 for ${domain}`,
   };
 };
@@ -257,7 +276,11 @@ export const lookupDomainComposite = (
 
   return {
     value: null,
-    steps: [],
+    steps: [createFailureStep(
+      d1.tableId,
+      d1.source,
+      `Sum of Standard Scores ${sum} not found in table`
+    )],
     note: `Sum ${sum} not found in D1`,
   };
 };
