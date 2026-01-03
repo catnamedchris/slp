@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format, parse, subYears } from 'date-fns';
 import { calcAgeMonths, findAgeBand } from '../lib/age';
 import { createLookupContext } from '../data/context';
+import { DAYC2_MIN_AGE_MONTHS, DAYC2_MAX_AGE_MONTHS } from '../constants';
 
 interface ChildInfoFormProps {
   dob: string;
@@ -23,8 +24,7 @@ export interface AgeInfo {
   error: string | null;
 }
 
-const DAYC2_MIN_AGE = 12;
-const DAYC2_MAX_AGE = 71;
+
 
 export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null => {
   if (!dob || !testDate) return null;
@@ -36,10 +36,10 @@ export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null 
   let error: string | null = null;
   if (ageMonths < 0) {
     error = 'Test date cannot be before date of birth';
-  } else if (ageMonths < DAYC2_MIN_AGE) {
-    error = `Age ${ageMonths} months is below DAYC-2 minimum (${DAYC2_MIN_AGE} months)`;
-  } else if (ageMonths > DAYC2_MAX_AGE) {
-    error = `Age ${ageMonths} months is above DAYC-2 maximum (${DAYC2_MAX_AGE} months)`;
+  } else if (ageMonths < DAYC2_MIN_AGE_MONTHS) {
+    error = `Age ${ageMonths} months is below DAYC-2 minimum (${DAYC2_MIN_AGE_MONTHS} months)`;
+  } else if (ageMonths > DAYC2_MAX_AGE_MONTHS) {
+    error = `Age ${ageMonths} months is above DAYC-2 maximum (${DAYC2_MAX_AGE_MONTHS} months)`;
   }
 
   return {
@@ -107,10 +107,10 @@ const ChildInfoForm = ({
     const ctx = createLookupContext();
     const bTable = findAgeBand(ageOverride, ctx);
     let error: string | null = null;
-    if (ageOverride < DAYC2_MIN_AGE) {
-      error = `Age ${ageOverride} months is below DAYC-2 minimum (${DAYC2_MIN_AGE} months)`;
-    } else if (ageOverride > DAYC2_MAX_AGE) {
-      error = `Age ${ageOverride} months is above DAYC-2 maximum (${DAYC2_MAX_AGE} months)`;
+    if (ageOverride < DAYC2_MIN_AGE_MONTHS) {
+      error = `Age ${ageOverride} months is below DAYC-2 minimum (${DAYC2_MIN_AGE_MONTHS} months)`;
+    } else if (ageOverride > DAYC2_MAX_AGE_MONTHS) {
+      error = `Age ${ageOverride} months is above DAYC-2 maximum (${DAYC2_MAX_AGE_MONTHS} months)`;
     }
     return {
       ageMonths: ageOverride,
@@ -149,8 +149,8 @@ const ChildInfoForm = ({
             id="ageOverride"
             value={ageOverride ?? ''}
             onChange={handleAgeInputChange}
-            min={DAYC2_MIN_AGE}
-            max={DAYC2_MAX_AGE}
+            min={DAYC2_MIN_AGE_MONTHS}
+            max={DAYC2_MAX_AGE_MONTHS}
             className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
         </div>

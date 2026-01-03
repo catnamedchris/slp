@@ -5,6 +5,7 @@ import type { CalculationResult } from '../lib/calculate';
 import { calculateAllScores } from '../lib/calculate';
 import { createLookupContext } from '../data/context';
 import type { RawScores } from '../components/RawScoresForm';
+import { isDayc2AgeInRange } from '../constants';
 
 interface UseCalculationParams {
   ageMonths: number | null;
@@ -20,12 +21,12 @@ export const useCalculation = ({
   rawScores,
 }: UseCalculationParams): UseCalculationResult => {
   const result = useMemo(() => {
-    if (ageMonths === null || ageMonths < 12 || ageMonths > 71) {
+    if (!isDayc2AgeInRange(ageMonths)) {
       return null;
     }
 
     const ctx = createLookupContext();
-    return calculateAllScores({ ageMonths, rawScores }, ctx);
+    return calculateAllScores({ ageMonths: ageMonths as number, rawScores }, ctx);
   }, [ageMonths, rawScores]);
 
   return { result };

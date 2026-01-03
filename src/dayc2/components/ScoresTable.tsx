@@ -11,6 +11,7 @@ import {
   type DomainKey,
   type SubtestScoreDisplay,
 } from './scoresDisplay';
+import { isDayc2AgeInRange } from '../constants';
 
 interface ScoresTableProps {
   ageMonths: number | null;
@@ -328,7 +329,7 @@ const ScoresTable = ({
   onRawScoreChange,
   onProvenanceClick,
 }: ScoresTableProps) => {
-  const isDisabled = ageMonths === null || ageMonths < 12 || ageMonths > 71;
+  const isDisabled = !isDayc2AgeInRange(ageMonths);
 
   const visibleSubtestList = SUBTESTS.filter((s) => visibleSubtests.has(s));
 
