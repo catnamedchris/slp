@@ -1,28 +1,12 @@
-// Shared label mappings for display
+// Re-export label mappings from canonical metadata module
+// Also provides score formatting utilities
 
-import type { SubtestKey, AgeEquivalentKey, ParsedScore } from '../types';
+export {
+  SUBTEST_LABELS,
+  AGE_EQUIV_LABELS,
+} from './metadata';
 
-export const SUBTEST_LABELS: Record<SubtestKey, string> = {
-  cognitive: 'Cognitive',
-  receptiveLanguage: 'Receptive Language',
-  expressiveLanguage: 'Expressive Language',
-  socialEmotional: 'Social-Emotional',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
-};
-
-export const AGE_EQUIV_LABELS: Record<AgeEquivalentKey, string> = {
-  cognitive: 'Cognitive',
-  receptiveLanguage: 'Receptive Language',
-  expressiveLanguage: 'Expressive Language',
-  communication: 'Communication',
-  socialEmotional: 'Social-Emotional',
-  physicalDevelopment: 'Physical Development',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
-};
+import type { ParsedScore } from '../types';
 
 export const formatScoreValue = (score: ParsedScore | null): string => {
   if (score === null) return '—';

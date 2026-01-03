@@ -4,43 +4,25 @@ import type { SubtestResult, DomainResult, SumValue } from '../lib/calculate';
 import type { ParsedScore, ParsedPercentile, ParsedAgeMonths, SubtestKey } from '../types';
 import type { ValueWithProvenance, ProvenanceStep } from '@/shared/lib/types';
 import { formatValue } from '../lib/tables';
+import {
+  SUBTESTS,
+  SUBTEST_LABELS,
+  DOMAINS,
+  DOMAIN_LABELS,
+  DEFAULT_VISIBLE_SUBTESTS,
+  DEFAULT_VISIBLE_DOMAINS,
+  type DomainKey,
+} from '../lib/metadata';
 
-export const SUBTEST_LABELS: Record<SubtestKey, string> = {
-  cognitive: 'Cognitive',
-  receptiveLanguage: 'Receptive Language',
-  expressiveLanguage: 'Expressive Language',
-  socialEmotional: 'Social-Emotional',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
+export {
+  SUBTESTS,
+  SUBTEST_LABELS,
+  DOMAINS,
+  DOMAIN_LABELS,
+  DEFAULT_VISIBLE_SUBTESTS,
+  DEFAULT_VISIBLE_DOMAINS,
+  type DomainKey,
 };
-
-export const SUBTESTS: SubtestKey[] = [
-  'cognitive',
-  'receptiveLanguage',
-  'expressiveLanguage',
-  'socialEmotional',
-  'grossMotor',
-  'fineMotor',
-  'adaptiveBehavior',
-];
-
-export const DEFAULT_VISIBLE_SUBTESTS: SubtestKey[] = [
-  'receptiveLanguage',
-  'expressiveLanguage',
-  'socialEmotional',
-];
-
-export type DomainKey = 'communication' | 'physical';
-
-export const DOMAIN_LABELS: Record<DomainKey, string> = {
-  communication: 'Communication (RL+EL)',
-  physical: 'Physical (GM+FM)',
-};
-
-export const DOMAINS: DomainKey[] = ['communication', 'physical'];
-
-export const DEFAULT_VISIBLE_DOMAINS: DomainKey[] = [];
 
 // Formatting helpers
 export const formatAgeEquivalent = (ae: ValueWithProvenance<ParsedAgeMonths>): string => {

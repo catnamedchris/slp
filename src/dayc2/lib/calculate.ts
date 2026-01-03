@@ -15,17 +15,7 @@ import {
   lookupDomainComposite,
 } from './scoring';
 import { isExact, isBounded } from './tables';
-
-/** All 7 DAYC-2 subtests */
-const SUBTESTS: SubtestKey[] = [
-  'cognitive',
-  'receptiveLanguage',
-  'expressiveLanguage',
-  'socialEmotional',
-  'grossMotor',
-  'fineMotor',
-  'adaptiveBehavior',
-];
+import { SUBTESTS } from './metadata';
 
 /** Input for score calculation - now supports partial scores */
 export interface CalculationInput {
