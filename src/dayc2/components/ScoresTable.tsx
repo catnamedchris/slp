@@ -7,10 +7,10 @@ import {
   SUBTESTS,
   getSubtestDisplay,
   getDomainDisplay,
-  createRawScoreHandler,
   type DomainKey,
   type SubtestScoreDisplay,
-} from './scoresDisplay';
+} from '../lib/scoresDisplay';
+import { createRawScoreHandler } from '../lib/inputs';
 import { isDayc2AgeInRange } from '../constants';
 
 interface ScoresTableProps {

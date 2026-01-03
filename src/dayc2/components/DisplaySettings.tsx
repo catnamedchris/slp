@@ -7,7 +7,7 @@ import {
   DOMAIN_LABELS,
   DOMAINS,
   type DomainKey,
-} from './scoresDisplay';
+} from '../lib/scoresDisplay';
 
 interface DisplaySettingsProps {
   visibleSubtests: Set<SubtestKey>;

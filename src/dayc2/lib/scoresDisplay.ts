@@ -1,9 +1,9 @@
-// Shared display logic for scores - centralizes formatting and warning logic
+// View-model logic for score display - formatting and data transformation
 
-import type { SubtestResult, DomainResult, SumValue } from '../lib/calculate';
+import type { SubtestResult, DomainResult, SumValue } from './calculate';
 import type { ParsedScore, ParsedPercentile, ParsedAgeMonths, SubtestKey } from '../types';
 import type { ValueWithProvenance, ProvenanceStep } from '@/shared/lib/types';
-import { formatValue } from '../lib/tables';
+import { formatValue } from './tables';
 import {
   SUBTESTS,
   SUBTEST_LABELS,
@@ -12,8 +12,9 @@ import {
   DEFAULT_VISIBLE_SUBTESTS,
   DEFAULT_VISIBLE_DOMAINS,
   type DomainKey,
-} from '../lib/metadata';
+} from './metadata';
 
+// Re-export metadata for consumers
 export {
   SUBTESTS,
   SUBTEST_LABELS,
@@ -171,22 +172,5 @@ export const getDomainDisplay = (result: DomainResult | null): DomainDisplay => 
     note,
     showNote,
     scores,
-  };
-};
-
-// Raw score input handler factory
-export const createRawScoreHandler = (
-  subtest: SubtestKey,
-  onRawScoreChange: (subtest: SubtestKey, value: number | null) => void
-) => {
-  return (value: string) => {
-    if (value === '') {
-      onRawScoreChange(subtest, null);
-    } else {
-      const parsed = parseInt(value, 10);
-      if (!isNaN(parsed) && parsed >= 0) {
-        onRawScoreChange(subtest, parsed);
-      }
-    }
   };
 };

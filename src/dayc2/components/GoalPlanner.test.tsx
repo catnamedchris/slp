@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import GoalPlanner from './GoalPlanner';
 import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, SUBTESTS } from './scoresDisplay';
+import { DEFAULT_VISIBLE_SUBTESTS, SUBTESTS } from '../lib/scoresDisplay';
 
 const defaultProps = {
   ageMonths: 24,

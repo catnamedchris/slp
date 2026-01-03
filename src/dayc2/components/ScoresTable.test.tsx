@@ -4,7 +4,7 @@ import ScoresTable from './ScoresTable';
 import { createEmptyRawScores } from './RawScoresForm';
 import type { CalculationResult } from '../lib/calculate';
 import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from './scoresDisplay';
+import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
 
 const defaultVisibleSubtests = new Set<SubtestKey>(DEFAULT_VISIBLE_SUBTESTS);
 const defaultVisibleDomains = new Set<DomainKey>(DEFAULT_VISIBLE_DOMAINS);

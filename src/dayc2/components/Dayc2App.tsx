@@ -10,7 +10,7 @@ import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import GoalPlanner from './GoalPlanner';
 import { useCalculation } from '../hooks/useCalculation';
 import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from './scoresDisplay';
+import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 import { A1, C1, D1, BTables } from '../data';
 

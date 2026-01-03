@@ -6,7 +6,7 @@ import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } fr
 import { createLookupContext } from '../data/context';
 import { isExact } from '../lib/tables';
 import type { ProvenanceStep } from '@/shared/lib/types';
-import { SUBTEST_LABELS, SUBTESTS } from './scoresDisplay';
+import { SUBTEST_LABELS, SUBTESTS } from '../lib/scoresDisplay';
 
 interface GoalPlannerProps {
   ageMonths: number | null;
