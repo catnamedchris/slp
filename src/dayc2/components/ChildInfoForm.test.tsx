@@ -2,8 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
 
-vi.mock('react-datepicker', () => import('@/test/__mocks__/react-datepicker'));
-
 describe('calculateAgeInfo', () => {
   it('returns null when dob is empty', () => {
     expect(calculateAgeInfo('', '2024-01-15')).toBeNull();
@@ -70,16 +68,14 @@ describe('ChildInfoForm component', () => {
 
   it('renders date inputs with labels', () => {
     render(<ChildInfoForm {...defaultProps} />);
-    expect(screen.getByText('Birth Date')).toBeInTheDocument();
-    expect(screen.getByText('Test Date')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Select date of birth')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Select test date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Birth Date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
   });
 
   it('calls onDobChange when DOB input changes', () => {
     const onDobChange = vi.fn();
     render(<ChildInfoForm {...defaultProps} onDobChange={onDobChange} />);
-    const dobInput = screen.getByPlaceholderText('Select date of birth');
+    const dobInput = screen.getByLabelText('Birth Date');
     fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     expect(onDobChange).toHaveBeenCalledWith('2022-01-15');
   });
@@ -87,7 +83,7 @@ describe('ChildInfoForm component', () => {
   it('calls onTestDateChange when test date input changes', () => {
     const onTestDateChange = vi.fn();
     render(<ChildInfoForm {...defaultProps} onTestDateChange={onTestDateChange} />);
-    const testDateInput = screen.getByPlaceholderText('Select test date');
+    const testDateInput = screen.getByLabelText('Test Date');
     fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
     expect(onTestDateChange).toHaveBeenCalledWith('2024-01-15');
   });
@@ -104,8 +100,8 @@ describe('ChildInfoForm component', () => {
 
   it('displays selected dates in the inputs', () => {
     render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
-    const dobInput = screen.getByPlaceholderText('Select date of birth') as HTMLInputElement;
-    const testDateInput = screen.getByPlaceholderText('Select test date') as HTMLInputElement;
+    const dobInput = screen.getByLabelText('Birth Date') as HTMLInputElement;
+    const testDateInput = screen.getByLabelText('Test Date') as HTMLInputElement;
     expect(dobInput.value).toBe('2022-01-15');
     expect(testDateInput.value).toBe('2024-01-15');
   });
@@ -118,7 +114,7 @@ describe('ChildInfoForm component', () => {
   it('shows age input when useAgeOverride is true', () => {
     render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={24} />);
     expect(screen.getByLabelText('Age (months)')).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText('Select date of birth')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Birth Date')).not.toBeInTheDocument();
   });
 
   it('displays age from ageOverride', () => {

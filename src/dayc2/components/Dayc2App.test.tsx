@@ -1,8 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Dayc2App from './Dayc2App';
-
-vi.mock('react-datepicker', () => import('@/test/__mocks__/react-datepicker'));
 
 // Helper to find raw score input by subtest in mobile layout (cards) or desktop (table row)
 const getRawScoreInput = (subtest: string) => {
@@ -39,8 +37,8 @@ describe('Dayc2App', () => {
   it('enables raw score inputs when age is valid', () => {
     render(<Dayc2App />);
 
-    const dobInput = screen.getByPlaceholderText('Select date of birth');
-    const testDateInput = screen.getByPlaceholderText('Select test date');
+    const dobInput = screen.getByLabelText('Birth Date');
+    const testDateInput = screen.getByLabelText('Test Date');
 
     fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
@@ -56,8 +54,8 @@ describe('Dayc2App', () => {
   it('calculates and displays results when inputs are entered', () => {
     render(<Dayc2App />);
 
-    const dobInput = screen.getByPlaceholderText('Select date of birth');
-    const testDateInput = screen.getByPlaceholderText('Select test date');
+    const dobInput = screen.getByLabelText('Birth Date');
+    const testDateInput = screen.getByLabelText('Test Date');
 
     fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
     fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });

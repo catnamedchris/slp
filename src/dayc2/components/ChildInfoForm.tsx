@@ -1,8 +1,6 @@
 // ChildInfoForm: Date of birth and test date inputs with age calculation
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { format, parse, subYears } from 'date-fns';
+import { format, subYears } from 'date-fns';
 import { calcAgeMonths, findAgeBand } from '../lib/age';
 import { createLookupContext } from '../data/context';
 import { DAYC2_MIN_AGE_MONTHS, DAYC2_MAX_AGE_MONTHS } from '../constants';
@@ -23,8 +21,6 @@ export interface AgeInfo {
   ageBandLabel: string | null;
   error: string | null;
 }
-
-
 
 export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null => {
   if (!dob || !testDate) return null;
@@ -49,20 +45,6 @@ export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null 
   };
 };
 
-const parseISODate = (isoString: string): Date | null => {
-  if (!isoString) return null;
-  try {
-    return parse(isoString, 'yyyy-MM-dd', new Date());
-  } catch {
-    return null;
-  }
-};
-
-const formatToISO = (date: Date | null): string => {
-  if (!date) return '';
-  return format(date, 'yyyy-MM-dd');
-};
-
 const ChildInfoForm = ({
   dob,
   testDate,
@@ -74,18 +56,11 @@ const ChildInfoForm = ({
   onAgeOverrideChange,
 }: ChildInfoFormProps) => {
   const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
-  const today = new Date();
+  const today = format(new Date(), 'yyyy-MM-dd');
 
-  const dobDate = parseISODate(dob);
-  const testDateDate = parseISODate(testDate);
-
-  const handleDobChange = (date: Date | null) => {
-    onDobChange(formatToISO(date));
-  };
-
-  const handleTestDateChange = (date: Date | null) => {
-    onTestDateChange(formatToISO(date));
-  };
+  // Calculate max DOB (6 years before test date or today)
+  const maxDob = testDate || today;
+  const minDob = testDate ? format(subYears(new Date(testDate), 6), 'yyyy-MM-dd') : undefined;
 
   const handleToggleMode = () => {
     onUseAgeOverrideChange(!useAgeOverride);
@@ -128,7 +103,7 @@ const ChildInfoForm = ({
         Child Information
       </h2>
       
-      <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+      <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
         <label className="flex items-center gap-2 cursor-pointer w-fit">
           <input
@@ -142,7 +117,7 @@ const ChildInfoForm = ({
       </div>
 
       {useAgeOverride ? (
-        <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+        <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
           <label htmlFor="ageOverride" className="font-medium text-gray-600">Age (months)</label>
           <input
             type="number"
@@ -151,46 +126,34 @@ const ChildInfoForm = ({
             onChange={handleAgeInputChange}
             min={DAYC2_MIN_AGE_MONTHS}
             max={DAYC2_MAX_AGE_MONTHS}
-            className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
             <label htmlFor="dob" className="font-medium text-gray-600">Birth Date</label>
-            <div className="relative w-fit">
-              <DatePicker
-                id="dob"
-                selected={dobDate}
-                onChange={handleDobChange}
-                dateFormat="MM/dd/yyyy"
-                showMonthDropdown
-                showYearDropdown
-                dropdownMode="select"
-                maxDate={testDateDate ?? undefined}
-                minDate={testDateDate ? subYears(testDateDate, 6) : undefined}
-                placeholderText="e.g. 01/15/2024"
-                className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </div>
+            <input
+              type="date"
+              id="dob"
+              value={dob}
+              onChange={(e) => onDobChange(e.target.value)}
+              max={maxDob}
+              min={minDob}
+              className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
           </div>
-          <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
             <label htmlFor="testDate" className="font-medium text-gray-600">Test Date</label>
-            <div className="relative w-fit">
-              <DatePicker
-                id="testDate"
-                selected={testDateDate}
-                onChange={handleTestDateChange}
-                dateFormat="MM/dd/yyyy"
-                showMonthDropdown
-                showYearDropdown
-                dropdownMode="select"
-                maxDate={today}
-                minDate={dobDate ?? undefined}
-                placeholderText="e.g. 01/03/2026"
-                className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </div>
+            <input
+              type="date"
+              id="testDate"
+              value={testDate}
+              onChange={(e) => onTestDateChange(e.target.value)}
+              max={today}
+              min={dob || undefined}
+              className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            />
           </div>
         </>
       )}
