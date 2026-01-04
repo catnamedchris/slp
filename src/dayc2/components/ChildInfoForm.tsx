@@ -158,35 +158,39 @@ const ChildInfoForm = ({
         <>
           <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
             <label htmlFor="dob" className="font-medium text-gray-600">Birth Date</label>
-            <DatePicker
-              id="dob"
-              selected={dobDate}
-              onChange={handleDobChange}
-              dateFormat="MM/dd/yyyy"
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              maxDate={testDateDate ?? undefined}
-              minDate={testDateDate ? subYears(testDateDate, 6) : undefined}
-              placeholderText="Select date of birth"
-              className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            />
+            <div className="relative w-fit">
+              <DatePicker
+                id="dob"
+                selected={dobDate}
+                onChange={handleDobChange}
+                dateFormat="MM/dd/yyyy"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={testDateDate ?? undefined}
+                minDate={testDateDate ? subYears(testDateDate, 6) : undefined}
+                placeholderText="e.g. 01/15/2024"
+                className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
             <label htmlFor="testDate" className="font-medium text-gray-600">Test Date</label>
-            <DatePicker
-              id="testDate"
-              selected={testDateDate}
-              onChange={handleTestDateChange}
-              dateFormat="MM/dd/yyyy"
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              maxDate={today}
-              minDate={dobDate ?? undefined}
-              placeholderText="Select test date"
-              className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            />
+            <div className="relative w-fit">
+              <DatePicker
+                id="testDate"
+                selected={testDateDate}
+                onChange={handleTestDateChange}
+                dateFormat="MM/dd/yyyy"
+                showMonthDropdown
+                showYearDropdown
+                dropdownMode="select"
+                maxDate={today}
+                minDate={dobDate ?? undefined}
+                placeholderText="e.g. 01/03/2026"
+                className="px-3 py-2 border border-gray-300 rounded text-base w-full max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              />
+            </div>
           </div>
         </>
       )}
