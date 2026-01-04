@@ -75,10 +75,7 @@ const ReverseLookup = ({
   };
 
   const visibleResults = lookupResults?.subtests?.filter((r) => visibleSubtests.has(r.subtest)) ?? [];
-
-  if (ageMonths === null) {
-    return null;
-  }
+  const isDisabled = ageMonths === null;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -98,53 +95,59 @@ const ReverseLookup = ({
             value={targetPercentile}
             onChange={(e) => handlePercentileChange(e.target.value)}
             placeholder="1–99"
-            className="px-3 py-2 border border-gray-300 rounded text-sm w-16 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            disabled={isDisabled}
+            className="px-3 py-2 border border-gray-300 rounded text-sm w-16 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
           />
           <span className="text-gray-500">%</span>
         </div>
       </div>
 
-      {lookupResults && (
-        <div className="mt-4">
-          {lookupResults.note ? (
-            <p className="text-red-500 text-sm">{lookupResults.note}</p>
-          ) : (
-            <>
-              <p className="bg-gradient-to-r from-teal-50 to-emerald-50 px-4 py-3 rounded-lg mb-4 border border-teal-100">
-                Target Standard Score: <strong className="text-teal-600">{lookupResults.standardScore}</strong>
-              </p>
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500 border-r border-r-slate-200">Subtest</th>
-                    <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Min. Raw Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleResults.map((result) => (
-                    <tr key={result.subtest} className="odd:bg-slate-50 hover:bg-teal-50">
-                      <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">{SUBTEST_LABELS[result.subtest]}</td>
-                      <td
-                        className={`py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100 ${result.steps.length > 0 && onProvenanceClick ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
-                        onClick={
-                          result.steps.length > 0 && onProvenanceClick
-                            ? (e: React.MouseEvent<HTMLTableCellElement>) => {
-                                onProvenanceClick(result.steps, e.currentTarget, SUBTEST_LABELS[result.subtest]);
-                              }
-                            : undefined
-                        }
-                        title={result.note ?? undefined}
-                      >
-                        {result.rawScore !== null ? result.rawScore : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          )}
-        </div>
+      {isDisabled && (
+        <p className="text-amber-600 text-sm mb-3">
+          ⚠ Enter child age to enable lookup.
+        </p>
       )}
+
+      <div className="mt-4">
+        {lookupResults?.note ? (
+          <p className="text-red-500 text-sm">{lookupResults.note}</p>
+        ) : lookupResults ? (
+          <p className="bg-gradient-to-r from-teal-50 to-emerald-50 px-4 py-3 rounded-lg mb-4 border border-teal-100">
+            Target Standard Score: <strong className="text-teal-600">{lookupResults.standardScore}</strong>
+          </p>
+        ) : null}
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200">Subtest</th>
+              <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Min. Raw Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SUBTESTS.filter((s) => visibleSubtests.has(s)).map((subtest) => {
+              const result = visibleResults.find((r) => r.subtest === subtest);
+              return (
+                <tr key={subtest} className="odd:bg-slate-50 hover:bg-teal-50 h-16">
+                  <td className="text-left text-sm text-slate-700 py-3 px-2.5 border-b border-gray-100 border-r border-r-slate-200">{SUBTEST_LABELS[subtest]}</td>
+                  <td
+                    className={`py-3 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100 ${result?.steps.length && onProvenanceClick ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
+                    onClick={
+                      result?.steps.length && onProvenanceClick
+                        ? (e: React.MouseEvent<HTMLTableCellElement>) => {
+                            onProvenanceClick(result.steps, e.currentTarget, SUBTEST_LABELS[subtest]);
+                          }
+                        : undefined
+                    }
+                    title={result?.note ?? undefined}
+                  >
+                    {result?.rawScore !== null && result?.rawScore !== undefined ? result.rawScore : '—'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       </div>
     </div>
   );

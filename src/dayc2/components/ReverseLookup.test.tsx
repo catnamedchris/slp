@@ -12,9 +12,10 @@ const defaultProps = {
 };
 
 describe('ReverseLookup', () => {
-  it('returns null when ageMonths is null', () => {
-    const { container } = render(<ReverseLookup {...defaultProps} ageMonths={null} />);
-    expect(container.firstChild).toBeNull();
+  it('renders with disabled input when ageMonths is null', () => {
+    render(<ReverseLookup {...defaultProps} ageMonths={null} />);
+    const input = screen.getByLabelText('Target Percentile');
+    expect(input).toBeDisabled();
   });
 
   it('renders heading and instructions when age is valid', () => {

@@ -13,7 +13,7 @@ import type {
 } from '../types';
 import type { LookupContext } from '../data/context';
 import { isExact, isRange, isBounded } from './tables';
-import { AGE_EQUIV_LABELS, formatScoreValue, formatPercentileValue, formatAgeMonthsValue } from './labels';
+import { formatScoreValue, formatPercentileValue, formatAgeMonthsValue } from './labels';
 
 /**
  * Looks up standard score from raw score using the appropriate B table for the child's age.

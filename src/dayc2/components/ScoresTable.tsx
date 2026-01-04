@@ -246,8 +246,8 @@ const SubtestRow = ({
   const display = getSubtestDisplay(subtest, subtestResult);
 
   return (
-    <tr className="odd:bg-slate-50 hover:bg-teal-50">
-      <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">
+    <tr className="odd:bg-slate-50 hover:bg-teal-50 h-16">
+      <td className="text-left text-sm text-slate-700 py-3 px-2.5 border-b border-gray-100 border-r border-r-slate-200">
         <label htmlFor={`raw-${subtest}`}>
           {display.label}
         </label>
@@ -255,7 +255,7 @@ const SubtestRow = ({
           <div className="text-xs text-amber-600 mt-0.5">⚠ {display.note}</div>
         )}
       </td>
-      <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">
+      <td className="py-3 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">
         <input
           type="number"
           inputMode="numeric"
@@ -266,7 +266,7 @@ const SubtestRow = ({
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
           placeholder="—"
-          className="w-20 p-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="w-20 py-1.5 px-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </td>
       <ScoreCells scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
@@ -350,8 +350,8 @@ const ScoresTable = ({
       </div>
       <div className="p-5">
       {isDisabled && (
-        <p className="bg-red-50 border border-red-200 border-l-4 border-l-red-400 text-red-700 px-4 py-3 rounded text-sm mb-3">
-          Enter valid child information to enable score entry.
+        <p className="text-amber-600 text-sm mb-3">
+          ⚠ Enter valid child information to enable score entry.
         </p>
       )}
 
@@ -389,11 +389,11 @@ const ScoresTable = ({
         <table className="w-full border-collapse min-w-[600px]">
         <thead>
           <tr>
-            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500 border-r border-r-slate-200">Subtest</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Raw</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Standard</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Percentile</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Age Eq.</th>
+            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200">Subtest</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Raw</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Standard</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Percentile</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Age Eq.</th>
           </tr>
         </thead>
         <tbody>
