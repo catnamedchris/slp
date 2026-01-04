@@ -130,19 +130,19 @@ describe('ChildInfoForm component', () => {
     expect(onAgeOverrideChange).toHaveBeenCalledWith(30);
   });
 
-  it('toggles to age override mode when checkbox clicked', () => {
+  it('toggles to age override mode when switch clicked', () => {
     const onUseAgeOverrideChange = vi.fn();
     render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" onUseAgeOverrideChange={onUseAgeOverrideChange} />);
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
+    const toggle = screen.getByRole('switch');
+    fireEvent.click(toggle);
     expect(onUseAgeOverrideChange).toHaveBeenCalledWith(true);
   });
 
-  it('toggles back to date mode when checkbox unchecked', () => {
+  it('toggles back to date mode when switch clicked again', () => {
     const onUseAgeOverrideChange = vi.fn();
     render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={24} onUseAgeOverrideChange={onUseAgeOverrideChange} />);
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
+    const toggle = screen.getByRole('switch');
+    fireEvent.click(toggle);
     expect(onUseAgeOverrideChange).toHaveBeenCalledWith(false);
   });
 

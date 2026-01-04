@@ -104,13 +104,22 @@ const ChildInfoForm = ({
       <div className="p-5">
       <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
-        <label className="flex items-center gap-2 cursor-pointer w-fit">
-          <input
-            type="checkbox"
-            checked={useAgeOverride}
-            onChange={handleToggleMode}
-            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-          />
+        <label className="flex items-center gap-3 cursor-pointer w-fit">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={useAgeOverride}
+            onClick={handleToggleMode}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 ${
+              useAgeOverride ? 'bg-teal-500' : 'bg-slate-300'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+                useAgeOverride ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
           <span className="text-gray-600">Enter age directly</span>
         </label>
       </div>
