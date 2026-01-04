@@ -389,7 +389,7 @@ const ScoresTable = ({
         <table className="w-full border-collapse min-w-[600px]">
         <thead>
           <tr>
-            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200">Subtest</th>
+            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200 w-[28%]">Subtest</th>
             <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Raw</th>
             <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Standard</th>
             <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Percentile</th>

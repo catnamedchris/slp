@@ -84,8 +84,8 @@ const ReverseLookup = ({
         <p className="text-slate-500 text-sm mt-1 m-0">Find the raw scores needed to reach a target percentile.</p>
       </div>
       <div className="p-5">
-      <div className="grid grid-cols-[auto_1fr] sm:grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
-        <label htmlFor="targetPercentile" className="font-medium text-gray-600">Target Percentile</label>
+      <div className="flex flex-col gap-1 mb-3 sm:grid sm:grid-cols-[50%_1fr] md:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
+        <label htmlFor="targetPercentile" className="font-medium text-gray-600 sm:pl-0.5">Target Percentile</label>
         <div className="flex items-center gap-2">
           <input
             type="number"
@@ -96,7 +96,7 @@ const ReverseLookup = ({
             onChange={(e) => handlePercentileChange(e.target.value)}
             placeholder="1–99"
             disabled={isDisabled}
-            className="px-3 py-2 border border-gray-300 rounded text-sm w-16 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg font-semibold text-center w-20 sm:w-16 sm:py-2 sm:text-sm sm:font-normal bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
           />
           <span className="text-gray-500">%</span>
         </div>
@@ -119,7 +119,7 @@ const ReverseLookup = ({
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200">Subtest</th>
+              <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200 w-[50%] md:w-[28%]">Subtest</th>
               <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Min. Raw Score</th>
             </tr>
           </thead>

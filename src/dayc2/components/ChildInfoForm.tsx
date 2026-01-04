@@ -102,7 +102,7 @@ const ChildInfoForm = ({
         <h2 className="text-slate-800 font-semibold text-lg m-0">Child Information</h2>
       </div>
       <div className="p-5 overflow-hidden">
-      <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+      <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
         <label className="flex items-center gap-3 cursor-pointer w-fit">
           <button
@@ -125,7 +125,7 @@ const ChildInfoForm = ({
       </div>
 
       {useAgeOverride ? (
-        <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+        <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
           <label htmlFor="ageOverride" className="font-medium text-gray-600">Age (months)</label>
           <input
             type="number"
@@ -139,7 +139,7 @@ const ChildInfoForm = ({
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
             <label htmlFor="dob" className="font-medium text-gray-600">Birth Date</label>
             <input
               type="date"
@@ -149,10 +149,10 @@ const ChildInfoForm = ({
               max={maxDob}
               min={minDob}
               style={{ maxWidth: 'calc(100vw - 60px)' }}
-              className="px-3 py-2 border border-gray-300 rounded text-sm sm:w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm sm:w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             />
           </div>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
             <label htmlFor="testDate" className="font-medium text-gray-600">Test Date</label>
             <input
               type="date"
@@ -162,7 +162,7 @@ const ChildInfoForm = ({
               max={today}
               min={dob || undefined}
               style={{ maxWidth: 'calc(100vw - 60px)' }}
-              className="px-3 py-2 border border-gray-300 rounded text-sm sm:w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm sm:w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             />
           </div>
         </>
