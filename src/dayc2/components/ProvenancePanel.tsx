@@ -30,7 +30,7 @@ export const AboutData = ({ sources }: AboutDataProps) => {
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
       >
-        <span className="font-medium text-slate-700">About the Data</span>
+        <span className="font-semibold text-slate-800 text-lg">About the Data</span>
         <svg
           className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
           fill="none"

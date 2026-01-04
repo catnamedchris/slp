@@ -33,7 +33,7 @@ const DisplaySettings = ({
         className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
       >
         <div>
-          <span className="font-medium text-slate-700">Display Settings</span>
+          <span className="font-semibold text-slate-800 text-lg">Display Settings</span>
           <span className="text-slate-400 text-sm ml-3">
             {visibleSubtests.size} subtests, {visibleDomains.size} domains
           </span>
