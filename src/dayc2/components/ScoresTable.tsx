@@ -266,7 +266,7 @@ const SubtestRow = ({
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
           placeholder="—"
-          className="w-20 py-1.5 px-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="w-20 py-1.5 px-2 border border-slate-300 rounded-lg text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
         />
       </td>
       <ScoreCells scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />

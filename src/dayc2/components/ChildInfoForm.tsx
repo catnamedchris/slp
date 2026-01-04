@@ -134,7 +134,7 @@ const ChildInfoForm = ({
             onChange={handleAgeInputChange}
             min={DAYC2_MIN_AGE_MONTHS}
             max={DAYC2_MAX_AGE_MONTHS}
-            className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm w-full sm:max-w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
           />
         </div>
       ) : (
