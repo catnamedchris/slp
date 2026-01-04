@@ -20,7 +20,7 @@ const UpdateToast = ({ needRefresh, offlineReady, onUpdate, onClose }: UpdateToa
           <div className="flex gap-2">
             <button
               onClick={onUpdate}
-              className="px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors"
+              className="px-3 py-1.5 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-teal-700 transition-colors"
             >
               Update now
             </button>

@@ -16,6 +16,7 @@ import {
 } from './scoring';
 import { isExact, isBounded } from './tables';
 import { SUBTESTS } from './metadata';
+import { createFailureStep } from '@/shared/lib/provenance';
 
 /** Input for score calculation - now supports partial scores */
 export interface CalculationInput {
@@ -273,6 +274,9 @@ const calculateDomainComposite = (
 
   // Bounded sum - look up the boundary value
   const lookupBoundedComposite = (sum: SumValue): ValueWithProvenance<ParsedScore> => {
+    const d1 = ctx.sumToDomain;
+    const boundPrefix = sum.type === 'lt' ? '<' : '>';
+    
     if (sum.type === 'lt') {
       // Sum < value means max sum is value-1
       const result = lookupDomainComposite(sum.value - 1, ctx);
@@ -282,7 +286,16 @@ const calculateDomainComposite = (
           steps: result.steps,
         };
       }
-      return result;
+      // Lookup failed - provide accurate bounded sum in message
+      return {
+        value: null,
+        steps: [createFailureStep(
+          d1.tableId,
+          d1.source,
+          `Sum of Standard Scores ${boundPrefix}${sum.value} is below table minimum`
+        )],
+        note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+      };
     }
     if (sum.type === 'gt') {
       // Sum > value means min sum is value+1
@@ -293,7 +306,16 @@ const calculateDomainComposite = (
           steps: result.steps,
         };
       }
-      return result;
+      // Lookup failed - provide accurate bounded sum in message
+      return {
+        value: null,
+        steps: [createFailureStep(
+          d1.tableId,
+          d1.source,
+          `Sum of Standard Scores ${boundPrefix}${sum.value} is above table maximum`
+        )],
+        note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+      };
     }
     return { value: null, steps: [], note: 'Unexpected sum type in bounded composite lookup' };
   };

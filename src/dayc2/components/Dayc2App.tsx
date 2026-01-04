@@ -87,12 +87,12 @@ const Dayc2App = () => {
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
 
   return (
-    <div className={`font-sans min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 transition-[margin] duration-200 ${isPanelOpen ? 'lg:mr-[420px]' : ''}`}>
+    <div className={`font-sans min-h-screen bg-gradient-to-br from-slate-50 via-white to-teal-50/30 transition-[margin] duration-200 ${isPanelOpen ? 'lg:mr-[420px]' : ''}`}>
       {/* Header */}
-      <header className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-6 px-5 shadow-lg mb-8">
+      <header className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-6 px-5 shadow-lg mb-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-1">DAYC-2 Score Calculator</h1>
-          <p className="text-indigo-200 text-sm md:text-base">Developmental Assessment of Young Children, Second Edition</p>
+          <p className="text-teal-200 text-sm md:text-base">Developmental Assessment of Young Children, Second Edition</p>
         </div>
       </header>
 
