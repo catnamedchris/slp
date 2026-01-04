@@ -81,14 +81,13 @@ const ReverseLookup = ({
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-      <h2 className="mt-0 mb-4 text-slate-800 font-semibold text-lg flex items-center gap-2">
-        <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
-        Reverse Lookup
-      </h2>
-      <p className="text-slate-600 text-sm mb-4">Find the raw scores needed to reach a target percentile.</p>
-
-      <div className="grid grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+        <h2 className="text-slate-800 font-semibold text-lg m-0">Reverse Lookup</h2>
+        <p className="text-slate-500 text-sm mt-1 m-0">Find the raw scores needed to reach a target percentile.</p>
+      </div>
+      <div className="p-5">
+      <div className="grid grid-cols-[auto_1fr] sm:grid-cols-[180px_1fr] gap-2.5 mb-3 items-center">
         <label htmlFor="targetPercentile" className="font-medium text-gray-600">Target Percentile</label>
         <div className="flex items-center gap-2">
           <input
@@ -99,7 +98,7 @@ const ReverseLookup = ({
             value={targetPercentile}
             onChange={(e) => handlePercentileChange(e.target.value)}
             placeholder="1–99"
-            className="px-3 py-2 border border-gray-300 rounded text-base w-24 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            className="px-3 py-2 border border-gray-300 rounded text-sm w-16 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
           <span className="text-gray-500">%</span>
         </div>
@@ -111,22 +110,22 @@ const ReverseLookup = ({
             <p className="text-red-500 text-sm">{lookupResults.note}</p>
           ) : (
             <>
-              <p className="bg-gradient-to-r from-indigo-50 to-blue-50 px-4 py-3 rounded-lg mb-4 border border-indigo-100">
-                Target Standard Score: <strong className="text-indigo-600">{lookupResults.standardScore}</strong>
+              <p className="bg-gradient-to-r from-teal-50 to-emerald-50 px-4 py-3 rounded-lg mb-4 border border-teal-100">
+                Target Standard Score: <strong className="text-teal-600">{lookupResults.standardScore}</strong>
               </p>
-              <table className="w-full border-collapse text-sm">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    <th className="p-3 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">Subtest</th>
-                    <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">Min. Raw Score</th>
+                    <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500 border-r border-r-slate-200">Subtest</th>
+                    <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Min. Raw Score</th>
                   </tr>
                 </thead>
                 <tbody>
                   {visibleResults.map((result) => (
-                    <tr key={result.subtest} className="hover:bg-gray-50">
-                      <td className="p-2.5 text-left font-medium border-b border-gray-100">{SUBTEST_LABELS[result.subtest]}</td>
+                    <tr key={result.subtest} className="odd:bg-slate-50 hover:bg-teal-50">
+                      <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">{SUBTEST_LABELS[result.subtest]}</td>
                       <td
-                        className={`p-2.5 text-center border-b border-gray-100 ${result.steps.length > 0 && onProvenanceClick ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
+                        className={`py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100 ${result.steps.length > 0 && onProvenanceClick ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
                         onClick={
                           result.steps.length > 0 && onProvenanceClick
                             ? (e: React.MouseEvent<HTMLTableCellElement>) => {
@@ -146,6 +145,7 @@ const ReverseLookup = ({
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

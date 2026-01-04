@@ -210,7 +210,7 @@ export const lookupAgeEquivalent = (
           tableId: a1.tableId,
           csvRow: row.csvRow,
           source: a1.source,
-          description: `${AGE_EQUIV_LABELS[domain]}: Raw Score ${rawScore} → Age Equivalent ${formatAgeMonthsValue(row.ageMonths)}`,
+          description: `Raw Score ${rawScore} → Age Equivalent ${formatAgeMonthsValue(row.ageMonths)}`,
         }],
       };
     }
@@ -221,7 +221,7 @@ export const lookupAgeEquivalent = (
     steps: [createFailureStep(
       a1.tableId,
       a1.source,
-      `${AGE_EQUIV_LABELS[domain]}: Raw Score ${rawScore} not found in table`
+      `Raw Score ${rawScore} not found in table`
     )],
     note: `Raw score ${rawScore} not found in A1 for ${domain}`,
   };

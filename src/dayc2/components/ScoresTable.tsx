@@ -43,7 +43,7 @@ const ScoreCell = ({ value, steps, title, onProvenanceClick }: ScoreCellProps) =
 
   return (
     <td
-      className={`p-2.5 text-center border-b border-gray-100 ${hasProvenance ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
+      className={`py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100 ${hasProvenance ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
       onClick={handleClick}
       title={hasProvenance ? 'Click to view provenance' : undefined}
     >
@@ -74,7 +74,7 @@ const ScoreChip = ({ label, value, steps, title, onProvenanceClick }: ScoreChipP
       type="button"
       disabled={!hasProvenance}
       onClick={handleClick}
-      className="flex-1 px-2 py-2 rounded-lg border border-slate-200 bg-slate-50 text-left disabled:opacity-60 active:bg-indigo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+      className="flex-1 px-2 py-2 rounded-lg border border-slate-200 bg-slate-50 text-left disabled:opacity-60 active:bg-teal-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
     >
       <div className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase">
         {label}
@@ -210,7 +210,7 @@ const SubtestCard = ({
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
           placeholder="Tap to enter"
-          className="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-center placeholder:text-center placeholder:text-gray-400 placeholder:font-normal text-lg font-semibold text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-center placeholder:text-center placeholder:text-gray-400 placeholder:font-normal text-lg font-semibold text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
         />
       </div>
 
@@ -246,16 +246,16 @@ const SubtestRow = ({
   const display = getSubtestDisplay(subtest, subtestResult);
 
   return (
-    <tr className="hover:bg-gray-50">
-      <td className="text-left font-medium p-2.5 border-b border-gray-100">
+    <tr className="odd:bg-slate-50 hover:bg-teal-50">
+      <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">
         <label htmlFor={`raw-${subtest}`}>
           {display.label}
         </label>
         {display.note && (
-          <div className="text-xs text-amber-600 font-normal mt-0.5">⚠ {display.note}</div>
+          <div className="text-xs text-amber-600 mt-0.5">⚠ {display.note}</div>
         )}
       </td>
-      <td className="p-2.5 text-center border-b border-gray-100">
+      <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">
         <input
           type="number"
           inputMode="numeric"
@@ -266,7 +266,7 @@ const SubtestRow = ({
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
           placeholder="—"
-          className="w-24 p-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-lg disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="w-20 p-2 border border-gray-300 rounded text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </td>
       <ScoreCells scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
@@ -312,16 +312,16 @@ const DomainRow = ({ label, result, onProvenanceClick }: DomainRowProps) => {
 
   return (
     <>
-      <tr className="composite-row bg-amber-100 font-semibold">
-        <td className="text-left font-medium p-2.5 border-b border-gray-100">{label}</td>
-        <td className="p-2.5 text-center border-b border-gray-100" title={display.note ?? undefined}>
+      <tr className="composite-row bg-amber-50 hover:bg-amber-100/70">
+        <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">{label}</td>
+        <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100" title={display.note ?? undefined}>
           {display.sum}
           {display.showNote && (
             <span className="ml-1 text-amber-600 cursor-help" title={display.note ?? undefined}>⚠</span>
           )}
         </td>
         <ScoreCells scores={display.scores} title={label} onProvenanceClick={onProvenanceClick} />
-        <td className="p-2.5 text-center border-b border-gray-100">N/A</td>
+        <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">N/A</td>
       </tr>
       {display.showNote && display.note && <DomainNoteRow note={display.note} />}
     </>
@@ -344,19 +344,19 @@ const ScoresTable = ({
   const visibleSubtestList = SUBTESTS.filter((s) => visibleSubtests.has(s));
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-      <h2 className="mt-0 mb-5 text-slate-800 font-semibold text-lg flex items-center gap-2">
-        <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
-        Scores
-      </h2>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+        <h2 className="text-slate-800 font-semibold text-lg m-0">Scores</h2>
+      </div>
+      <div className="p-5">
       {isDisabled && (
-        <p className="bg-red-50 border border-red-200 border-l-4 border-l-red-400 text-red-700 px-4 py-3 rounded text-sm my-3">
+        <p className="bg-red-50 border border-red-200 border-l-4 border-l-red-400 text-red-700 px-4 py-3 rounded text-sm mb-3">
           Enter valid child information to enable score entry.
         </p>
       )}
 
       {/* Mobile: Card layout */}
-      <div className="md:hidden mt-2 space-y-3">
+      <div className="md:hidden space-y-3">
         {visibleSubtestList.map((subtest) => (
           <SubtestCard
             key={subtest}
@@ -385,15 +385,15 @@ const ScoresTable = ({
       </div>
 
       {/* Desktop/Tablet: Table layout */}
-      <div className="hidden md:block overflow-x-auto -mx-6 px-6">
-        <table className="w-full border-collapse mt-2.5 min-w-[600px]">
+      <div className="hidden md:block overflow-x-auto -mx-5 px-5">
+        <table className="w-full border-collapse min-w-[600px]">
         <thead>
           <tr>
-            <th className="p-3 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Subtest</th>
-            <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Raw</th>
-            <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Standard Score</th>
-            <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Percentile</th>
-            <th className="p-3 text-center border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700 text-sm">Age Equiv.</th>
+            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500 border-r border-r-slate-200">Subtest</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Raw</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Standard</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Percentile</th>
+            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Age Eq.</th>
           </tr>
         </thead>
         <tbody>
@@ -424,6 +424,7 @@ const ScoresTable = ({
           )}
         </tbody>
       </table>
+      </div>
       </div>
     </div>
   );

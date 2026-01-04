@@ -97,12 +97,11 @@ const ChildInfoForm = ({
   const displayAgeInfo = useAgeOverride ? overrideAgeInfo : ageInfo;
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-      <h2 className="mt-0 mb-5 text-slate-800 font-semibold text-lg flex items-center gap-2">
-        <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
-        Child Information
-      </h2>
-      
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+        <h2 className="text-slate-800 font-semibold text-lg m-0">Child Information</h2>
+      </div>
+      <div className="p-5">
       <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
         <label className="flex items-center gap-2 cursor-pointer w-fit">
@@ -126,7 +125,7 @@ const ChildInfoForm = ({
             onChange={handleAgeInputChange}
             min={DAYC2_MIN_AGE_MONTHS}
             max={DAYC2_MAX_AGE_MONTHS}
-            className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
           />
         </div>
       ) : (
@@ -140,7 +139,7 @@ const ChildInfoForm = ({
               onChange={(e) => onDobChange(e.target.value)}
               max={maxDob}
               min={minDob}
-              className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
           <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
@@ -152,21 +151,22 @@ const ChildInfoForm = ({
               onChange={(e) => onTestDateChange(e.target.value)}
               max={today}
               min={dob || undefined}
-              className="px-3 py-2 border border-gray-300 rounded text-base w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
         </>
       )}
 
       {displayAgeInfo && (
-        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-4 rounded-lg mt-5 border border-indigo-100">
-          <div className="text-2xl font-bold text-indigo-600">{displayAgeInfo.ageMonths} months</div>
+        <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-lg mt-4 border border-teal-100">
+          <div className="text-2xl font-bold text-teal-600">{displayAgeInfo.ageMonths} months</div>
           {displayAgeInfo.ageBandLabel && (
             <div className="text-slate-600 mt-1 text-sm">Age Band: <span className="font-medium">{displayAgeInfo.ageBandLabel}</span></div>
           )}
           {displayAgeInfo.error && <div className="text-red-500 text-sm mt-1">{displayAgeInfo.error}</div>}
         </div>
       )}
+      </div>
     </div>
   );
 };

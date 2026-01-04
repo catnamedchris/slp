@@ -24,30 +24,35 @@ export const AboutData = ({ sources }: AboutDataProps) => {
   );
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <button
+        type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full text-left flex items-center justify-between text-slate-700 hover:text-slate-900 transition-colors"
+        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
       >
-        <span className="font-medium flex items-center gap-2">
-          <span className="w-1 h-5 bg-slate-300 rounded-full"></span>
-          About the Data
-        </span>
-        <span className={`text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
+        <span className="font-medium text-slate-700">About the Data</span>
+        <svg
+          className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <p className="text-slate-600 text-sm leading-relaxed">
+        <div className="px-5 pb-5 pt-2 border-t border-gray-100">
+          <p className="text-slate-600 text-sm leading-relaxed mb-4">
             All scores are calculated using direct table lookups from the DAYC-2
             Examiner's Manual. No interpolation or modeling is used.
           </p>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm my-4">
+          <div className="overflow-x-auto -mx-5 px-5">
+            <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="p-2.5 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">Table</th>
-                  <th className="p-2.5 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">CSV File</th>
-                  <th className="p-2.5 text-left border-b-2 border-indigo-100 bg-slate-50 font-semibold text-slate-700">SHA-256</th>
+                  <th className="p-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">Table</th>
+                  <th className="p-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">CSV File</th>
+                  <th className="p-2.5 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-100 bg-slate-50 text-slate-500">SHA-256</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,7 +69,7 @@ export const AboutData = ({ sources }: AboutDataProps) => {
             </table>
           </div>
           {uniqueSources.length > 0 && (
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-400 mt-3">
               Generated: {uniqueSources[0].generatorVersion}
             </p>
           )}
@@ -74,7 +79,7 @@ export const AboutData = ({ sources }: AboutDataProps) => {
   );
 };
 
-const HIGHLIGHT_CLASS = 'bg-indigo-50 shadow-[inset_0_0_0_2px_rgb(99,102,241)]';
+const HIGHLIGHT_CLASS = 'bg-teal-50 shadow-[inset_0_0_0_2px_rgb(20,184,166)]';
 
 const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: ProvenancePanelProps) => {
   // Add highlight class directly to anchor element - no position tracking needed
@@ -100,10 +105,10 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
       <div className="fixed z-[1000] bg-white shadow-2xl overflow-y-auto
         bottom-0 left-0 right-0 max-h-[60vh] rounded-t-2xl
         lg:top-0 lg:bottom-0 lg:right-0 lg:left-auto lg:w-[400px] lg:max-h-none lg:rounded-none lg:shadow-[-4px_0_20px_rgba(0,0,0,0.1)]">
-        <div className="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white sticky top-0">
+        <div className="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-teal-600 to-teal-700 text-white sticky top-0">
           <div>
             {title && <h3 className="m-0 text-base font-semibold">{title}</h3>}
-            <p className={`m-0 text-indigo-200 ${title ? 'text-xs' : 'text-sm font-semibold text-white'}`}>How was this calculated?</p>
+            <p className={`m-0 text-teal-200 ${title ? 'text-xs' : 'text-sm font-semibold text-white'}`}>How was this calculated?</p>
           </div>
           <button onClick={onClose} className="bg-white/20 hover:bg-white/30 border-none text-lg cursor-pointer text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors leading-none">
             ✕
@@ -117,11 +122,11 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
           {selectedSteps.map((step, index) => (
             <div key={index} className="flex gap-4 mb-5 last:mb-0">
               <div className="flex flex-col items-center shrink-0">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
+                <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
                   {index + 1}
                 </div>
                 {index < selectedSteps.length - 1 && (
-                  <div className="w-0.5 flex-1 bg-indigo-100 mt-2 rounded-full" />
+                  <div className="w-0.5 flex-1 bg-teal-100 mt-2 rounded-full" />
                 )}
               </div>
               <div className="flex-1 pb-2">
@@ -135,7 +140,7 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
                         const rest = step.description.slice(colonIndex + 1).trim();
                         return (
                           <>
-                            <span className="text-indigo-600 font-semibold">{label}:</span>{' '}
+                            <span className="text-teal-600 font-semibold">{label}:</span>{' '}
                             <span className="text-slate-700">{rest}</span>
                           </>
                         );
