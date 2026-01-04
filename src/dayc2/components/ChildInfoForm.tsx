@@ -101,7 +101,7 @@ const ChildInfoForm = ({
       <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
         <h2 className="text-slate-800 font-semibold text-lg m-0">Child Information</h2>
       </div>
-      <div className="p-5">
+      <div className="p-5 overflow-hidden">
       <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
         <label className="font-medium text-gray-600">Input Mode</label>
         <label className="flex items-center gap-3 cursor-pointer w-fit">
@@ -139,7 +139,7 @@ const ChildInfoForm = ({
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center min-w-0">
             <label htmlFor="dob" className="font-medium text-gray-600">Birth Date</label>
             <input
               type="date"
@@ -148,10 +148,10 @@ const ChildInfoForm = ({
               onChange={(e) => onDobChange(e.target.value)}
               max={maxDob}
               min={minDob}
-              className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 border border-gray-300 rounded text-sm w-full max-w-full sm:max-w-[200px] box-border focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center">
+          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[180px_1fr] sm:gap-2.5 sm:items-center min-w-0">
             <label htmlFor="testDate" className="font-medium text-gray-600">Test Date</label>
             <input
               type="date"
@@ -160,7 +160,7 @@ const ChildInfoForm = ({
               onChange={(e) => onTestDateChange(e.target.value)}
               max={today}
               min={dob || undefined}
-              className="px-3 py-2 border border-gray-300 rounded text-sm w-full sm:max-w-[200px] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+              className="px-3 py-2 border border-gray-300 rounded text-sm w-full max-w-full sm:max-w-[200px] box-border focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
         </>
