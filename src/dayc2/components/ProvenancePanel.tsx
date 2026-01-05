@@ -87,7 +87,7 @@ export const AboutData = ({ sources }: AboutDataProps) => {
 };
 
 const HIGHLIGHT_CLASS = 'bg-primary-50 ring-2 ring-primary-400 ring-inset';
-const PDF_PATH = '/DAYC2-Scoring-Manual.pdf';
+const PDF_PATH = `${import.meta.env.BASE_URL}DAYC2-Scoring-Manual.pdf`;
 
 const getPdfLink = (page: number): string => `${PDF_PATH}#page=${page}`;
 

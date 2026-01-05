@@ -64,7 +64,7 @@ describe('ProvenancePanel', () => {
   it('renders PDF links for each step', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
     const links = screen.getAllByRole('link');
-    expect(links[0]).toHaveAttribute('href', '/DAYC2-Scoring-Manual.pdf#page=12');
+    expect(links[0].getAttribute('href')).toContain('DAYC2-Scoring-Manual.pdf#page=12');
   });
 
   it('calls onClose when close button is clicked', () => {
