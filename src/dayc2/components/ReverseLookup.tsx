@@ -154,7 +154,7 @@ const ReverseLookup = ({
                         className={`py-4 px-3 text-center text-xl font-bold md:text-sm md:font-semibold border-b border-slate-100 transition-colors ${
                           hasProvenance 
                             ? 'cursor-pointer text-primary-700 underline decoration-dotted decoration-primary-300 hover:bg-primary-50' 
-                            : 'text-slate-700'
+                            : 'text-slate-400'
                         }`}
                         onClick={
                           hasProvenance
