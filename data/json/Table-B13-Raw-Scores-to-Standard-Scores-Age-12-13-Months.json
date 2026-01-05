@@ -2,10 +2,12 @@
   "tableId": "B13",
   "source": {
     "tableId": "B13",
+    "tableTitle": "Table B.13 Raw Scores to Standard Scores: Ages 12–13 Months",
+    "manualPage": 4,
     "csvFilename": "Table-B13-Raw-Scores-to-Standard-Scores-Age-12-13-Months.csv",
     "csvSha256": "1510f5fb475eae7489829e05e56a3615298956e9d3b025eaae94fa97dc67e300",
-    "generatedAt": "2025-12-22T20:08:56.045Z",
-    "generatorVersion": "dayc2-csv2json@1.0.0",
+    "generatedAt": "2026-01-05T18:42:52.715Z",
+    "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 12,
       "maxMonths": 13,

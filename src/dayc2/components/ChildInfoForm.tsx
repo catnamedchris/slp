@@ -58,7 +58,6 @@ const ChildInfoForm = ({
   const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
   const today = format(new Date(), 'yyyy-MM-dd');
 
-  // Calculate max DOB (6 years before test date or today)
   const maxDob = testDate || today;
   const minDob = testDate ? format(subYears(new Date(testDate), 6), 'yyyy-MM-dd') : undefined;
 
@@ -97,88 +96,112 @@ const ChildInfoForm = ({
   const displayAgeInfo = useAgeOverride ? overrideAgeInfo : ageInfo;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+    <section className="bg-white rounded-2xl shadow-card overflow-hidden animate-fade-in">
+      <header className="px-5 py-4 border-b border-slate-100 bg-white flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+          <svg className="w-4.5 h-4.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+        </div>
         <h2 className="text-slate-800 font-semibold text-lg m-0">Child Information</h2>
-      </div>
-      <div className="p-5 overflow-hidden">
-      <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
-        <label className="font-medium text-gray-600">Input Mode</label>
-        <label className="flex items-center gap-3 cursor-pointer w-fit">
+      </header>
+      
+      <div className="p-5 space-y-4">
+        {/* Input Mode Toggle */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <span className="font-medium text-slate-600 text-sm sm:w-32">
+            Enter age directly
+          </span>
           <button
             type="button"
             role="switch"
             aria-checked={useAgeOverride}
             onClick={handleToggleMode}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 ${
-              useAgeOverride ? 'bg-teal-500' : 'bg-slate-300'
+            className={`toggle-switch relative inline-flex h-7 w-12 shrink-0 items-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+              useAgeOverride ? 'bg-primary-500' : 'bg-slate-300'
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${
+              className={`toggle-knob inline-block h-5 w-5 transform rounded-full bg-white shadow-md ${
                 useAgeOverride ? 'translate-x-6' : 'translate-x-1'
               }`}
             />
           </button>
-          <span className="text-gray-600">Enter age directly</span>
-        </label>
-      </div>
-
-      {useAgeOverride ? (
-        <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
-          <label htmlFor="ageOverride" className="font-medium text-gray-600">Age (months)</label>
-          <input
-            type="number"
-            id="ageOverride"
-            value={ageOverride ?? ''}
-            onChange={handleAgeInputChange}
-            min={DAYC2_MIN_AGE_MONTHS}
-            max={DAYC2_MAX_AGE_MONTHS}
-            className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm w-full sm:max-w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-          />
         </div>
-      ) : (
-        <>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
-            <label htmlFor="dob" className="font-medium text-gray-600">Birth Date</label>
+
+        {useAgeOverride ? (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <label htmlFor="ageOverride" className="font-medium text-slate-600 text-sm sm:w-32">
+              Age (months)
+            </label>
             <input
-              type="date"
-              id="dob"
-              value={dob}
-              onChange={(e) => onDobChange(e.target.value)}
-              max={maxDob}
-              min={minDob}
-              style={{ maxWidth: 'calc(100vw - 60px)' }}
-              className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm sm:w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+              type="number"
+              id="ageOverride"
+              value={ageOverride ?? ''}
+              onChange={handleAgeInputChange}
+              min={DAYC2_MIN_AGE_MONTHS}
+              max={DAYC2_MAX_AGE_MONTHS}
+              placeholder="Enter age"
+              className="w-full sm:w-40 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
             />
           </div>
-          <div className="flex flex-col gap-1 mb-4 sm:grid sm:grid-cols-[28%_1fr] sm:gap-2.5 sm:items-center">
-            <label htmlFor="testDate" className="font-medium text-gray-600">Test Date</label>
-            <input
-              type="date"
-              id="testDate"
-              value={testDate}
-              onChange={(e) => onTestDateChange(e.target.value)}
-              max={today}
-              min={dob || undefined}
-              style={{ maxWidth: 'calc(100vw - 60px)' }}
-              className="px-3 py-2.5 border border-slate-300 rounded-lg text-lg sm:py-2 sm:text-sm sm:w-[200px] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-            />
-          </div>
-        </>
-      )}
+        ) : (
+          <>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+              <label htmlFor="dob" className="font-medium text-slate-600 text-sm sm:w-32">
+                Birth Date
+              </label>
+              <input
+                type="date"
+                id="dob"
+                value={dob}
+                onChange={(e) => onDobChange(e.target.value)}
+                max={maxDob}
+                min={minDob}
+                className="w-full sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+              />
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+              <label htmlFor="testDate" className="font-medium text-slate-600 text-sm sm:w-32">
+                Test Date
+              </label>
+              <input
+                type="date"
+                id="testDate"
+                value={testDate}
+                onChange={(e) => onTestDateChange(e.target.value)}
+                max={today}
+                min={dob || undefined}
+                className="w-full sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+              />
+            </div>
+          </>
+        )}
 
-      {displayAgeInfo && (
-        <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-lg mt-4 border border-teal-100">
-          <div className="text-2xl font-bold text-teal-600">{displayAgeInfo.ageMonths} months</div>
-          {displayAgeInfo.ageBandLabel && (
-            <div className="text-slate-600 mt-1 text-sm">Age Band: <span className="font-medium">{displayAgeInfo.ageBandLabel}</span></div>
-          )}
-          {displayAgeInfo.error && <div className="text-red-500 text-sm mt-1">{displayAgeInfo.error}</div>}
-        </div>
-      )}
+        {/* Age Result Display */}
+        {displayAgeInfo && (
+          <div className={`alert-info mt-4 animate-scale-in ${displayAgeInfo.error ? 'alert-warning' : ''}`}>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-primary-600">{displayAgeInfo.ageMonths}</span>
+              <span className="text-lg text-slate-600">months</span>
+            </div>
+            {displayAgeInfo.ageBandLabel && (
+              <p className="text-sm text-slate-600 mt-1">
+                Age Band: <span className="font-semibold text-slate-700">{displayAgeInfo.ageBandLabel}</span>
+              </p>
+            )}
+            {displayAgeInfo.error && (
+              <p className="text-sm text-amber-700 mt-2 flex items-center gap-1.5">
+                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                </svg>
+                {displayAgeInfo.error}
+              </p>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 

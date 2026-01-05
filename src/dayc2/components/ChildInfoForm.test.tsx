@@ -90,7 +90,8 @@ describe('ChildInfoForm component', () => {
 
   it('displays age when both dates are entered', () => {
     render(<ChildInfoForm {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
-    expect(screen.getByText('24 months')).toBeInTheDocument();
+    expect(screen.getByText('24')).toBeInTheDocument();
+    expect(screen.getByText('months')).toBeInTheDocument();
   });
 
   it('displays error when age is out of range', () => {
@@ -119,7 +120,8 @@ describe('ChildInfoForm component', () => {
 
   it('displays age from ageOverride', () => {
     render(<ChildInfoForm {...defaultProps} useAgeOverride={true} ageOverride={36} />);
-    expect(screen.getByText('36 months')).toBeInTheDocument();
+    expect(screen.getByText('36')).toBeInTheDocument();
+    expect(screen.getByText('months')).toBeInTheDocument();
   });
 
   it('calls onAgeOverrideChange when age input changes', () => {

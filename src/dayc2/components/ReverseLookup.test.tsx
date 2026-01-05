@@ -21,7 +21,7 @@ describe('ReverseLookup', () => {
   it('renders heading and instructions when age is valid', () => {
     render(<ReverseLookup {...defaultProps} />);
     expect(screen.getByText('Reverse Lookup')).toBeInTheDocument();
-    expect(screen.getByText(/Find the raw scores/)).toBeInTheDocument();
+    expect(screen.getByText(/Find raw scores needed/)).toBeInTheDocument();
   });
 
   it('renders percentile input field', () => {

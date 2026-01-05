@@ -2,10 +2,12 @@
   "tableId": "A1",
   "source": {
     "tableId": "A1",
+    "tableTitle": "Table A.1 Raw Scores to Age Equivalents",
+    "manualPage": 1,
     "csvFilename": "Table-A1-Raw-Scores-to-Age-Equivalents.csv",
     "csvSha256": "dfc0b0365e0ba1c3a2cc3ead24a851bdc111a3019a0b539cde8105680b95e851",
-    "generatedAt": "2025-12-22T20:08:56.040Z",
-    "generatorVersion": "dayc2-csv2json@1.0.0"
+    "generatedAt": "2026-01-05T18:42:52.713Z",
+    "generatorVersion": "dayc2-csv2json@1.1.0"
   },
   "rows": [
     {

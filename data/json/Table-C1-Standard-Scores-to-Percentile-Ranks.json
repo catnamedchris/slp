@@ -2,10 +2,12 @@
   "tableId": "C1",
   "source": {
     "tableId": "C1",
+    "tableTitle": "Table C.1 Standard Scores to Percentile Ranks",
+    "manualPage": 38,
     "csvFilename": "Table-C1-Standard-Scores-to-Percentile-Ranks.csv",
     "csvSha256": "60d208817780cdad79807d794575922485f5f0bc2ed2e849f42e8015a07428cd",
-    "generatedAt": "2025-12-22T20:08:56.056Z",
-    "generatorVersion": "dayc2-csv2json@1.0.0"
+    "generatedAt": "2026-01-05T18:42:52.720Z",
+    "generatorVersion": "dayc2-csv2json@1.1.0"
   },
   "rows": [
     {

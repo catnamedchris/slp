@@ -5,6 +5,8 @@ import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 
 const mockSource: SourceMeta = {
   tableId: 'B17',
+  tableTitle: 'Table B.17 Raw Scores to Standard Scores: Ages 22–24 Months',
+  manualPage: 12,
   csvFilename: 'Table-B17-Raw-Scores.csv',
   csvSha256: 'abc123def456789012345678901234567890123456789012345678901234',
   generatedAt: '2025-01-01T00:00:00Z',
@@ -46,12 +48,11 @@ describe('ProvenancePanel', () => {
     expect(screen.getByText('How was this calculated?')).toBeInTheDocument();
   });
 
-  it('renders all provenance steps', () => {
+  it('renders all provenance steps with table titles and page numbers', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
-    expect(screen.getByText('Table B17')).toBeInTheDocument();
-    expect(screen.getByText('Table C1')).toBeInTheDocument();
-    expect(screen.getByText('Row 25')).toBeInTheDocument();
-    expect(screen.getByText('Row 50')).toBeInTheDocument();
+    const titles = screen.getAllByText('Table B.17 Raw Scores to Standard Scores: Ages 22–24 Months');
+    expect(titles.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Page 12').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders step descriptions', () => {
@@ -60,16 +61,17 @@ describe('ProvenancePanel', () => {
     expect(screen.getByText('SS 100 → 50th percentile')).toBeInTheDocument();
   });
 
-  it('renders source filenames', () => {
+  it('renders PDF links for each step', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
-    expect(screen.getByText('Table-B17-Raw-Scores.csv')).toBeInTheDocument();
-    expect(screen.getByText('Table-C1-Percentiles.csv')).toBeInTheDocument();
+    const links = screen.getAllByRole('link');
+    expect(links[0]).toHaveAttribute('href', '/DAYC2-Scoring-Manual.pdf#page=12');
   });
 
   it('calls onClose when close button is clicked', () => {
     const onClose = vi.fn();
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={onClose} />);
-    fireEvent.click(screen.getByText('✕'));
+    const closeButton = screen.getByRole('button');
+    fireEvent.click(closeButton);
     expect(onClose).toHaveBeenCalled();
   });
 

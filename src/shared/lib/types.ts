@@ -6,6 +6,8 @@
  */
 export interface SourceMeta {
   tableId: string;
+  tableTitle: string;
+  manualPage: number;
   csvFilename: string;
   csvSha256: string;
   generatedAt: string;

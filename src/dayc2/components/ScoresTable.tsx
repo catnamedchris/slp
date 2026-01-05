@@ -23,8 +23,6 @@ interface ScoresTableProps {
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-// Shared UI primitives
-
 interface ScoreCellProps {
   value: string;
   steps?: ProvenanceStep[];
@@ -43,9 +41,13 @@ const ScoreCell = ({ value, steps, title, onProvenanceClick }: ScoreCellProps) =
 
   return (
     <td
-      className={`py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100 ${hasProvenance ? 'cursor-pointer underline decoration-dotted hover:bg-blue-50' : ''}`}
+      className={`py-4 px-3 text-center text-sm border-b border-slate-100 transition-colors ${
+        hasProvenance 
+          ? 'cursor-pointer text-primary-700 font-semibold underline decoration-dotted decoration-primary-300 hover:bg-primary-50' 
+          : 'text-slate-700'
+      }`}
       onClick={handleClick}
-      title={hasProvenance ? 'Click to view provenance' : undefined}
+      title={hasProvenance ? 'Click to view calculation details' : undefined}
     >
       {value}
     </td>
@@ -74,19 +76,22 @@ const ScoreChip = ({ label, value, steps, title, onProvenanceClick }: ScoreChipP
       type="button"
       disabled={!hasProvenance}
       onClick={handleClick}
-      className="flex-1 px-2 py-2 rounded-lg border border-slate-200 bg-slate-50 text-left disabled:opacity-60 active:bg-teal-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+      className={`score-chip flex-1 px-3 py-3 rounded-xl border-2 text-left transition-all ${
+        hasProvenance
+          ? 'border-primary-200 bg-primary-50/50 hover:bg-primary-100 hover:border-primary-300 active:scale-[0.98]'
+          : 'border-slate-200 bg-slate-50 opacity-70'
+      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
     >
-      <div className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase">
+      <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">
         {label}
       </div>
-      <div className="text-base font-semibold text-slate-900 mt-0.5">
+      <div className={`text-xl font-bold ${hasProvenance ? 'text-primary-700' : 'text-slate-400'}`}>
         {value}
       </div>
     </button>
   );
 };
 
-// Domain note badge - shared between card and row layouts
 interface DomainSumBadgeProps {
   sum: string;
   note: string | null;
@@ -94,13 +99,12 @@ interface DomainSumBadgeProps {
 }
 
 const DomainSumBadge = ({ sum, note, showNote }: DomainSumBadgeProps) => (
-  <span className="text-xs text-slate-500" title={note ?? undefined}>
-    Sum: {sum}
-    {showNote && <span className="ml-1 text-amber-600 cursor-help" title={note ?? undefined}>⚠</span>}
+  <span className="text-xs text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200" title={note ?? undefined}>
+    Sum: <span className="font-semibold">{sum}</span>
+    {showNote && <span className="ml-1 text-amber-600">⚠</span>}
   </span>
 );
 
-// Shared score chips renderer
 interface ScoreChipsProps {
   scores: SubtestScoreDisplay[];
   title?: string;
@@ -122,7 +126,6 @@ const ScoreChips = ({ scores, title, onProvenanceClick }: ScoreChipsProps) => (
   </>
 );
 
-// Shared score cells renderer for table rows
 interface ScoreCellsProps {
   scores: SubtestScoreDisplay[];
   title?: string;
@@ -143,29 +146,35 @@ const ScoreCells = ({ scores, title, onProvenanceClick }: ScoreCellsProps) => (
   </>
 );
 
-// Domain note row for table layout
 interface DomainNoteRowProps {
   note: string;
 }
 
 const DomainNoteRow = ({ note }: DomainNoteRowProps) => (
-  <tr className="bg-amber-50">
-    <td colSpan={5} className="px-2.5 py-1.5 text-xs text-amber-700 border-b border-gray-100">
-      ⚠ {note}
+  <tr className="bg-amber-50/50">
+    <td colSpan={5} className="px-3 py-2 text-xs text-amber-700 border-b border-slate-100">
+      <span className="flex items-center gap-1.5">
+        <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        </svg>
+        {note}
+      </span>
     </td>
   </tr>
 );
 
-// Domain note paragraph for card layout
 interface DomainNoteParagraphProps {
   note: string;
 }
 
 const DomainNoteParagraph = ({ note }: DomainNoteParagraphProps) => (
-  <p className="mt-2 text-xs text-amber-700">{note}</p>
+  <p className="mt-3 text-xs text-amber-700 flex items-center gap-1.5">
+    <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+    </svg>
+    {note}
+  </p>
 );
-
-// Subtest components (card + row)
 
 interface SubtestCardProps {
   subtest: SubtestKey;
@@ -188,17 +197,17 @@ const SubtestCard = ({
   const display = getSubtestDisplay(subtest, subtestResult);
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <header className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium text-slate-800">{display.label}</h3>
+    <article className="rounded-2xl border-2 border-slate-200 bg-white p-4 shadow-card card-interactive animate-slide-up">
+      <header className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-semibold text-slate-800">{display.label}</h3>
       </header>
 
-      <div className="mb-3">
+      <div className="mb-4">
         <label
           htmlFor={`raw-mobile-${subtest}`}
-          className="block text-xs font-medium text-slate-600 mb-1"
+          className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2"
         >
-          Raw score
+          Raw Score
         </label>
         <input
           type="number"
@@ -209,19 +218,24 @@ const SubtestCard = ({
           value={rawScore ?? ''}
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
-          placeholder="Tap to enter"
-          className="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-center placeholder:text-center placeholder:text-gray-400 placeholder:font-normal text-lg font-semibold text-slate-900 disabled:bg-slate-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+          placeholder="Enter score"
+          className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-center text-lg font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal disabled:bg-slate-100 disabled:border-dashed disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
         />
       </div>
 
       {display.note && (
-        <p className="text-xs text-amber-600 mb-2">⚠ {display.note}</p>
+        <p className="text-xs text-amber-600 mb-3 flex items-center gap-1.5 bg-amber-50 px-3 py-2 rounded-lg">
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          {display.note}
+        </p>
       )}
 
       <div className="flex gap-2">
         <ScoreChips scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
       </div>
-    </section>
+    </article>
   );
 };
 
@@ -246,16 +260,21 @@ const SubtestRow = ({
   const display = getSubtestDisplay(subtest, subtestResult);
 
   return (
-    <tr className="odd:bg-slate-50 hover:bg-teal-50 h-16">
-      <td className="text-left text-sm text-slate-700 py-3 px-2.5 border-b border-gray-100 border-r border-r-slate-200">
-        <label htmlFor={`raw-${subtest}`}>
+    <tr className="table-row-animate odd:bg-slate-50/50 hover:bg-primary-50/50">
+      <td className="text-left text-sm text-slate-700 py-4 px-3 border-b border-slate-100 border-r border-slate-200">
+        <label htmlFor={`raw-${subtest}`} className="font-medium">
           {display.label}
         </label>
         {display.note && (
-          <div className="text-xs text-amber-600 mt-0.5">⚠ {display.note}</div>
+          <div className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+            <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            {display.note}
+          </div>
         )}
       </td>
-      <td className="py-3 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">
+      <td className="py-4 px-3 text-center border-b border-slate-100">
         <input
           type="number"
           inputMode="numeric"
@@ -265,16 +284,14 @@ const SubtestRow = ({
           value={rawScore ?? ''}
           onChange={(e) => handleInputChange(e.target.value)}
           disabled={disabled}
-          placeholder="—"
-          className="w-20 py-1.5 px-2 border border-slate-300 rounded-lg text-center placeholder:text-center placeholder:text-gray-400 text-sm disabled:bg-gray-100 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+          placeholder=""
+          className="w-20 py-2 px-3 border-2 border-slate-200 bg-slate-50 rounded-lg text-center text-sm font-medium placeholder:text-slate-300 disabled:bg-slate-100 disabled:border-dashed disabled:border-slate-300 disabled:text-slate-300 disabled:cursor-not-allowed focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
         />
       </td>
       <ScoreCells scores={display.scores} title={display.label} onProvenanceClick={onProvenanceClick} />
     </tr>
   );
 };
-
-// Domain components (card + row)
 
 interface DomainCardProps {
   label: string;
@@ -286,9 +303,9 @@ const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
   const display = getDomainDisplay(result);
 
   return (
-    <section className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm">
+    <article className="rounded-2xl border-2 border-accent-200 bg-gradient-to-br from-accent-50 to-amber-50/50 p-4 shadow-card animate-slide-up">
       <header className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-slate-800">{label}</h3>
+        <h3 className="text-base font-semibold text-slate-800">{label}</h3>
         <DomainSumBadge sum={display.sum} note={display.note} showNote={display.showNote} />
       </header>
 
@@ -297,7 +314,7 @@ const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
         <ScoreChip label="Age Equiv." value="N/A" />
       </div>
       {display.showNote && display.note && <DomainNoteParagraph note={display.note} />}
-    </section>
+    </article>
   );
 };
 
@@ -312,23 +329,23 @@ const DomainRow = ({ label, result, onProvenanceClick }: DomainRowProps) => {
 
   return (
     <>
-      <tr className="composite-row bg-amber-50 hover:bg-amber-100/70">
-        <td className="text-left text-sm text-slate-700 py-4 px-2.5 border-b border-gray-100 border-r border-r-slate-200">{label}</td>
-        <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100" title={display.note ?? undefined}>
-          {display.sum}
+      <tr className="table-row-animate bg-accent-50/50 hover:bg-accent-100/50">
+        <td className="text-left text-sm font-semibold text-slate-700 py-4 px-3 border-b border-slate-100 border-r border-slate-200">
+          {label}
+        </td>
+        <td className="py-4 px-3 text-center text-sm text-slate-700 border-b border-slate-100" title={display.note ?? undefined}>
+          <span className="font-semibold">{display.sum}</span>
           {display.showNote && (
-            <span className="ml-1 text-amber-600 cursor-help" title={display.note ?? undefined}>⚠</span>
+            <span className="ml-1 text-amber-600">⚠</span>
           )}
         </td>
         <ScoreCells scores={display.scores} title={label} onProvenanceClick={onProvenanceClick} />
-        <td className="py-4 px-2.5 text-center text-sm text-slate-700 border-b border-gray-100">N/A</td>
+        <td className="py-4 px-3 text-center text-sm text-slate-400 border-b border-slate-100">N/A</td>
       </tr>
       {display.showNote && display.note && <DomainNoteRow note={display.note} />}
     </>
   );
 };
-
-// Main component
 
 const ScoresTable = ({
   ageMonths,
@@ -340,65 +357,35 @@ const ScoresTable = ({
   onProvenanceClick,
 }: ScoresTableProps) => {
   const isDisabled = !isDayc2AgeInRange(ageMonths);
-
   const visibleSubtestList = SUBTESTS.filter((s) => visibleSubtests.has(s));
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-5 py-4 border-b border-gray-100 bg-slate-50/50">
+    <section className="bg-white rounded-2xl shadow-card overflow-hidden">
+      <header className="px-5 py-4 border-b border-slate-100 bg-white flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+          <svg className="w-4.5 h-4.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+          </svg>
+        </div>
         <h2 className="text-slate-800 font-semibold text-lg m-0">Scores</h2>
-      </div>
+      </header>
+      
       <div className="p-5">
-      {isDisabled && (
-        <p className="text-amber-600 text-sm mb-3">
-          ⚠ Enter valid child information to enable score entry.
-        </p>
-      )}
-
-      {/* Mobile: Card layout */}
-      <div className="md:hidden space-y-3">
-        {visibleSubtestList.map((subtest) => (
-          <SubtestCard
-            key={subtest}
-            subtest={subtest}
-            rawScore={rawScores[subtest]}
-            subtestResult={result?.subtests[subtest] ?? null}
-            disabled={isDisabled}
-            onRawScoreChange={onRawScoreChange}
-            onProvenanceClick={onProvenanceClick}
-          />
-        ))}
-        {visibleDomains.has('communication') && (
-          <DomainCard
-            label="Communication (RL+EL)"
-            result={result?.domains.communication ?? null}
-            onProvenanceClick={onProvenanceClick}
-          />
+        {isDisabled && (
+          <div className="alert-warning mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <p className="text-amber-800 text-sm font-medium m-0">
+              Enter valid child information to enable score entry.
+            </p>
+          </div>
         )}
-        {visibleDomains.has('physical') && (
-          <DomainCard
-            label="Physical (GM+FM)"
-            result={result?.domains.physical ?? null}
-            onProvenanceClick={onProvenanceClick}
-          />
-        )}
-      </div>
 
-      {/* Desktop/Tablet: Table layout */}
-      <div className="hidden md:block overflow-x-auto -mx-5 px-5">
-        <table className="w-full border-collapse min-w-[600px]">
-        <thead>
-          <tr>
-            <th className="p-3 text-left text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600 border-r border-r-slate-200 w-[28%]">Subtest</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Raw</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Standard</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Percentile</th>
-            <th className="p-3 text-center text-xs font-semibold uppercase tracking-wide border-b-2 border-teal-400 bg-slate-50 text-slate-600">Age Eq.</th>
-          </tr>
-        </thead>
-        <tbody>
+        {/* Mobile: Card layout */}
+        <div className="md:hidden space-y-4">
           {visibleSubtestList.map((subtest) => (
-            <SubtestRow
+            <SubtestCard
               key={subtest}
               subtest={subtest}
               rawScore={rawScores[subtest]}
@@ -409,24 +396,64 @@ const ScoresTable = ({
             />
           ))}
           {visibleDomains.has('communication') && (
-            <DomainRow
+            <DomainCard
               label="Communication (RL+EL)"
               result={result?.domains.communication ?? null}
               onProvenanceClick={onProvenanceClick}
             />
           )}
           {visibleDomains.has('physical') && (
-            <DomainRow
+            <DomainCard
               label="Physical (GM+FM)"
               result={result?.domains.physical ?? null}
               onProvenanceClick={onProvenanceClick}
             />
           )}
-        </tbody>
-      </table>
+        </div>
+
+        {/* Desktop/Tablet: Table layout */}
+        <div className="hidden md:block overflow-x-auto -mx-5 px-5">
+          <table className="w-full border-collapse min-w-[600px]">
+            <thead>
+              <tr className="border-b-2 border-primary-400">
+                <th className="p-3 text-left text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600 w-[28%]">Subtest</th>
+                <th className="p-3 text-center text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600">Raw</th>
+                <th className="p-3 text-center text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600">Standard</th>
+                <th className="p-3 text-center text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600">Percentile</th>
+                <th className="p-3 text-center text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600">Age Eq.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visibleSubtestList.map((subtest) => (
+                <SubtestRow
+                  key={subtest}
+                  subtest={subtest}
+                  rawScore={rawScores[subtest]}
+                  subtestResult={result?.subtests[subtest] ?? null}
+                  disabled={isDisabled}
+                  onRawScoreChange={onRawScoreChange}
+                  onProvenanceClick={onProvenanceClick}
+                />
+              ))}
+              {visibleDomains.has('communication') && (
+                <DomainRow
+                  label="Communication (RL+EL)"
+                  result={result?.domains.communication ?? null}
+                  onProvenanceClick={onProvenanceClick}
+                />
+              )}
+              {visibleDomains.has('physical') && (
+                <DomainRow
+                  label="Physical (GM+FM)"
+                  result={result?.domains.physical ?? null}
+                  onProvenanceClick={onProvenanceClick}
+                />
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-      </div>
-    </div>
+    </section>
   );
 };
 

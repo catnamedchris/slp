@@ -137,6 +137,8 @@ describe('getSubtestDisplay', () => {
       csvRow: 25,
       source: {
         tableId: 'B17',
+        tableTitle: 'Table B.17',
+        manualPage: 12,
         csvFilename: 'test.csv',
         csvSha256: 'abc123',
         generatedAt: '2025-01-01',

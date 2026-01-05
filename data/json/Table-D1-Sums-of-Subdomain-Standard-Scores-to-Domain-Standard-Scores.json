@@ -2,10 +2,12 @@
   "tableId": "D1",
   "source": {
     "tableId": "D1",
+    "tableTitle": "Table D.1 Sums of Subdomain Standard Scores to Domain Standard Scores",
+    "manualPage": 39,
     "csvFilename": "Table-D1-Sums-of-Subdomain-Standard-Scores-to-Domain-Standard-Scores.csv",
     "csvSha256": "46d802560ce22d7133e584a7511434d8b2ab3f3b029db420b94c432ec7741f5d",
-    "generatedAt": "2025-12-22T20:08:56.056Z",
-    "generatorVersion": "dayc2-csv2json@1.0.0"
+    "generatedAt": "2026-01-05T18:42:52.720Z",
+    "generatorVersion": "dayc2-csv2json@1.1.0"
   },
   "rows": [
     {

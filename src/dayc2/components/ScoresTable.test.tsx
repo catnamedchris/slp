@@ -326,6 +326,8 @@ describe('ScoresTable', () => {
       csvRow: 12,
       source: {
         tableId: 'B13',
+        tableTitle: 'Table B.13',
+        manualPage: 4,
         csvFilename: 'test.csv',
         csvSha256: 'abc123',
         generatedAt: '2025-01-01',

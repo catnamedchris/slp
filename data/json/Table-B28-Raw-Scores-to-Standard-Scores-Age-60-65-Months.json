@@ -2,10 +2,12 @@
   "tableId": "B28",
   "source": {
     "tableId": "B28",
+    "tableTitle": "Table B.28 Raw Scores to Standard Scores: Ages 60–65 Months",
+    "manualPage": 34,
     "csvFilename": "Table-B28-Raw-Scores-to-Standard-Scores-Age-60-65-Months.csv",
     "csvSha256": "9e44cb9b59686e8891858687912148eaec00324c11a5fd8a3f2336d74f65d010",
-    "generatedAt": "2025-12-22T20:08:56.055Z",
-    "generatorVersion": "dayc2-csv2json@1.0.0",
+    "generatedAt": "2026-01-05T18:42:52.719Z",
+    "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 61,
       "maxMonths": 65,

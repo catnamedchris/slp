@@ -14,6 +14,8 @@ import type { LookupContext } from './context';
 // Helper to create mock source metadata
 const mockSource = (tableId: string): SourceMeta => ({
   tableId,
+  tableTitle: `Table ${tableId}`,
+  manualPage: 1,
   csvFilename: `mock-${tableId}.csv`,
   csvSha256: 'mock-sha256-for-testing',
   generatedAt: '2025-01-01T00:00:00.000Z',
