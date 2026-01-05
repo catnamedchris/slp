@@ -42,6 +42,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2,pdf}'],
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6 MB to accommodate DAYC2-Scoring-Manual.pdf
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
