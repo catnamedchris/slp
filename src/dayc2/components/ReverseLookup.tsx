@@ -151,10 +151,10 @@ const ReverseLookup = ({
                         {SUBTEST_LABELS[subtest]}
                       </td>
                       <td
-                        className={`py-4 px-3 text-center border-b border-slate-100 transition-colors ${
+                        className={`py-4 px-3 text-center text-xl font-bold md:text-sm md:font-semibold border-b border-slate-100 transition-colors ${
                           hasProvenance 
-                            ? 'cursor-pointer text-primary-700 font-bold text-lg underline decoration-dotted decoration-primary-300 hover:bg-primary-50' 
-                            : 'text-slate-700 text-lg font-semibold'
+                            ? 'cursor-pointer text-primary-700 underline decoration-dotted decoration-primary-300 hover:bg-primary-50' 
+                            : 'text-slate-700'
                         }`}
                         onClick={
                           hasProvenance
