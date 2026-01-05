@@ -135,14 +135,14 @@ const ChildInfoForm = ({
               Age (months)
             </label>
             <input
-              type="number"
-              id="ageOverride"
-              value={ageOverride ?? ''}
-              onChange={handleAgeInputChange}
-              min={DAYC2_MIN_AGE_MONTHS}
-              max={DAYC2_MAX_AGE_MONTHS}
-              placeholder="Enter age"
-              className="w-full sm:w-40 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+            type="number"
+            id="ageOverride"
+            value={ageOverride ?? ''}
+            onChange={handleAgeInputChange}
+            min={DAYC2_MIN_AGE_MONTHS}
+            max={DAYC2_MAX_AGE_MONTHS}
+            placeholder="Enter age"
+            className="w-[calc(100vw-72px)] sm:w-40 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base font-medium text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
             />
           </div>
         ) : (
@@ -158,7 +158,7 @@ const ChildInfoForm = ({
                 onChange={(e) => onDobChange(e.target.value)}
                 max={maxDob}
                 min={minDob}
-                className="w-full sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+                className="w-[calc(100vw-72px)] sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
               />
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -172,7 +172,7 @@ const ChildInfoForm = ({
                 onChange={(e) => onTestDateChange(e.target.value)}
                 max={today}
                 min={dob || undefined}
-                className="w-full sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
+                className="w-[calc(100vw-72px)] sm:w-52 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all"
               />
             </div>
           </>
