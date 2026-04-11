@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { CalculationResult } from '../lib/calculate';
 import { calculateAllScores } from '../lib/calculate';
 import { createLookupContext } from '../data/context';
-import type { RawScores } from '../components/RawScoresForm';
+import type { RawScores } from '../lib/rawScores';
 import { isDayc2AgeInRange } from '../constants';
 
 interface UseCalculationParams {

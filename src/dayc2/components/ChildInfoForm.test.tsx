@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
+import ChildInfoForm from './ChildInfoForm';
+import { calculateAgeInfo } from '../lib/age';
 
 describe('calculateAgeInfo', () => {
   it('returns null when dob is empty', () => {

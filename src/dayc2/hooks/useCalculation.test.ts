@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useCalculation } from './useCalculation';
-import { createEmptyRawScores } from '../components/RawScoresForm';
+import { createEmptyRawScores } from '../lib/rawScores';
 
 describe('useCalculation', () => {
   it('returns null result when ageMonths is null', () => {

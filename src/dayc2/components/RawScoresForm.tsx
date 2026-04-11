@@ -1,8 +1,7 @@
 // RawScoresForm: Input fields for 7 DAYC-2 subtest raw scores
 
 import type { SubtestKey } from '../types';
-
-export type RawScores = Record<SubtestKey, number | null>;
+import type { RawScores } from '../lib/rawScores';
 
 interface RawScoresFormProps {
   rawScores: RawScores;
@@ -29,16 +28,6 @@ const SUBTESTS: SubtestKey[] = [
   'fineMotor',
   'adaptiveBehavior',
 ];
-
-export const createEmptyRawScores = (): RawScores => ({
-  cognitive: null,
-  receptiveLanguage: null,
-  expressiveLanguage: null,
-  socialEmotional: null,
-  grossMotor: null,
-  fineMotor: null,
-  adaptiveBehavior: null,
-});
 
 const RawScoresForm = ({
   rawScores,

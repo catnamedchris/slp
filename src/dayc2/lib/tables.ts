@@ -27,20 +27,6 @@ export const isBounded = (v: ParsedNumeric | null): v is BoundedNumber => {
 export const isRange = (v: ParsedNumeric | null): v is NumberRange => {
   return v !== null && 'min' in v && 'max' in v;
 };
-
-/**
- * Extracts a numeric value from any ParsedNumeric type.
- * - ExactNumber: returns value
- * - BoundedNumber: returns value (the bound)
- * - NumberRange: returns min (conservative/lower bound)
- * - null: returns null
- */
-export const getNumericValue = (v: ParsedNumeric | null): number | null => {
-  if (v === null) return null;
-  if (isRange(v)) return v.min;
-  return v.value;
-};
-
 /**
  * Formats a ParsedNumeric for display.
  * - ExactNumber: "100"

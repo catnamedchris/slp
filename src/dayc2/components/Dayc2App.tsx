@@ -1,17 +1,12 @@
 // Dayc2App: Main DAYC-2 calculator component
 
-import { useState, useCallback } from 'react';
-import ChildInfoForm, { calculateAgeInfo } from './ChildInfoForm';
-import { createEmptyRawScores } from './RawScoresForm';
-import type { RawScores } from './RawScoresForm';
+import ChildInfoForm from './ChildInfoForm';
 import ScoresTable from './ScoresTable';
 import DisplaySettings from './DisplaySettings';
 import ProvenancePanel, { AboutData } from './ProvenancePanel';
 import ReverseLookup from './ReverseLookup';
-import { useCalculation } from '../hooks/useCalculation';
-import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
-import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
+import { useDayc2App } from '../hooks/useDayc2App';
+import type { SourceMeta } from '@/shared/lib/types';
 import { A1, C1, D1, BTables } from '../data';
 
 const getAllSources = (): SourceMeta[] => {
@@ -23,68 +18,32 @@ const getAllSources = (): SourceMeta[] => {
 };
 
 const Dayc2App = () => {
-  const [dob, setDob] = useState('');
-  const [testDate, setTestDate] = useState('');
-  const [useAgeOverride, setUseAgeOverride] = useState(false);
-  const [ageOverride, setAgeOverride] = useState<number | null>(null);
-  const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
-  const [visibleSubtests, setVisibleSubtests] = useState<Set<SubtestKey>>(
-    () => new Set(DEFAULT_VISIBLE_SUBTESTS)
-  );
-  const [visibleDomains, setVisibleDomains] = useState<Set<DomainKey>>(
-    () => new Set(DEFAULT_VISIBLE_DOMAINS)
-  );
-  const [targetPercentile, setTargetPercentile] = useState(6);
-  const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
-  const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
-  const [provenanceTitle, setProvenanceTitle] = useState<string | null>(null);
-
-  const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
-  const ageMonths = useAgeOverride ? ageOverride : (ageInfo?.error ? null : ageInfo?.ageMonths ?? null);
-
-  const { result } = useCalculation({ ageMonths, rawScores });
-
-  const handleRawScoreChange = useCallback((subtest: SubtestKey, value: number | null) => {
-    setRawScores((prev) => ({ ...prev, [subtest]: value }));
-  }, []);
-
-  const handleSubtestToggle = useCallback((subtest: SubtestKey) => {
-    setVisibleSubtests((prev) => {
-      const next = new Set(prev);
-      if (next.has(subtest)) {
-        next.delete(subtest);
-      } else {
-        next.add(subtest);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleDomainToggle = useCallback((domain: DomainKey) => {
-    setVisibleDomains((prev) => {
-      const next = new Set(prev);
-      if (next.has(domain)) {
-        next.delete(domain);
-      } else {
-        next.add(domain);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => {
-    setSelectedProvenance(steps);
-    setProvenanceAnchor(anchorElement);
-    setProvenanceTitle(title ?? null);
-  }, []);
-
-  const handleProvenanceClose = useCallback(() => {
-    setSelectedProvenance(null);
-    setProvenanceAnchor(null);
-    setProvenanceTitle(null);
-  }, []);
-
-  const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
+  const {
+    dob,
+    setDob,
+    testDate,
+    setTestDate,
+    useAgeOverride,
+    ageOverride,
+    setAgeOverride,
+    handleUseAgeOverrideChange,
+    rawScores,
+    result,
+    ageMonths,
+    visibleSubtests,
+    visibleDomains,
+    targetPercentile,
+    setTargetPercentile,
+    selectedProvenance,
+    provenanceAnchor,
+    provenanceTitle,
+    isPanelOpen,
+    handleRawScoreChange,
+    handleSubtestToggle,
+    handleDomainToggle,
+    handleProvenanceClick,
+    handleProvenanceClose,
+  } = useDayc2App();
 
   return (
     <div className={`font-sans min-h-screen bg-slate-50 transition-[margin] duration-300 ease-out ${isPanelOpen ? 'lg:mr-[420px]' : ''}`}>
@@ -112,12 +71,7 @@ const Dayc2App = () => {
         onTestDateChange={setTestDate}
         useAgeOverride={useAgeOverride}
         ageOverride={ageOverride}
-        onUseAgeOverrideChange={(use) => {
-          setUseAgeOverride(use);
-          if (!use) {
-            setRawScores(createEmptyRawScores());
-          }
-        }}
+        onUseAgeOverrideChange={handleUseAgeOverrideChange}
         onAgeOverrideChange={setAgeOverride}
       />
 

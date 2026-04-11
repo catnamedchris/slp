@@ -3,6 +3,8 @@
 import { differenceInMonths } from 'date-fns';
 import type { RawToStandardTableJson } from '../types';
 import type { LookupContext } from '../data/context';
+import { createLookupContext } from '../data/context';
+import { DAYC2_MIN_AGE_MONTHS, DAYC2_MAX_AGE_MONTHS } from '../constants';
 
 /**
  * Calculates age in months between date of birth and test date.
@@ -37,4 +39,46 @@ export const findAgeBand = (
   ctx: LookupContext
 ): RawToStandardTableJson | null => {
   return ctx.getBTableForAge(ageMonths);
+};
+
+/**
+ * Validates that an age in months falls within DAYC-2 bounds.
+ * Returns an error message string if invalid, or null if valid.
+ * Does NOT check for negative ages (that's a date-ordering concern, not a bounds concern).
+ */
+export const validateAgeBounds = (ageMonths: number): string | null => {
+  if (ageMonths < DAYC2_MIN_AGE_MONTHS) {
+    return `Age ${ageMonths} months is below DAYC-2 minimum (${DAYC2_MIN_AGE_MONTHS} months)`;
+  }
+  if (ageMonths > DAYC2_MAX_AGE_MONTHS) {
+    return `Age ${ageMonths} months is above DAYC-2 maximum (${DAYC2_MAX_AGE_MONTHS} months)`;
+  }
+  return null;
+};
+
+export interface AgeInfo {
+  ageMonths: number;
+  ageBandLabel: string | null;
+  error: string | null;
+}
+
+export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null => {
+  if (!dob || !testDate) return null;
+
+  const ageMonths = calcAgeMonths(dob, testDate);
+  const ctx = createLookupContext();
+  const bTable = findAgeBand(ageMonths, ctx);
+
+  let error: string | null = null;
+  if (ageMonths < 0) {
+    error = 'Test date cannot be before date of birth';
+  } else {
+    error = validateAgeBounds(ageMonths);
+  }
+
+  return {
+    ageMonths,
+    ageBandLabel: bTable?.source.ageBand.label ?? null,
+    error,
+  };
 };

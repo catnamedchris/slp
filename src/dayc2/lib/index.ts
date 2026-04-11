@@ -18,12 +18,12 @@ export {
   isExact,
   isBounded,
   isRange,
-  getNumericValue,
   formatValue,
 } from './tables';
 
 // Age calculations
-export { calcAgeMonths, findAgeBand } from './age';
+export { calcAgeMonths, findAgeBand, calculateAgeInfo } from './age';
+export type { AgeInfo } from './age';
 
 // Forward lookups (raw → standard → percentile)
 export {
@@ -47,3 +47,6 @@ export {
   type SubtestResult,
   type DomainResult,
 } from './calculate';
+
+// Raw scores
+export { createEmptyRawScores, type RawScores } from './rawScores';

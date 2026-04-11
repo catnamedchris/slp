@@ -1,7 +1,7 @@
 // ChildInfoForm: Date of birth and test date inputs with age calculation
 
 import { format, subYears } from 'date-fns';
-import { calcAgeMonths, findAgeBand } from '../lib/age';
+import { findAgeBand, validateAgeBounds, calculateAgeInfo } from '../lib/age';
 import { createLookupContext } from '../data/context';
 import { DAYC2_MIN_AGE_MONTHS, DAYC2_MAX_AGE_MONTHS } from '../constants';
 
@@ -15,35 +15,6 @@ interface ChildInfoFormProps {
   onUseAgeOverrideChange: (use: boolean) => void;
   onAgeOverrideChange: (age: number | null) => void;
 }
-
-export interface AgeInfo {
-  ageMonths: number;
-  ageBandLabel: string | null;
-  error: string | null;
-}
-
-export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null => {
-  if (!dob || !testDate) return null;
-
-  const ageMonths = calcAgeMonths(dob, testDate);
-  const ctx = createLookupContext();
-  const bTable = findAgeBand(ageMonths, ctx);
-
-  let error: string | null = null;
-  if (ageMonths < 0) {
-    error = 'Test date cannot be before date of birth';
-  } else if (ageMonths < DAYC2_MIN_AGE_MONTHS) {
-    error = `Age ${ageMonths} months is below DAYC-2 minimum (${DAYC2_MIN_AGE_MONTHS} months)`;
-  } else if (ageMonths > DAYC2_MAX_AGE_MONTHS) {
-    error = `Age ${ageMonths} months is above DAYC-2 maximum (${DAYC2_MAX_AGE_MONTHS} months)`;
-  }
-
-  return {
-    ageMonths,
-    ageBandLabel: bTable?.source.ageBand.label ?? null,
-    error,
-  };
-};
 
 const ChildInfoForm = ({
   dob,
@@ -80,12 +51,7 @@ const ChildInfoForm = ({
   const overrideAgeInfo = useAgeOverride && ageOverride !== null ? (() => {
     const ctx = createLookupContext();
     const bTable = findAgeBand(ageOverride, ctx);
-    let error: string | null = null;
-    if (ageOverride < DAYC2_MIN_AGE_MONTHS) {
-      error = `Age ${ageOverride} months is below DAYC-2 minimum (${DAYC2_MIN_AGE_MONTHS} months)`;
-    } else if (ageOverride > DAYC2_MAX_AGE_MONTHS) {
-      error = `Age ${ageOverride} months is above DAYC-2 maximum (${DAYC2_MAX_AGE_MONTHS} months)`;
-    }
+    const error = validateAgeBounds(ageOverride);
     return {
       ageMonths: ageOverride,
       ageBandLabel: bTable?.source.ageBand.label ?? null,

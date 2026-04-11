@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import RawScoresForm, { createEmptyRawScores } from './RawScoresForm';
+import RawScoresForm from './RawScoresForm';
+import { createEmptyRawScores } from '../lib/rawScores';
 
 describe('createEmptyRawScores', () => {
   it('creates object with all subtests set to null', () => {

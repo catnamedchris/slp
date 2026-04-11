@@ -63,13 +63,17 @@ export const lookupStandardScore = (
   let usedRow = row;
 
   if (score === null) {
-    for (let r = rawScore - 1; r >= 0; r--) {
-      const fallbackRow = bTable.rows.find((rw: RawToStandardRow) => rw.rawScore === r);
-      if (fallbackRow && fallbackRow[subtest] !== null) {
-        score = fallbackRow[subtest];
-        usedRow = fallbackRow;
-        break;
+    let bestFallback: RawToStandardRow | null = null;
+    for (const candidate of bTable.rows) {
+      if (candidate.rawScore < usedRow.rawScore && candidate[subtest] !== null) {
+        if (!bestFallback || candidate.rawScore > bestFallback.rawScore) {
+          bestFallback = candidate;
+        }
       }
+    }
+    if (bestFallback) {
+      score = bestFallback[subtest];
+      usedRow = bestFallback;
     }
   }
 

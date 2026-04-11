@@ -5,7 +5,6 @@ import {
   isExact,
   isBounded,
   isRange,
-  getNumericValue,
   formatValue,
 } from './tables';
 import type { ExactNumber, BoundedNumber, NumberRange } from '../types';
@@ -71,28 +70,6 @@ describe('Type Guards', () => {
     it('returns false for null', () => {
       expect(isRange(null)).toBe(false);
     });
-  });
-});
-
-describe('getNumericValue', () => {
-  it('returns value for ExactNumber', () => {
-    expect(getNumericValue({ value: 100 })).toBe(100);
-  });
-
-  it('returns value for BoundedNumber (lt)', () => {
-    expect(getNumericValue({ bound: 'lt', value: 50 })).toBe(50);
-  });
-
-  it('returns value for BoundedNumber (gt)', () => {
-    expect(getNumericValue({ bound: 'gt', value: 150 })).toBe(150);
-  });
-
-  it('returns min for NumberRange', () => {
-    expect(getNumericValue({ min: 10, max: 20 })).toBe(10);
-  });
-
-  it('returns null for null input', () => {
-    expect(getNumericValue(null)).toBe(null);
   });
 });
 

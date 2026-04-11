@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ScoresTable from './ScoresTable';
-import { createEmptyRawScores } from './RawScoresForm';
+import { createEmptyRawScores } from '../lib/rawScores';
 import type { CalculationResult } from '../lib/calculate';
 import type { SubtestKey } from '../types';
 import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
