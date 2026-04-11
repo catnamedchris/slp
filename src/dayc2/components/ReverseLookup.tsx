@@ -1,4 +1,4 @@
-// ReverseLookup: Find raw scores needed for target percentile
+// ReverseLookup: Compact display of minimum raw scores for a target percentile
 
 import { useMemo } from 'react';
 import type { SubtestKey } from '../types';
@@ -6,7 +6,7 @@ import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } fr
 import { createLookupContext } from '../data/context';
 import { isExact } from '../lib/tables';
 import type { ProvenanceStep } from '@/shared/lib/types';
-import { SUBTEST_LABELS, SUBTESTS } from '../lib/scoresDisplay';
+import { SUBTEST_LABELS, SUBTEST_ABBREVS, SUBTESTS } from '../lib/scoresDisplay';
 
 interface ReverseLookupProps {
   ageMonths: number | null;
@@ -79,102 +79,77 @@ const ReverseLookup = ({
 
   return (
     <section className="bg-white rounded-2xl shadow-card overflow-hidden">
-      <header className="px-5 py-4 border-b border-slate-100 bg-white flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
-          <svg className="w-4.5 h-4.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
+      {/* Header row: title + inline target percentile input */}
+      <div className="px-4 py-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <h2 className="text-sm font-semibold text-slate-800 m-0 whitespace-nowrap">Reverse Lookup</h2>
+          <p className="text-xs text-slate-400 m-0 hidden sm:block">Find raw scores needed for a target percentile</p>
         </div>
-        <div>
-          <h2 className="text-slate-800 font-semibold text-lg m-0">Reverse Lookup</h2>
-          <p className="text-slate-500 text-sm m-0 hidden sm:block">Find raw scores needed for a target percentile</p>
-        </div>
-      </header>
-      
-      <div className="p-5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4 mb-4">
-          <label htmlFor="targetPercentile" className="font-medium text-slate-600 text-sm sm:w-36">
+        <div className="flex items-center gap-1 shrink-0">
+          <label htmlFor="targetPercentile" className="text-xs text-slate-500 whitespace-nowrap">
             Target Percentile
           </label>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              id="targetPercentile"
-              min={1}
-              max={99}
-              value={targetPercentile}
-              onChange={(e) => handlePercentileChange(e.target.value)}
-              placeholder="1–99"
-              disabled={isDisabled}
-              className="w-20 px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-lg text-base font-semibold text-center text-slate-800 focus:bg-white focus:border-primary-400 focus:ring-2 focus:ring-primary-100 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed transition-all"
-            />
-            <span className="text-slate-500 font-medium">%</span>
-          </div>
-        </div>
-
-        {isDisabled && (
-          <div className="alert-warning mb-4 flex items-center gap-2">
-            <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-            <p className="text-amber-800 text-sm font-medium m-0">
-              Enter child age to enable lookup.
-            </p>
-          </div>
-        )}
-
-        <div className="mt-4">
-          {lookupResults?.note ? (
-            <p className="text-red-600 text-sm bg-red-50 px-4 py-3 rounded-xl border border-red-200">{lookupResults.note}</p>
-          ) : lookupResults ? (
-            <div className="alert-info mb-4">
-              <span className="text-sm text-slate-600">Target Standard Score:</span>
-              <span className="text-2xl font-bold text-primary-600 ml-2">{lookupResults.standardScore}</span>
-            </div>
-          ) : null}
-          
-          <div className="overflow-x-auto -mx-5 px-5">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b-2 border-primary-400">
-                  <th className="p-3 text-left text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600 w-[50%] md:w-[28%]">Subtest</th>
-                  <th className="p-3 text-center text-xs font-semibold uppercase tracking-wider bg-slate-50 text-slate-600">Min. Raw Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {SUBTESTS.filter((s) => visibleSubtests.has(s)).map((subtest) => {
-                  const result = visibleResults.find((r) => r.subtest === subtest);
-                  const hasProvenance = result?.steps.length && onProvenanceClick;
-                  return (
-                    <tr key={subtest} className="table-row-animate odd:bg-slate-50/50 hover:bg-primary-50/50">
-                      <td className="text-left text-sm font-medium text-slate-700 py-4 px-3 border-b border-slate-100 border-r border-slate-200">
-                        {SUBTEST_LABELS[subtest]}
-                      </td>
-                      <td
-                        className={`py-4 px-3 text-center text-xl font-bold md:text-sm md:font-semibold border-b border-slate-100 transition-colors ${
-                          hasProvenance 
-                            ? 'cursor-pointer text-primary-700 underline decoration-dotted decoration-primary-300 hover:bg-primary-50' 
-                            : 'text-slate-400'
-                        }`}
-                        onClick={
-                          hasProvenance
-                            ? (e: React.MouseEvent<HTMLTableCellElement>) => {
-                                onProvenanceClick(result.steps, e.currentTarget, SUBTEST_LABELS[subtest]);
-                              }
-                            : undefined
-                        }
-                        title={result?.note ?? (hasProvenance ? 'Click to view calculation details' : undefined)}
-                      >
-                        {result?.rawScore !== null && result?.rawScore !== undefined ? result.rawScore : '—'}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <input
+            type="number"
+            id="targetPercentile"
+            min={1}
+            max={99}
+            value={targetPercentile}
+            onChange={(e) => handlePercentileChange(e.target.value)}
+            placeholder="1–99"
+            disabled={isDisabled}
+            className="w-12 h-7 bg-slate-100 rounded-md text-center text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-primary-200 focus:outline-none disabled:text-slate-300 transition-all"
+          />
+          <span className="text-xs text-slate-400">%</span>
         </div>
       </div>
+
+      {/* Error state */}
+      {lookupResults?.note && (
+        <div className="px-4 pb-3">
+          <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-lg border border-red-200 m-0">{lookupResults.note}</p>
+        </div>
+      )}
+
+      {/* Compact results: horizontal row of min raw scores */}
+      {!lookupResults?.note && visibleResults.length > 0 && (
+        <div className="px-4 pb-3">
+          <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-2">Min. Raw Score</p>
+          <div className="flex gap-2">
+            {SUBTESTS.filter((s) => visibleSubtests.has(s)).map((subtest) => {
+              const result = visibleResults.find((r) => r.subtest === subtest);
+              const hasProvenance = result?.steps.length && onProvenanceClick;
+              const rawValue = result?.rawScore !== null && result?.rawScore !== undefined ? result.rawScore : '—';
+
+              return (
+                <button
+                  key={subtest}
+                  type="button"
+                  disabled={!hasProvenance}
+                  onClick={
+                    hasProvenance
+                      ? (e: React.MouseEvent<HTMLButtonElement>) => {
+                          onProvenanceClick(result.steps, e.currentTarget, SUBTEST_LABELS[subtest]);
+                        }
+                      : undefined
+                  }
+                  title={result?.note ?? (hasProvenance ? 'Click to view calculation details' : undefined)}
+                  className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
+                    hasProvenance
+                      ? 'bg-slate-50 border border-slate-200 hover:bg-primary-50 hover:border-primary-200 active:scale-[0.97] cursor-pointer'
+                      : 'bg-slate-50 border border-slate-100'
+                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
+                >
+                  <div className="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">{SUBTEST_ABBREVS[subtest]}</div>
+                  <div className={`text-lg font-bold mt-0.5 ${hasProvenance ? 'text-primary-700' : 'text-slate-400'}`}>
+                    {rawValue}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

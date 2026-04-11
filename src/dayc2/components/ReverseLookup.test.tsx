@@ -37,33 +37,32 @@ describe('ReverseLookup', () => {
     expect(input).toHaveAttribute('placeholder', '1–99');
   });
 
-  it('shows results table with default percentile', () => {
+  it('shows results with default percentile', () => {
     render(<ReverseLookup {...defaultProps} />);
-    expect(screen.getByText('Target Standard Score:')).toBeInTheDocument();
     expect(screen.getByText('Min. Raw Score')).toBeInTheDocument();
   });
 
   it('shows only visible subtests in results', () => {
     render(<ReverseLookup {...defaultProps} targetPercentile={50} />);
-    expect(screen.getByText('Receptive Language')).toBeInTheDocument();
-    expect(screen.getByText('Expressive Language')).toBeInTheDocument();
-    expect(screen.getByText('Social-Emotional')).toBeInTheDocument();
-    expect(screen.queryByText('Cognitive')).not.toBeInTheDocument();
-    expect(screen.queryByText('Gross Motor')).not.toBeInTheDocument();
-    expect(screen.queryByText('Fine Motor')).not.toBeInTheDocument();
-    expect(screen.queryByText('Adaptive Behavior')).not.toBeInTheDocument();
+    expect(screen.getByText('RL')).toBeInTheDocument();
+    expect(screen.getByText('EL')).toBeInTheDocument();
+    expect(screen.getByText('SE')).toBeInTheDocument();
+    expect(screen.queryByText('COG')).not.toBeInTheDocument();
+    expect(screen.queryByText('GM')).not.toBeInTheDocument();
+    expect(screen.queryByText('FM')).not.toBeInTheDocument();
+    expect(screen.queryByText('AB')).not.toBeInTheDocument();
   });
 
   it('shows all subtests when all are visible', () => {
     const allVisible = new Set<SubtestKey>(SUBTESTS);
     render(<ReverseLookup {...defaultProps} visibleSubtests={allVisible} targetPercentile={50} />);
-    expect(screen.getByText('Cognitive')).toBeInTheDocument();
-    expect(screen.getByText('Receptive Language')).toBeInTheDocument();
-    expect(screen.getByText('Expressive Language')).toBeInTheDocument();
-    expect(screen.getByText('Social-Emotional')).toBeInTheDocument();
-    expect(screen.getByText('Gross Motor')).toBeInTheDocument();
-    expect(screen.getByText('Fine Motor')).toBeInTheDocument();
-    expect(screen.getByText('Adaptive Behavior')).toBeInTheDocument();
+    expect(screen.getByText('COG')).toBeInTheDocument();
+    expect(screen.getByText('RL')).toBeInTheDocument();
+    expect(screen.getByText('EL')).toBeInTheDocument();
+    expect(screen.getByText('SE')).toBeInTheDocument();
+    expect(screen.getByText('GM')).toBeInTheDocument();
+    expect(screen.getByText('FM')).toBeInTheDocument();
+    expect(screen.getByText('AB')).toBeInTheDocument();
   });
 
   it('calls onProvenanceClick when a result cell is clicked', () => {

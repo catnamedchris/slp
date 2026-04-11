@@ -7,6 +7,7 @@ import { formatValue } from './tables';
 import {
   SUBTESTS,
   SUBTEST_LABELS,
+  SUBTEST_ABBREVS,
   DOMAINS,
   DOMAIN_LABELS,
   DEFAULT_VISIBLE_SUBTESTS,
@@ -18,6 +19,7 @@ import {
 export {
   SUBTESTS,
   SUBTEST_LABELS,
+  SUBTEST_ABBREVS,
   DOMAINS,
   DOMAIN_LABELS,
   DEFAULT_VISIBLE_SUBTESTS,
@@ -77,12 +79,35 @@ export const DOMAIN_SCORE_COLUMNS: DomainScoreColumn[] = [
   { key: 'percentile', label: 'Percentile' },
 ];
 
+// Semantic tone for score coloring
+export type SemanticTone = 'neutral' | 'low' | 'average' | 'high';
+
+/**
+ * Determines semantic tone from a percentile value.
+ * <16th percentile = low (clinical concern), 16-84 = average, >84 = high.
+ */
+export const getPercentileTone = (pct: ParsedPercentile | null): SemanticTone => {
+  if (!pct) return 'neutral';
+  if ('bound' in pct) {
+    // <N: if N <= 16, it's low; >N: if N >= 84, it's high
+    if (pct.bound === 'lt') return pct.value <= 16 ? 'low' : 'average';
+    if (pct.bound === 'gt') return pct.value >= 84 ? 'high' : 'average';
+  }
+  if ('value' in pct && !('bound' in pct) && !('min' in pct)) {
+    if (pct.value < 16) return 'low';
+    if (pct.value > 84) return 'high';
+    return 'average';
+  }
+  return 'neutral';
+};
+
 // Display data interfaces
 export interface SubtestScoreDisplay {
   key: ScoreColumn['key'];
   label: string;
   value: string;
   steps: ProvenanceStep[];
+  tone: SemanticTone;
 }
 
 export interface SubtestDisplay {
@@ -96,6 +121,7 @@ export interface DomainScoreDisplay {
   label: string;
   value: string;
   steps: ProvenanceStep[];
+  tone: SemanticTone;
 }
 
 export interface DomainDisplay {
@@ -110,9 +136,11 @@ export const getSubtestDisplay = (
   subtest: SubtestKey,
   result: SubtestResult | null
 ): SubtestDisplay => {
+  const tone = result ? getPercentileTone(result.percentile.value) : 'neutral';
+
   const scores: SubtestScoreDisplay[] = SUBTEST_SCORE_COLUMNS.map((col) => {
     if (!result) {
-      return { key: col.key, label: col.label, value: '—', steps: [] };
+      return { key: col.key, label: col.label, value: '—', steps: [], tone: 'neutral' as SemanticTone };
     }
 
     let value: string;
@@ -129,6 +157,7 @@ export const getSubtestDisplay = (
       label: col.label,
       value,
       steps: result[col.key].steps,
+      tone,
     };
   });
 
@@ -148,9 +177,11 @@ export const getDomainDisplay = (result: DomainResult | null): DomainDisplay => 
   const note = result?.standardScore.note ?? null;
   const showNote = !!(result && !result.sum && note);
 
+  const tone = result ? getPercentileTone(result.percentile.value) : 'neutral';
+
   const scores: DomainScoreDisplay[] = DOMAIN_SCORE_COLUMNS.map((col) => {
     if (!result) {
-      return { key: col.key, label: col.label, value: '—', steps: [] };
+      return { key: col.key, label: col.label, value: '—', steps: [], tone: 'neutral' as SemanticTone };
     }
 
     let value: string;
@@ -165,6 +196,7 @@ export const getDomainDisplay = (result: DomainResult | null): DomainDisplay => 
       label: col.label,
       value,
       steps: result[col.key].steps,
+      tone,
     };
   });
 

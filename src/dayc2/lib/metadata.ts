@@ -22,6 +22,16 @@ export const SUBTEST_LABELS: Record<SubtestKey, string> = {
   adaptiveBehavior: 'Adaptive Behavior',
 };
 
+export const SUBTEST_ABBREVS: Record<SubtestKey, string> = {
+  cognitive: 'COG',
+  receptiveLanguage: 'RL',
+  expressiveLanguage: 'EL',
+  socialEmotional: 'SE',
+  grossMotor: 'GM',
+  fineMotor: 'FM',
+  adaptiveBehavior: 'AB',
+};
+
 export type DomainKey = 'communication' | 'physical';
 
 export const DOMAINS: DomainKey[] = ['communication', 'physical'];
@@ -54,4 +64,4 @@ export const DEFAULT_VISIBLE_SUBTESTS: SubtestKey[] = [
   'socialEmotional',
 ];
 
-export const DEFAULT_VISIBLE_DOMAINS: DomainKey[] = [];
+export const DEFAULT_VISIBLE_DOMAINS: DomainKey[] = ['communication'];

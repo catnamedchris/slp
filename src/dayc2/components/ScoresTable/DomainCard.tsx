@@ -1,7 +1,6 @@
 import type { DomainResult } from '../../lib/calculate';
 import type { ProvenanceStep } from '@/shared/lib/types';
 import { getDomainDisplay } from '../../lib/scoresDisplay';
-import ScoreChip from './ScoreChip';
 import { DomainSumBadge, ScoreChips, DomainNoteParagraph } from './ScoreHelpers';
 
 interface DomainCardProps {
@@ -14,15 +13,14 @@ const DomainCard = ({ label, result, onProvenanceClick }: DomainCardProps) => {
   const display = getDomainDisplay(result);
 
   return (
-    <article className="rounded-2xl border-2 border-accent-200 bg-gradient-to-br from-accent-50 to-amber-50/50 p-4 shadow-card animate-slide-up">
+    <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card animate-slide-up">
       <header className="flex items-center justify-between mb-3">
-        <h3 className="text-base font-semibold text-slate-800">{label}</h3>
+        <h3 className="text-base font-semibold text-slate-800">{label}<span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-primary-500 bg-primary-50 px-2 py-0.5 rounded-full">Composite</span></h3>
         <DomainSumBadge sum={display.sum} note={display.note} showNote={display.showNote} />
       </header>
 
       <div className="flex gap-2">
         <ScoreChips scores={display.scores} title={label} onProvenanceClick={onProvenanceClick} />
-        <ScoreChip label="Age Equiv." value="N/A" />
       </div>
       {display.showNote && display.note && <DomainNoteParagraph note={display.note} />}
     </article>

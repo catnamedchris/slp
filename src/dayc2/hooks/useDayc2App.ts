@@ -12,8 +12,6 @@ import type { ProvenanceStep } from '@/shared/lib/types';
 export const useDayc2App = () => {
   const [dob, setDob] = useState('');
   const [testDate, setTestDate] = useState('');
-  const [useAgeOverride, setUseAgeOverride] = useState(false);
-  const [ageOverride, setAgeOverride] = useState<number | null>(null);
   const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
   const [visibleSubtests, setVisibleSubtests] = useState<Set<SubtestKey>>(
     () => new Set(DEFAULT_VISIBLE_SUBTESTS)
@@ -26,8 +24,8 @@ export const useDayc2App = () => {
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
   const [provenanceTitle, setProvenanceTitle] = useState<string | null>(null);
 
-  const ageInfo = useAgeOverride ? null : calculateAgeInfo(dob, testDate);
-  const ageMonths = useAgeOverride ? ageOverride : (ageInfo?.error ? null : ageInfo?.ageMonths ?? null);
+  const ageInfo = calculateAgeInfo(dob, testDate);
+  const ageMonths = ageInfo?.error ? null : ageInfo?.ageMonths ?? null;
 
   const { result } = useCalculation({ ageMonths, rawScores });
 
@@ -71,13 +69,6 @@ export const useDayc2App = () => {
     setProvenanceTitle(null);
   }, []);
 
-  const handleUseAgeOverrideChange = useCallback((use: boolean) => {
-    setUseAgeOverride(use);
-    if (!use) {
-      setRawScores(createEmptyRawScores());
-    }
-  }, []);
-
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
 
   return {
@@ -85,10 +76,6 @@ export const useDayc2App = () => {
     setDob,
     testDate,
     setTestDate,
-    useAgeOverride,
-    ageOverride,
-    setAgeOverride,
-    handleUseAgeOverrideChange,
     rawScores,
     result,
     ageMonths,

@@ -31,6 +31,7 @@ export const ScoreChips = ({ scores, title, onProvenanceClick }: ScoreChipsProps
         value={score.value}
         steps={score.steps}
         title={title}
+        tone={score.tone}
         onProvenanceClick={onProvenanceClick}
       />
     ))}
@@ -51,6 +52,7 @@ export const ScoreCells = ({ scores, title, onProvenanceClick }: ScoreCellsProps
         value={score.value}
         steps={score.steps}
         title={title}
+        tone={score.tone}
         onProvenanceClick={onProvenanceClick}
       />
     ))}

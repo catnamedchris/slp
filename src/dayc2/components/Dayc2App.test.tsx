@@ -10,10 +10,18 @@ const getRawScoreInput = (subtest: string) => {
   return mobileInput || desktopInput;
 };
 
+// Helper to enter valid dates so the scores section appears
+const enterValidDates = () => {
+  const dobInput = screen.getByLabelText('Birth Date');
+  const testDateInput = screen.getByLabelText('Test Date');
+  fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
+  fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
+};
+
 describe('Dayc2App', () => {
   it('renders the main heading', () => {
     render(<Dayc2App />);
-    expect(screen.getByText('DAYC-2 Score Calculator')).toBeInTheDocument();
+    expect(screen.getByText('dayc')).toBeInTheDocument();
   });
 
   it('renders child info form', () => {
@@ -22,54 +30,48 @@ describe('Dayc2App', () => {
     expect(screen.getByText('Test Date')).toBeInTheDocument();
   });
 
-  it('renders default visible subtests (RL, EL, SE)', () => {
+  it('shows empty state when no dates entered', () => {
     render(<Dayc2App />);
+    expect(screen.getByText('Ready to calculate')).toBeInTheDocument();
+  });
+
+  it('renders default visible subtests (RL, EL, SE) after entering valid dates', () => {
+    render(<Dayc2App />);
+    enterValidDates();
     expect(getRawScoreInput('receptiveLanguage')).toBeInTheDocument();
     expect(getRawScoreInput('expressiveLanguage')).toBeInTheDocument();
     expect(getRawScoreInput('socialEmotional')).toBeInTheDocument();
   });
 
-  it('disables raw score inputs when no dates entered', () => {
-    render(<Dayc2App />);
-    expect(getRawScoreInput('receptiveLanguage')).toBeDisabled();
-  });
-
   it('enables raw score inputs when age is valid', () => {
     render(<Dayc2App />);
-
-    const dobInput = screen.getByLabelText('Birth Date');
-    const testDateInput = screen.getByLabelText('Test Date');
-
-    fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
-    fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
-
+    enterValidDates();
     expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
-  });
-
-  it('shows hint when no dates entered', () => {
-    render(<Dayc2App />);
-    expect(screen.getByText(/Enter valid child information/)).toBeInTheDocument();
   });
 
   it('calculates and displays results when inputs are entered', () => {
     render(<Dayc2App />);
-
-    const dobInput = screen.getByLabelText('Birth Date');
-    const testDateInput = screen.getByLabelText('Test Date');
-
-    fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
-    fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
+    enterValidDates();
 
     fireEvent.change(getRawScoreInput('receptiveLanguage')!, { target: { value: '20' } });
     fireEvent.change(getRawScoreInput('expressiveLanguage')!, { target: { value: '18' } });
     fireEvent.change(getRawScoreInput('socialEmotional')!, { target: { value: '22' } });
 
-    expect(screen.queryByText(/Enter valid child information/)).not.toBeInTheDocument();
     expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
   });
 
-  it('renders About Data section', () => {
+  it('renders About Data section inside settings sheet', () => {
     render(<Dayc2App />);
+    const settingsButton = screen.getByLabelText('Display settings');
+    fireEvent.click(settingsButton);
     expect(screen.getByText(/About the Data/)).toBeInTheDocument();
+  });
+
+  it('opens display settings sheet when gear button is clicked', () => {
+    render(<Dayc2App />);
+    const settingsButton = screen.getByLabelText('Display settings');
+    fireEvent.click(settingsButton);
+    expect(screen.getByText('Display Settings')).toBeInTheDocument();
+    expect(screen.getByText('Subtests')).toBeInTheDocument();
   });
 });
