@@ -6,19 +6,15 @@ import { createEmptyRawScores } from '../lib/rawScores';
 import type { RawScores } from '../lib/rawScores';
 import { useCalculation } from './useCalculation';
 import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
+import type { ActiveSubtestKey } from '../lib/metadata';
 import type { ProvenanceStep } from '@/shared/lib/types';
+import { createEmptySkillItems, type AllSkillItems } from '../lib/skills';
 
 export const useDayc2App = () => {
   const [dob, setDob] = useState('');
   const [testDate, setTestDate] = useState('');
   const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
-  const [visibleSubtests, setVisibleSubtests] = useState<Set<SubtestKey>>(
-    () => new Set(DEFAULT_VISIBLE_SUBTESTS)
-  );
-  const [visibleDomains, setVisibleDomains] = useState<Set<DomainKey>>(
-    () => new Set(DEFAULT_VISIBLE_DOMAINS)
-  );
+  const [skillItems, setSkillItems] = useState<AllSkillItems>(createEmptySkillItems);
   const [targetPercentile, setTargetPercentile] = useState(6);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
@@ -33,29 +29,15 @@ export const useDayc2App = () => {
     setRawScores((prev) => ({ ...prev, [subtest]: value }));
   }, []);
 
-  const handleSubtestToggle = useCallback((subtest: SubtestKey) => {
-    setVisibleSubtests((prev) => {
-      const next = new Set(prev);
-      if (next.has(subtest)) {
-        next.delete(subtest);
-      } else {
-        next.add(subtest);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleDomainToggle = useCallback((domain: DomainKey) => {
-    setVisibleDomains((prev) => {
-      const next = new Set(prev);
-      if (next.has(domain)) {
-        next.delete(domain);
-      } else {
-        next.add(domain);
-      }
-      return next;
-    });
-  }, []);
+  const handleSkillItemsChange = useCallback(
+    (subtest: ActiveSubtestKey, list: 'able' | 'unable', value: string) => {
+      setSkillItems((prev) => ({
+        ...prev,
+        [subtest]: { ...prev[subtest], [list]: value },
+      }));
+    },
+    []
+  );
 
   const handleProvenanceClick = useCallback((steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => {
     setSelectedProvenance(steps);
@@ -69,6 +51,20 @@ export const useDayc2App = () => {
     setProvenanceTitle(null);
   }, []);
 
+  const hasData = dob !== '' || testDate !== '' ||
+    Object.values(rawScores).some((v) => v !== null) ||
+    Object.values(skillItems).some((s) => s.able !== '' || s.unable !== '');
+
+  const handleClear = useCallback(() => {
+    if (hasData && !window.confirm('Clear all data? This will reset dates, scores, and skills.')) {
+      return;
+    }
+    setDob('');
+    setTestDate('');
+    setRawScores(createEmptyRawScores());
+    setSkillItems(createEmptySkillItems());
+  }, [hasData]);
+
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
 
   return {
@@ -76,11 +72,11 @@ export const useDayc2App = () => {
     setDob,
     testDate,
     setTestDate,
+    handleClear,
     rawScores,
+    skillItems,
     result,
     ageMonths,
-    visibleSubtests,
-    visibleDomains,
     targetPercentile,
     setTargetPercentile,
     selectedProvenance,
@@ -88,8 +84,7 @@ export const useDayc2App = () => {
     provenanceTitle,
     isPanelOpen,
     handleRawScoreChange,
-    handleSubtestToggle,
-    handleDomainToggle,
+    handleSkillItemsChange,
     handleProvenanceClick,
     handleProvenanceClose,
   };

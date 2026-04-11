@@ -1,64 +1,48 @@
 // Canonical metadata definitions for DAYC-2 subtests and domains
 
-import type { SubtestKey, AgeEquivalentKey } from '../types';
+import type { AgeEquivalentKey } from '../types';
 
-export const SUBTESTS: SubtestKey[] = [
-  'cognitive',
+// Active subtests used by the app (subset of SubtestKey)
+export type ActiveSubtestKey = 'receptiveLanguage' | 'expressiveLanguage' | 'socialEmotional';
+
+export const SUBTESTS: ActiveSubtestKey[] = [
   'receptiveLanguage',
   'expressiveLanguage',
   'socialEmotional',
-  'grossMotor',
-  'fineMotor',
-  'adaptiveBehavior',
 ];
 
-export const SUBTEST_LABELS: Record<SubtestKey, string> = {
-  cognitive: 'Cognitive',
+export const SUBTEST_LABELS: Record<ActiveSubtestKey, string> = {
   receptiveLanguage: 'Receptive Language',
   expressiveLanguage: 'Expressive Language',
   socialEmotional: 'Social-Emotional',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
 };
 
-export const SUBTEST_ABBREVS: Record<SubtestKey, string> = {
-  cognitive: 'COG',
+export const SUBTEST_ABBREVS: Record<ActiveSubtestKey, string> = {
   receptiveLanguage: 'RL',
   expressiveLanguage: 'EL',
   socialEmotional: 'SE',
-  grossMotor: 'GM',
-  fineMotor: 'FM',
-  adaptiveBehavior: 'AB',
 };
 
-export type DomainKey = 'communication' | 'physical';
+export type DomainKey = 'communication';
 
-export const DOMAINS: DomainKey[] = ['communication', 'physical'];
+export const DOMAINS: DomainKey[] = ['communication'];
 
 export const DOMAIN_LABELS: Record<DomainKey, string> = {
   communication: 'Communication (RL+EL)',
-  physical: 'Physical (GM+FM)',
 };
 
-export const AGE_EQUIV_LABELS: Record<AgeEquivalentKey, string> = {
-  cognitive: 'Cognitive',
+export const AGE_EQUIV_LABELS: Record<ActiveSubtestKey | 'communication', string> = {
   receptiveLanguage: 'Receptive Language',
   expressiveLanguage: 'Expressive Language',
   communication: 'Communication',
   socialEmotional: 'Social-Emotional',
-  physicalDevelopment: 'Physical Development',
-  grossMotor: 'Gross Motor',
-  fineMotor: 'Fine Motor',
-  adaptiveBehavior: 'Adaptive Behavior',
 };
 
 export const DOMAIN_TO_AGE_EQUIV: Record<DomainKey, AgeEquivalentKey> = {
   communication: 'communication',
-  physical: 'physicalDevelopment',
 };
 
-export const DEFAULT_VISIBLE_SUBTESTS: SubtestKey[] = [
+export const DEFAULT_VISIBLE_SUBTESTS: ActiveSubtestKey[] = [
   'receptiveLanguage',
   'expressiveLanguage',
   'socialEmotional',

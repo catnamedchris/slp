@@ -37,7 +37,6 @@ describe('useCalculation', () => {
   it('returns partial result when only some raw scores are filled', () => {
     const scores = {
       ...createEmptyRawScores(),
-      cognitive: 25,
       receptiveLanguage: 20,
     };
     const { result } = renderHook(() =>
@@ -47,8 +46,8 @@ describe('useCalculation', () => {
       })
     );
     expect(result.current.result).not.toBeNull();
-    expect(result.current.result?.subtests.cognitive.rawScore).toBe(25);
-    expect(result.current.result?.subtests.cognitive.standardScore.value).not.toBeNull();
+    expect(result.current.result?.subtests.receptiveLanguage.rawScore).toBe(20);
+    expect(result.current.result?.subtests.receptiveLanguage.standardScore.value).not.toBeNull();
     expect(result.current.result?.subtests.expressiveLanguage.rawScore).toBeNull();
   });
 
@@ -70,7 +69,7 @@ describe('useCalculation', () => {
     );
     expect(result.current.result).not.toBeNull();
     expect(result.current.result?.ageMonths).toBe(24);
-    expect(result.current.result?.subtests.cognitive.rawScore).toBe(25);
+    expect(result.current.result?.subtests.receptiveLanguage.rawScore).toBe(20);
   });
 
   it('memoizes result when inputs do not change', () => {

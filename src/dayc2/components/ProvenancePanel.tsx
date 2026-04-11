@@ -1,6 +1,6 @@
 // ProvenancePanel: Displays lookup provenance for transparency
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 
 interface ProvenancePanelProps {
@@ -92,6 +92,9 @@ const PDF_PATH = `${import.meta.env.BASE_URL}DAYC2-Scoring-Manual.pdf`;
 const getPdfLink = (page: number): string => `${PDF_PATH}#page=${page}`;
 
 const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: ProvenancePanelProps) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (anchorElement) {
       anchorElement.classList.add(...HIGHLIGHT_CLASS.split(' '));
@@ -100,6 +103,46 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
       };
     }
   }, [anchorElement]);
+
+  // Focus close button when panel opens
+  useEffect(() => {
+    if (selectedSteps && selectedSteps.length > 0) {
+      closeButtonRef.current?.focus();
+    }
+  }, [selectedSteps]);
+
+  // Escape to close
+  useEffect(() => {
+    if (!selectedSteps || selectedSteps.length === 0) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedSteps, onClose]);
+
+  // Focus trap: Tab cycles within the panel
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !panelRef.current) return;
+
+    const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
 
   if (!selectedSteps || selectedSteps.length === 0) return null;
 
@@ -112,7 +155,10 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
       />
       
       {/* Panel: bottom sheet on mobile, side panel on desktop */}
-      <div className="provenance-panel-enter fixed z-[1000] bg-white shadow-elevated overflow-y-auto
+      <div
+        ref={panelRef}
+        onKeyDown={handleKeyDown}
+        className="provenance-panel-enter fixed z-[1000] bg-white shadow-elevated overflow-y-auto
         bottom-0 left-0 right-0 max-h-[70vh] rounded-t-3xl
         lg:top-0 lg:bottom-0 lg:right-0 lg:left-auto lg:w-[420px] lg:max-h-none lg:rounded-none">
         
@@ -124,7 +170,8 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
               How was this calculated?
             </p>
           </div>
-          <button 
+          <button
+            ref={closeButtonRef}
             onClick={onClose} 
             className="shrink-0 self-center w-11 h-11 rounded-full flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >

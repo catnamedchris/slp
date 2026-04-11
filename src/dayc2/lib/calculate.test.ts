@@ -28,17 +28,17 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    // Check cognitive results
-    expect(result.subtests.cognitive.standardScore.value).toEqual({ value: 60 });
-    expect(result.subtests.cognitive.standardScore.steps).toHaveLength(1);
-    expect(result.subtests.cognitive.standardScore.steps[0].tableId).toBe('B13');
+    // Check receptiveLanguage results (raw 10 → SS 90 in mockB13)
+    expect(result.subtests.receptiveLanguage.standardScore.value).toEqual({ value: 90 });
+    expect(result.subtests.receptiveLanguage.standardScore.steps).toHaveLength(1);
+    expect(result.subtests.receptiveLanguage.standardScore.steps[0].tableId).toBe('B13');
   });
 
   it('calculates percentile from standard score', () => {
     const input: CalculationInput = {
       ageMonths: 12,
       rawScores: {
-        cognitive: 20, // SS 100 in mockB13
+        cognitive: 20,
         receptiveLanguage: 20,
         expressiveLanguage: 20,
         socialEmotional: 20,
@@ -50,21 +50,21 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    // cognitive raw 20 → SS 100 → percentile 50
-    expect(result.subtests.cognitive.standardScore.value).toEqual({ value: 100 });
-    expect(result.subtests.cognitive.percentile.value).toEqual({ value: 50 });
+    // receptiveLanguage raw 20 → SS 120 → percentile 91
+    expect(result.subtests.receptiveLanguage.standardScore.value).toEqual({ value: 120 });
+    expect(result.subtests.receptiveLanguage.percentile.value).toEqual({ value: 91 });
     // Percentile steps include both the B table lookup and C1 lookup (chained provenance)
-    expect(result.subtests.cognitive.percentile.steps).toHaveLength(2);
-    expect(result.subtests.cognitive.percentile.steps[0].tableId).toBe('B13');
-    expect(result.subtests.cognitive.percentile.steps[1].tableId).toBe('C1');
+    expect(result.subtests.receptiveLanguage.percentile.steps).toHaveLength(2);
+    expect(result.subtests.receptiveLanguage.percentile.steps[0].tableId).toBe('B13');
+    expect(result.subtests.receptiveLanguage.percentile.steps[1].tableId).toBe('C1');
   });
 
   it('calculates age equivalent', () => {
     const input: CalculationInput = {
       ageMonths: 12,
       rawScores: {
-        cognitive: 24, // matches ageMonths 12 in mockA1
-        receptiveLanguage: 13,
+        cognitive: 24,
+        receptiveLanguage: 13, // matches ageMonths 12 in mockA1
         expressiveLanguage: 12,
         socialEmotional: 22,
         grossMotor: 28,
@@ -75,8 +75,8 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    // cognitive raw 24 → age equiv 12 months
-    expect(result.subtests.cognitive.ageEquivalent.value).toEqual({ value: 12 });
+    // receptiveLanguage raw 13 → age equiv 12 months
+    expect(result.subtests.receptiveLanguage.ageEquivalent.value).toEqual({ value: 12 });
   });
 
   it('calculates domain composites', () => {
@@ -87,8 +87,8 @@ describe('calculateAllScores', () => {
         receptiveLanguage: 10, // SS 90
         expressiveLanguage: 10, // SS 95
         socialEmotional: 10,
-        grossMotor: 10, // SS 55
-        fineMotor: 10, // SS 85
+        grossMotor: 10,
+        fineMotor: 10,
         adaptiveBehavior: 10,
       },
     };
@@ -99,57 +99,23 @@ describe('calculateAllScores', () => {
     // Sum 185 is NOT in mockD1 (falls between 167 and 186), so lookup fails
     expect(result.domains.communication.sum).toEqual({ type: 'exact', value: 185 });
     expect(result.domains.communication.standardScore.value).toBeNull();
-
-    // Physical = GM SS + FM SS = 55 + 85 = 140
-    // From mockD1: sum 140 → SS 70
-    expect(result.domains.physical.sum).toEqual({ type: 'exact', value: 140 });
-    expect(result.domains.physical.standardScore.value).toEqual({ value: 70 });
-  });
-
-  it('calculates physical domain with provenance chain', () => {
-    const input: CalculationInput = {
-      ageMonths: 12,
-      rawScores: {
-        cognitive: 10,
-        receptiveLanguage: 10,
-        expressiveLanguage: 10,
-        socialEmotional: 10,
-        grossMotor: 10, // SS 55
-        fineMotor: 10, // SS 85
-        adaptiveBehavior: 10,
-      },
-    };
-
-    const result = calculateAllScores(input, ctx);
-
-    // Physical domain composite works
-    expect(result.domains.physical.sum).toEqual({ type: 'exact', value: 140 });
-    expect(result.domains.physical.standardScore.value).toEqual({ value: 70 });
-    // SS 70 is NOT in mockC1 (it has 69, 79, 80, etc.), so percentile lookup fails
-    expect(result.domains.physical.percentile.value).toBeNull();
-
-    // Verify provenance chain includes all steps
-    expect(result.domains.physical.standardScore.steps.length).toBeGreaterThan(1);
   });
 
   it('handles missing standard scores gracefully', () => {
     const input: CalculationInput = {
       ageMonths: 12,
       rawScores: {
-        cognitive: 30, // SS 130 in mockB13
+        cognitive: 30,
         receptiveLanguage: 30, // SS >150 (bounded)
         expressiveLanguage: 30,
         socialEmotional: 30,
         grossMotor: 30,
-        fineMotor: 30, // null in mockB13
+        fineMotor: 30,
         adaptiveBehavior: 30,
       },
     };
 
     const result = calculateAllScores(input, ctx);
-
-    // fineMotor at rawScore 30 is null, but rawScore 20 has 110
-    expect(result.subtests.fineMotor.standardScore.value).toEqual({ value: 110 });
 
     // receptiveLanguage is bounded (>150), percentile lookup should fail
     expect(result.subtests.receptiveLanguage.standardScore.value).toEqual({ bound: 'gt', value: 150 });
@@ -172,9 +138,9 @@ describe('calculateAllScores', () => {
 
     const result = calculateAllScores(input, ctx);
 
-    expect(result.subtests.cognitive.standardScore.value).toBeNull();
-    expect(result.subtests.cognitive.standardScore.note).toContain('No B table available');
-    expect(result.subtests.cognitive.standardScore.steps).toHaveLength(0);
+    expect(result.subtests.receptiveLanguage.standardScore.value).toBeNull();
+    expect(result.subtests.receptiveLanguage.standardScore.note).toContain('No B table available');
+    expect(result.subtests.receptiveLanguage.standardScore.steps).toHaveLength(0);
   });
 
   it('computes bounded sum when one subtest is at ceiling', () => {

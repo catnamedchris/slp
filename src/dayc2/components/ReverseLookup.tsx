@@ -1,71 +1,84 @@
-// ReverseLookup: Compact display of minimum raw scores for a target percentile
+// ReverseLookup: Inline display of minimum raw scores for a target percentile
 
 import { useMemo } from 'react';
-import type { SubtestKey } from '../types';
 import { lookupStandardScoreFromPercentile, lookupRawScoreFromStandardScore } from '../lib/reverseLookup';
 import { createLookupContext } from '../data/context';
 import { isExact } from '../lib/tables';
 import type { ProvenanceStep } from '@/shared/lib/types';
-import { SUBTEST_LABELS, SUBTEST_ABBREVS, SUBTESTS } from '../lib/scoresDisplay';
+import { SUBTEST_LABELS, SUBTEST_ABBREVS, SUBTESTS, type ActiveSubtestKey } from '../lib/scoresDisplay';
+import { handleEnterAdvance } from '@/shared/lib/keyboard';
 
 interface ReverseLookupProps {
   ageMonths: number | null;
   targetPercentile: number;
-  visibleSubtests: Set<SubtestKey>;
   onTargetPercentileChange: (value: number) => void;
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
-interface LookupResult {
-  subtest: SubtestKey;
+export interface LookupResult {
+  subtest: ActiveSubtestKey;
   rawScore: number | null;
   steps: ProvenanceStep[];
   note?: string;
 }
 
+export interface ReverseLookupResults {
+  standardScore: number | null;
+  ssSteps: ProvenanceStep[];
+  note: string | null;
+  subtests: LookupResult[] | null;
+}
+
+export const computeReverseLookup = (
+  ageMonths: number | null,
+  targetPercentile: number
+): ReverseLookupResults | null => {
+  if (ageMonths === null) return null;
+
+  const ctx = createLookupContext();
+  const ssResult = lookupStandardScoreFromPercentile(targetPercentile, ctx);
+
+  if (!ssResult.value || !isExact(ssResult.value)) {
+    return {
+      standardScore: null,
+      ssSteps: ssResult.steps,
+      note: ssResult.note ?? 'Could not find standard score for this percentile',
+      subtests: null,
+    };
+  }
+
+  const targetSS = ssResult.value.value;
+  const results: LookupResult[] = [];
+
+  for (const subtest of SUBTESTS) {
+    const rawResult = lookupRawScoreFromStandardScore(targetSS, subtest, ageMonths, ctx);
+    results.push({
+      subtest,
+      rawScore: rawResult.value,
+      steps: [...ssResult.steps, ...rawResult.steps],
+      note: rawResult.note,
+    });
+  }
+
+  return {
+    standardScore: targetSS,
+    ssSteps: ssResult.steps,
+    note: null,
+    subtests: results,
+  };
+};
+
 const ReverseLookup = ({
   ageMonths,
   targetPercentile,
-  visibleSubtests,
   onTargetPercentileChange,
   onProvenanceClick,
 }: ReverseLookupProps) => {
 
-  const lookupResults = useMemo(() => {
-    if (ageMonths === null || targetPercentile === null) return null;
-
-    const ctx = createLookupContext();
-    const ssResult = lookupStandardScoreFromPercentile(targetPercentile, ctx);
-
-    if (!ssResult.value || !isExact(ssResult.value)) {
-      return {
-        standardScore: null,
-        ssSteps: ssResult.steps,
-        note: ssResult.note ?? 'Could not find standard score for this percentile',
-        subtests: null,
-      };
-    }
-
-    const targetSS = ssResult.value.value;
-    const results: LookupResult[] = [];
-
-    for (const subtest of SUBTESTS) {
-      const rawResult = lookupRawScoreFromStandardScore(targetSS, subtest, ageMonths, ctx);
-      results.push({
-        subtest,
-        rawScore: rawResult.value,
-        steps: [...ssResult.steps, ...rawResult.steps],
-        note: rawResult.note,
-      });
-    }
-
-    return {
-      standardScore: targetSS,
-      ssSteps: ssResult.steps,
-      note: null,
-      subtests: results,
-    };
-  }, [ageMonths, targetPercentile]);
+  const lookupResults = useMemo(
+    () => computeReverseLookup(ageMonths, targetPercentile),
+    [ageMonths, targetPercentile]
+  );
 
   const handlePercentileChange = (value: string) => {
     const parsed = parseInt(value, 10);
@@ -74,21 +87,18 @@ const ReverseLookup = ({
     }
   };
 
-  const visibleResults = lookupResults?.subtests?.filter((r) => visibleSubtests.has(r.subtest)) ?? [];
+  const visibleResults = lookupResults?.subtests ?? [];
   const isDisabled = ageMonths === null;
 
   return (
-    <section className="bg-white rounded-2xl shadow-card overflow-hidden">
-      {/* Header row: title + inline target percentile input */}
-      <div className="px-4 py-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <h2 className="text-sm font-semibold text-slate-800 m-0 whitespace-nowrap">Reverse Lookup</h2>
-          <p className="text-xs text-slate-400 m-0 hidden sm:block">Find raw scores needed for a target percentile</p>
-        </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <label htmlFor="targetPercentile" className="text-xs text-slate-500 whitespace-nowrap">
-            Target Percentile
-          </label>
+    <div className="bg-white rounded-[14px] shadow-card overflow-hidden">
+      <div className="p-[10px] px-4 flex items-center gap-3">
+        {/* Title */}
+        <span className="text-[13px] font-bold text-slate-700">Reverse Lookup</span>
+
+        {/* Target input */}
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-slate-500">Target</span>
           <input
             type="number"
             id="targetPercentile"
@@ -96,27 +106,22 @@ const ReverseLookup = ({
             max={99}
             value={targetPercentile}
             onChange={(e) => handlePercentileChange(e.target.value)}
-            placeholder="1–99"
+            onKeyDown={handleEnterAdvance}
             disabled={isDisabled}
-            className="w-12 h-7 bg-slate-100 rounded-md text-center text-sm font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-primary-200 focus:outline-none disabled:text-slate-300 transition-all"
+            className="w-9 h-6 bg-slate-50 border border-slate-200 rounded-[5px] text-center text-xs font-bold font-sans text-slate-800 focus:border-primary-300 focus:bg-white focus:shadow-[0_0_0_3px_#eef2ff] focus:outline-none disabled:text-slate-300"
           />
-          <span className="text-xs text-slate-400">%</span>
+          <span className="text-[10px] text-slate-500">%ile</span>
         </div>
-      </div>
 
-      {/* Error state */}
-      {lookupResults?.note && (
-        <div className="px-4 pb-3">
-          <p className="text-red-600 text-xs bg-red-50 px-3 py-2 rounded-lg border border-red-200 m-0">{lookupResults.note}</p>
-        </div>
-      )}
+        {/* Error */}
+        {lookupResults?.note && (
+          <span className="text-red-600 text-[10px]">{lookupResults.note}</span>
+        )}
 
-      {/* Compact results: horizontal row of min raw scores */}
-      {!lookupResults?.note && visibleResults.length > 0 && (
-        <div className="px-4 pb-3">
-          <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-2">Min. Raw Score</p>
-          <div className="flex gap-2">
-            {SUBTESTS.filter((s) => visibleSubtests.has(s)).map((subtest) => {
+        {/* Result chips */}
+        {!lookupResults?.note && visibleResults.length > 0 && (
+          <div className="flex gap-[5px] ml-auto">
+            {SUBTESTS.map((subtest) => {
               const result = visibleResults.find((r) => r.subtest === subtest);
               const hasProvenance = result?.steps.length && onProvenanceClick;
               const rawValue = result?.rawScore !== null && result?.rawScore !== undefined ? result.rawScore : '—';
@@ -134,23 +139,23 @@ const ReverseLookup = ({
                       : undefined
                   }
                   title={result?.note ?? (hasProvenance ? 'Click to view calculation details' : undefined)}
-                  className={`flex-1 py-2 px-2 rounded-xl text-center transition-all ${
+                  className={`py-[5px] px-3 rounded-lg text-center min-w-[56px] ${
                     hasProvenance
-                      ? 'bg-slate-50 border border-slate-200 hover:bg-primary-50 hover:border-primary-200 active:scale-[0.97] cursor-pointer'
+                      ? 'bg-slate-50 border border-slate-200 hover:bg-primary-50 hover:border-primary-200 cursor-pointer'
                       : 'bg-slate-50 border border-slate-100'
                   } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
                 >
-                  <div className="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">{SUBTEST_ABBREVS[subtest]}</div>
-                  <div className={`text-lg font-bold mt-0.5 ${hasProvenance ? 'text-primary-700' : 'text-slate-400'}`}>
+                  <div className="text-[8px] font-bold uppercase tracking-[0.06em] text-slate-400">{SUBTEST_ABBREVS[subtest]}</div>
+                  <div className={`text-base font-extrabold ${hasProvenance ? 'text-primary-700' : 'text-slate-400'}`}>
                     {rawValue}
                   </div>
                 </button>
               );
             })}
           </div>
-        </div>
-      )}
-    </section>
+        )}
+      </div>
+    </div>
   );
 };
 

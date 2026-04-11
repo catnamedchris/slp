@@ -1,48 +1,38 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ReverseLookup from './ReverseLookup';
-import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, SUBTESTS } from '../lib/scoresDisplay';
 
 const defaultProps = {
   ageMonths: 24,
   targetPercentile: 6,
-  visibleSubtests: new Set<SubtestKey>(DEFAULT_VISIBLE_SUBTESTS),
   onTargetPercentileChange: vi.fn(),
 };
 
 describe('ReverseLookup', () => {
   it('renders with disabled input when ageMonths is null', () => {
     render(<ReverseLookup {...defaultProps} ageMonths={null} />);
-    const input = screen.getByLabelText('Target Percentile');
+    const input = screen.getByRole('spinbutton');
     expect(input).toBeDisabled();
   });
 
-  it('renders heading and instructions when age is valid', () => {
+  it('renders title', () => {
     render(<ReverseLookup {...defaultProps} />);
     expect(screen.getByText('Reverse Lookup')).toBeInTheDocument();
-    expect(screen.getByText(/Find raw scores needed/)).toBeInTheDocument();
   });
 
-  it('renders percentile input field', () => {
+  it('renders percentile input with target value', () => {
     render(<ReverseLookup {...defaultProps} />);
-    expect(screen.getByLabelText('Target Percentile')).toBeInTheDocument();
+    const input = screen.getByRole('spinbutton');
+    expect(input).toHaveValue(6);
   });
 
-  it('accepts percentile values between 1-99', () => {
+  it('renders target and %ile labels', () => {
     render(<ReverseLookup {...defaultProps} />);
-    const input = screen.getByLabelText('Target Percentile');
-    expect(input).toHaveAttribute('min', '1');
-    expect(input).toHaveAttribute('max', '99');
-    expect(input).toHaveAttribute('placeholder', '1–99');
+    expect(screen.getByText('Target')).toBeInTheDocument();
+    expect(screen.getByText('%ile')).toBeInTheDocument();
   });
 
-  it('shows results with default percentile', () => {
-    render(<ReverseLookup {...defaultProps} />);
-    expect(screen.getByText('Min. Raw Score')).toBeInTheDocument();
-  });
-
-  it('shows only visible subtests in results', () => {
+  it('shows all active subtests (RL, EL, SE) in results', () => {
     render(<ReverseLookup {...defaultProps} targetPercentile={50} />);
     expect(screen.getByText('RL')).toBeInTheDocument();
     expect(screen.getByText('EL')).toBeInTheDocument();
@@ -53,19 +43,7 @@ describe('ReverseLookup', () => {
     expect(screen.queryByText('AB')).not.toBeInTheDocument();
   });
 
-  it('shows all subtests when all are visible', () => {
-    const allVisible = new Set<SubtestKey>(SUBTESTS);
-    render(<ReverseLookup {...defaultProps} visibleSubtests={allVisible} targetPercentile={50} />);
-    expect(screen.getByText('COG')).toBeInTheDocument();
-    expect(screen.getByText('RL')).toBeInTheDocument();
-    expect(screen.getByText('EL')).toBeInTheDocument();
-    expect(screen.getByText('SE')).toBeInTheDocument();
-    expect(screen.getByText('GM')).toBeInTheDocument();
-    expect(screen.getByText('FM')).toBeInTheDocument();
-    expect(screen.getByText('AB')).toBeInTheDocument();
-  });
-
-  it('calls onProvenanceClick when a result cell is clicked', () => {
+  it('calls onProvenanceClick when a result chip is clicked', () => {
     const onProvenanceClick = vi.fn();
     render(<ReverseLookup {...defaultProps} targetPercentile={50} onProvenanceClick={onProvenanceClick} />);
 
@@ -79,7 +57,7 @@ describe('ReverseLookup', () => {
   it('calls onTargetPercentileChange when input changes', () => {
     const onTargetPercentileChange = vi.fn();
     render(<ReverseLookup {...defaultProps} onTargetPercentileChange={onTargetPercentileChange} />);
-    fireEvent.change(screen.getByLabelText('Target Percentile'), {
+    fireEvent.change(screen.getByRole('spinbutton'), {
       target: { value: '25' },
     });
     expect(onTargetPercentileChange).toHaveBeenCalledWith(25);

@@ -19,15 +19,10 @@ const enterValidDates = () => {
 };
 
 describe('Dayc2App', () => {
-  it('renders the main heading', () => {
+  it('renders child info inputs', () => {
     render(<Dayc2App />);
-    expect(screen.getByText('dayc')).toBeInTheDocument();
-  });
-
-  it('renders child info form', () => {
-    render(<Dayc2App />);
-    expect(screen.getByText('Birth Date')).toBeInTheDocument();
-    expect(screen.getByText('Test Date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Birth Date')).toBeInTheDocument();
+    expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
   });
 
   it('shows empty state when no dates entered', () => {
@@ -58,20 +53,5 @@ describe('Dayc2App', () => {
     fireEvent.change(getRawScoreInput('socialEmotional')!, { target: { value: '22' } });
 
     expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
-  });
-
-  it('renders About Data section inside settings sheet', () => {
-    render(<Dayc2App />);
-    const settingsButton = screen.getByLabelText('Display settings');
-    fireEvent.click(settingsButton);
-    expect(screen.getByText(/About the Data/)).toBeInTheDocument();
-  });
-
-  it('opens display settings sheet when gear button is clicked', () => {
-    render(<Dayc2App />);
-    const settingsButton = screen.getByLabelText('Display settings');
-    fireEvent.click(settingsButton);
-    expect(screen.getByText('Display Settings')).toBeInTheDocument();
-    expect(screen.getByText('Subtests')).toBeInTheDocument();
   });
 });

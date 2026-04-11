@@ -2,18 +2,15 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ScoresTable from './ScoresTable';
 import { createEmptyRawScores } from '../lib/rawScores';
+import { createEmptySkillItems } from '../lib/skills';
 import type { CalculationResult } from '../lib/calculate';
-import type { SubtestKey } from '../types';
-import { DEFAULT_VISIBLE_SUBTESTS, DEFAULT_VISIBLE_DOMAINS, type DomainKey } from '../lib/scoresDisplay';
 
-const defaultVisibleSubtests = new Set<SubtestKey>(DEFAULT_VISIBLE_SUBTESTS);
-const defaultVisibleDomains = new Set<DomainKey>(DEFAULT_VISIBLE_DOMAINS);
+const getRawScoreInput = (subtest: string) =>
+  document.getElementById(`raw-${subtest}`);
 
-// Helper to find raw score input by subtest (mobile uses raw-mobile-{key}, desktop uses raw-{key})
-const getRawScoreInput = (subtest: string) => {
-  const mobileInput = document.getElementById(`raw-mobile-${subtest}`);
-  const desktopInput = document.getElementById(`raw-${subtest}`);
-  return mobileInput || desktopInput;
+const defaultSkillProps = {
+  skillItems: createEmptySkillItems(),
+  onSkillItemsChange: () => {},
 };
 
 const mockResult: CalculationResult = {
@@ -68,38 +65,18 @@ const mockResult: CalculationResult = {
       standardScore: { value: { value: 92 }, steps: [] },
       percentile: { value: { value: 30 }, steps: [] },
     },
-    physical: {
-      sum: null,
-      standardScore: { value: null, steps: [] },
-      percentile: { value: null, steps: [] },
-    },
   },
 };
 
 describe('ScoresTable', () => {
-  it('renders the Scores heading', () => {
+  it('shows all active subtests (RL, EL, SE)', () => {
     render(
       <ScoresTable
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
-      />
-    );
-    expect(screen.getByText('Scores')).toBeInTheDocument();
-  });
-
-  it('shows only default subtests (RL, EL, SE) initially', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
-        onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
     expect(getRawScoreInput('receptiveLanguage')).toBeInTheDocument();
@@ -111,49 +88,17 @@ describe('ScoresTable', () => {
     expect(getRawScoreInput('adaptiveBehavior')).not.toBeInTheDocument();
   });
 
-  it('hides domain rows when not in visibleDomains', () => {
+  it('shows Communication domain composite', () => {
     render(
       <ScoresTable
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={mockResult}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={new Set()}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
-    expect(screen.queryAllByText('Communication (RL+EL)')).toHaveLength(0);
-    expect(screen.queryAllByText('Physical (GM+FM)')).toHaveLength(0);
-  });
-
-  it('shows Physical domain row when in visibleDomains', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={mockResult}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={new Set<DomainKey>(['physical'])}
-        onRawScoreChange={() => {}}
-      />
-    );
-    // May appear in both mobile (h3) and desktop (td) layouts
-    expect(screen.getAllByText('Physical (GM+FM)').length).toBeGreaterThan(0);
-  });
-
-  it('shows Communication domain row when in visibleDomains', () => {
-    render(
-      <ScoresTable
-        ageMonths={24}
-        rawScores={createEmptyRawScores()}
-        result={mockResult}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={new Set<DomainKey>(['communication'])}
-        onRawScoreChange={() => {}}
-      />
-    );
-    // May appear in both mobile (h3) and desktop (td) layouts
-    expect(screen.getAllByText('Communication (RL+EL)').length).toBeGreaterThan(0);
+    expect(screen.getByText('Communication (RL+EL)')).toBeInTheDocument();
   });
 
   it('disables inputs when ageMonths is null', () => {
@@ -162,9 +107,8 @@ describe('ScoresTable', () => {
         ageMonths={null}
         rawScores={createEmptyRawScores()}
         result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
     expect(getRawScoreInput('receptiveLanguage')).toBeDisabled();
@@ -176,26 +120,11 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
     expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
-  });
-
-  it('shows hint when age is invalid', () => {
-    render(
-      <ScoresTable
-        ageMonths={null}
-        rawScores={createEmptyRawScores()}
-        result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
-        onRawScoreChange={() => {}}
-      />
-    );
-    expect(screen.getByText(/Enter valid child information/)).toBeInTheDocument();
   });
 
   it('calls onRawScoreChange when input value changes', () => {
@@ -205,9 +134,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={null}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={onRawScoreChange}
+        {...defaultSkillProps}
       />
     );
     const input = getRawScoreInput('receptiveLanguage');
@@ -227,9 +155,8 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={rawScores}
         result={mockResult}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
     expect(screen.getAllByText('95').length).toBeGreaterThan(0);
@@ -256,13 +183,11 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={resultWithNote}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
-    // Warning message should be visible (mobile and desktop show full note text)
-    expect(screen.getAllByText(/Raw score 50 exceeds table max/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Raw score 50 exceeds table max/)).toBeInTheDocument();
   });
 
   it('displays bounded sum with < prefix', () => {
@@ -282,14 +207,12 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={resultWithBoundedSum}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={new Set<DomainKey>(['communication'])}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
-
-    expect(screen.getAllByText('<145').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('<41').length).toBeGreaterThan(0);
+    expect(screen.getByText('<145')).toBeInTheDocument();
+    expect(screen.getByText('<41')).toBeInTheDocument();
   });
 
   it('displays bounded sum with > prefix', () => {
@@ -309,14 +232,12 @@ describe('ScoresTable', () => {
         ageMonths={24}
         rawScores={createEmptyRawScores()}
         result={resultWithBoundedSum}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={new Set<DomainKey>(['communication'])}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
-
-    expect(screen.getAllByText('>300').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('>159').length).toBeGreaterThan(0);
+    expect(screen.getByText('>300')).toBeInTheDocument();
+    expect(screen.getByText('>159')).toBeInTheDocument();
   });
 
   it('calls onProvenanceClick when score cell with steps is clicked', () => {
@@ -354,13 +275,11 @@ describe('ScoresTable', () => {
         rawScores={createEmptyRawScores()}
         result={resultWithSteps}
         onProvenanceClick={onProvenanceClick}
-        visibleSubtests={defaultVisibleSubtests}
-        visibleDomains={defaultVisibleDomains}
         onRawScoreChange={() => {}}
+        {...defaultSkillProps}
       />
     );
 
-    // Click on the standard score cell (95)
     const scoreCells = screen.getAllByText('95');
     fireEvent.click(scoreCells[0]);
 

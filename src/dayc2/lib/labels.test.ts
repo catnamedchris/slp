@@ -6,8 +6,7 @@ import {
   SUBTEST_LABELS,
   AGE_EQUIV_LABELS,
 } from './labels';
-import { SUBTESTS } from './metadata';
-import type { SubtestKey, AgeEquivalentKey } from '../types';
+import { SUBTESTS, type ActiveSubtestKey } from './metadata';
 
 describe('formatScoreValue', () => {
   it('returns dash for null', () => {
@@ -65,36 +64,27 @@ describe('formatAgeMonthsValue', () => {
 
 describe('SUBTEST_LABELS completeness', () => {
   it('has a label for every subtest key', () => {
-    const subtestKeys: SubtestKey[] = SUBTESTS;
+    const subtestKeys: ActiveSubtestKey[] = SUBTESTS;
     for (const key of subtestKeys) {
       expect(SUBTEST_LABELS[key]).toBeDefined();
       expect(typeof SUBTEST_LABELS[key]).toBe('string');
-      expect(SUBTEST_LABELS[key].length).toBeGreaterThan(0);
+      expect((SUBTEST_LABELS[key] as string).length).toBeGreaterThan(0);
     }
   });
 
   it('contains expected subtest labels', () => {
-    expect(SUBTEST_LABELS.cognitive).toBe('Cognitive');
     expect(SUBTEST_LABELS.receptiveLanguage).toBe('Receptive Language');
     expect(SUBTEST_LABELS.expressiveLanguage).toBe('Expressive Language');
     expect(SUBTEST_LABELS.socialEmotional).toBe('Social-Emotional');
-    expect(SUBTEST_LABELS.grossMotor).toBe('Gross Motor');
-    expect(SUBTEST_LABELS.fineMotor).toBe('Fine Motor');
-    expect(SUBTEST_LABELS.adaptiveBehavior).toBe('Adaptive Behavior');
   });
 });
 
 describe('AGE_EQUIV_LABELS completeness', () => {
-  const ageEquivKeys: AgeEquivalentKey[] = [
-    'cognitive',
+  const ageEquivKeys: Array<ActiveSubtestKey | 'communication'> = [
     'receptiveLanguage',
     'expressiveLanguage',
     'communication',
     'socialEmotional',
-    'physicalDevelopment',
-    'grossMotor',
-    'fineMotor',
-    'adaptiveBehavior',
   ];
 
   it('has a label for every age equivalent key', () => {
@@ -107,6 +97,5 @@ describe('AGE_EQUIV_LABELS completeness', () => {
 
   it('contains expected age equivalent labels', () => {
     expect(AGE_EQUIV_LABELS.communication).toBe('Communication');
-    expect(AGE_EQUIV_LABELS.physicalDevelopment).toBe('Physical Development');
   });
 });

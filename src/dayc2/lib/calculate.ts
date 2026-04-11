@@ -51,7 +51,6 @@ export interface CalculationResult {
   subtests: Record<SubtestKey, SubtestResult>;
   domains: {
     communication: DomainResult; // RL + EL
-    physical: DomainResult; // GM + FM
   };
 }
 
@@ -134,18 +133,11 @@ export const calculateAllScores = (
     ctx
   );
 
-  const physical = calculateDomainComposite(
-    subtests.grossMotor,
-    subtests.fineMotor,
-    ctx
-  );
-
   return {
     ageMonths,
     subtests,
     domains: {
       communication,
-      physical,
     },
   };
 };

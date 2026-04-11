@@ -1,7 +1,7 @@
 // View-model logic for score display - formatting and data transformation
 
 import type { SubtestResult, DomainResult, SumValue } from './calculate';
-import type { ParsedScore, ParsedPercentile, ParsedAgeMonths, SubtestKey } from '../types';
+import type { ParsedScore, ParsedPercentile, ParsedAgeMonths } from '../types';
 import type { ValueWithProvenance, ProvenanceStep } from '@/shared/lib/types';
 import { formatValue } from './tables';
 import {
@@ -12,6 +12,7 @@ import {
   DOMAIN_LABELS,
   DEFAULT_VISIBLE_SUBTESTS,
   DEFAULT_VISIBLE_DOMAINS,
+  type ActiveSubtestKey,
   type DomainKey,
 } from './metadata';
 
@@ -24,6 +25,7 @@ export {
   DOMAIN_LABELS,
   DEFAULT_VISIBLE_SUBTESTS,
   DEFAULT_VISIBLE_DOMAINS,
+  type ActiveSubtestKey,
   type DomainKey,
 };
 
@@ -133,7 +135,7 @@ export interface DomainDisplay {
 
 // Compute display data for a subtest
 export const getSubtestDisplay = (
-  subtest: SubtestKey,
+  subtest: ActiveSubtestKey,
   result: SubtestResult | null
 ): SubtestDisplay => {
   const tone = result ? getPercentileTone(result.percentile.value) : 'neutral';

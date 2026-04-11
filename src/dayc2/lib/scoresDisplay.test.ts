@@ -152,7 +152,7 @@ describe('getSubtestDisplay', () => {
       percentile: { value: { value: 37 }, steps: [] },
       ageEquivalent: { value: { value: 22 }, steps: [] },
     };
-    const display = getSubtestDisplay('cognitive', result);
+    const display = getSubtestDisplay('receptiveLanguage', result);
 
     expect(display.scores[0].steps).toHaveLength(1);
     expect(display.scores[0].steps[0].tableId).toBe('B17');

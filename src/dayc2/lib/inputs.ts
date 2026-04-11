@@ -1,11 +1,9 @@
 // Input handling utilities for DAYC-2 forms
 
-import type { SubtestKey } from '../types';
-
 // Raw score input handler factory
-export const createRawScoreHandler = (
-  subtest: SubtestKey,
-  onRawScoreChange: (subtest: SubtestKey, value: number | null) => void
+export const createRawScoreHandler = <K extends string>(
+  subtest: K,
+  onRawScoreChange: (subtest: K, value: number | null) => void
 ) => {
   return (value: string) => {
     if (value === '') {
