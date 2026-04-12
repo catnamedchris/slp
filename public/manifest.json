@@ -1,6 +1,6 @@
 {
-  "name": "DAYC-2 Score Calculator",
-  "short_name": "DAYC-2",
+  "name": "slpyhead",
+  "short_name": "slpyhead",
   "description": "DAYC-2 developmental assessment score calculator for clinicians",
   "start_url": ".",
   "scope": ".",

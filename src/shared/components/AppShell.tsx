@@ -12,7 +12,7 @@ const AppShell = ({ children }: AppShellProps) => {
           <div className="h-[36px] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-base font-bold tracking-[-0.01em] text-primary-700">
-                slp<span className="text-accent-400">.</span>scoring
+                slpyhead
               </span>
             </div>
             <span className="text-[9px] text-text-faint font-medium bg-surface-muted px-[5px] py-[1px] rounded-[3px]">

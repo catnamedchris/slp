@@ -32,20 +32,19 @@ const Dayc2App = () => {
   } = useDayc2App();
 
   const hasValidAge = ageMonths !== null;
-  const hasDatesEntered = dob !== '' || testDate !== '';
+  const hasDatesEntered = dob !== '';
 
   return (
     <div>
-      <ChildBar
-        dob={dob}
-        testDate={testDate}
-        ageInfo={ageInfo}
-        onDobChange={setDob}
-        onTestDateChange={setTestDate}
-        onClear={handleClear}
-      />
-
       <main className="max-w-(--container-max) mx-auto px-4 pt-4 pb-10 space-y-3">
+        <ChildBar
+          dob={dob}
+          testDate={testDate}
+          ageInfo={ageInfo}
+          onDobChange={setDob}
+          onTestDateChange={setTestDate}
+          onClear={handleClear}
+        />
         {hasValidAge ? (
           <div className="sections-enter space-y-3">
             <ReverseLookup

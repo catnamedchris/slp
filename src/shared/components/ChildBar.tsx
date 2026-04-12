@@ -44,7 +44,7 @@ const ChildBar = ({ dob, testDate, ageInfo, onDobChange, onTestDateChange, onCle
   }, []);
 
   return (
-    <div className="max-w-(--container-max) mx-auto px-4 pt-4">
+    <div>
       <div className="bg-surface rounded-xl shadow-card p-3 px-4 flex flex-col gap-2">
         {/* Row 1: Date inputs + Clear */}
         <div className="flex items-end gap-4">
