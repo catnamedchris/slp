@@ -1,80 +1,96 @@
-// SkillsSection: Able/Unable item input with validation, chips, and copy
+// SkillsSection: Able/Unable chip-input with validation and copy
 
 import { useState, useMemo, useCallback } from 'react';
-import type { ActiveSubtestKey } from '../lib/scoresDisplay';
+import type { ActiveSubtestKey } from '../lib/metadata';
+import { SUBTEST_MAX_ITEM } from '../lib/metadata';
 import { validateSkillItems, type SkillItemsInput } from '../lib/skills';
-import { handleEnterAdvance } from '@/shared/lib/keyboard';
+import ChipInput from './ChipInput';
 
 interface SkillsSectionProps {
   subtest: ActiveSubtestKey;
   input: SkillItemsInput;
-  onItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', value: string) => void;
+  onItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
 }
 
 const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) => {
-  const validation = useMemo(() => validateSkillItems(input), [input]);
+  const validation = useMemo(() => validateSkillItems(input, subtest), [input, subtest]);
+  const conflictSet = useMemo(() => new Set(validation.conflicts), [validation.conflicts]);
+  const outOfRangeSet = useMemo(() => new Set(validation.outOfRange), [validation.outOfRange]);
 
   return (
-    <div className="p-3 flex gap-[14px]">
-      <SkillColumn
+    <div className="p-3 px-4 flex flex-col gap-3">
+      <SkillRow
         subtest={subtest}
         list="able"
-        label="✓ Able to"
-        labelClass="text-[#059669]"
-        chipClass="text-[#065f46] bg-[#ecfdf5] border-[#a7f3d0]"
-        value={input.able}
+        label="Able"
+        labelClass="text-primary-600"
+        chipClass="text-primary-700 bg-primary-50 border-primary-200"
         items={validation.ableItems}
-        conflicts={validation.conflicts}
+        conflicts={conflictSet}
+        outOfRange={outOfRangeSet}
         canCopy={validation.canCopyAble}
         copyText={validation.formatCopyText('able')}
         onChange={onItemsChange}
       />
-      <SkillColumn
+      <SkillRow
         subtest={subtest}
         list="unable"
-        label="✗ Unable to"
-        labelClass="text-[#e11d48]"
-        chipClass="text-[#9f1239] bg-[#fff1f2] border-[#fecdd3]"
-        value={input.unable}
+        label="Unable"
+        labelClass="text-text-muted"
+        chipClass="text-text-default bg-surface-muted border-border-default"
         items={validation.unableItems}
-        conflicts={validation.conflicts}
+        conflicts={conflictSet}
+        outOfRange={outOfRangeSet}
         canCopy={validation.canCopyUnable}
         copyText={validation.formatCopyText('unable')}
         onChange={onItemsChange}
       />
+
+      {/* Warnings */}
+      {validation.hasConflicts && (
+        <div className="text-xs text-amber-800 flex items-center gap-1">
+          <WarningIcon />
+          Conflict: items {validation.conflicts.join(', ')} in both lists
+        </div>
+      )}
+      {validation.hasOutOfRange && (
+        <div className="text-xs text-red-700 flex items-center gap-1">
+          <WarningIcon />
+          Invalid: items {validation.outOfRange.join(', ')} exceed max ({SUBTEST_MAX_ITEM[subtest]})
+        </div>
+      )}
     </div>
   );
 };
 
-interface SkillColumnProps {
+interface SkillRowProps {
   subtest: ActiveSubtestKey;
   list: 'able' | 'unable';
   label: string;
   labelClass: string;
   chipClass: string;
-  value: string;
   items: number[];
-  conflicts: number[];
+  conflicts: Set<number>;
+  outOfRange: Set<number>;
   canCopy: boolean;
   copyText: string;
-  onChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', value: string) => void;
+  onChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
 }
 
-const SkillColumn = ({
+const SkillRow = ({
   subtest,
   list,
   label,
   labelClass,
   chipClass,
-  value,
   items,
   conflicts,
+  outOfRange,
   canCopy,
   copyText,
   onChange,
-}: SkillColumnProps) => {
+}: SkillRowProps) => {
   const [copyFeedback, setCopyFeedback] = useState(false);
-  const conflictSet = useMemo(() => new Set(conflicts), [conflicts]);
 
   const handleCopy = useCallback(async () => {
     if (!canCopy || !copyText) return;
@@ -83,82 +99,61 @@ const SkillColumn = ({
       setCopyFeedback(true);
       setTimeout(() => setCopyFeedback(false), 1500);
     } catch {
-      // Fallback: select the input text so user can Ctrl+C
       const input = document.querySelector<HTMLInputElement>(
-        `[aria-label="${subtest} ${list} items"]`
+        `[aria-label="${subtest} ${list} items"]`,
       );
       if (input) {
+        input.value = copyText;
         input.select();
       }
     }
   }, [canCopy, copyText, subtest, list]);
 
   return (
-    <div className="flex-1 flex flex-col gap-[5px]">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <span className={`text-[11px] font-bold ${labelClass}`}>{label}</span>
-        <button
-          type="button"
-          disabled={!canCopy}
-          onClick={handleCopy}
-          className={`text-[10px] font-semibold rounded-[6px] px-2 py-[3px] flex items-center gap-[3px] border transition-colors ${
-            canCopy
-              ? 'text-slate-500 bg-white border-slate-200 hover:bg-primary-50 hover:border-primary-200 hover:text-primary-700 cursor-pointer'
-              : 'text-[#cbd5e1] bg-white border-[#f1f5f9] cursor-default'
-          }`}
-        >
-          {copyFeedback ? '✓ Copied' : '📋 Copy'}
-        </button>
+    <div className="flex flex-col gap-[4px]">
+      <div className="flex items-center gap-[6px]">
+        <span className={`text-sm font-bold ${labelClass}`}>{label}</span>
+        {canCopy && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={`ml-auto flex items-center gap-1 text-xs font-semibold transition-colors cursor-pointer ${
+              copyFeedback ? 'text-score-high' : 'text-primary-600 hover:text-primary-700'
+            }`}
+            aria-label={`Copy ${list} items`}
+            title="Copy items"
+          >
+            {copyFeedback ? (
+              'Copied!'
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9.75a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                </svg>
+                Copy
+              </>
+            )}
+          </button>
+        )}
       </div>
-
-      {/* Input */}
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(subtest, list, e.target.value)}
-        onKeyDown={handleEnterAdvance}
+      <ChipInput
+        subtest={subtest}
+        list={list}
+        items={items}
+        conflicts={conflicts}
+        outOfRange={outOfRange}
+        chipClass={chipClass}
         placeholder={list === 'able' ? 'e.g. 8, 11, 14' : 'e.g. 16, 18'}
-        aria-label={`${subtest} ${list} items`}
-        className="w-full py-[5px] px-[9px] bg-white border border-[#e2e8f0] rounded-[7px] text-xs font-sans text-slate-800 placeholder:text-[#cbd5e1] focus:border-[#a5b4fc] focus:shadow-[0_0_0_2px_#eef2ff] focus:outline-none"
+        onChange={onChange}
       />
-
-      {/* Chips or empty hint */}
-      {items.length > 0 ? (
-        <div className="flex flex-wrap gap-1">
-          {items.map((item) => {
-            const isConflict = conflictSet.has(item);
-            return (
-              <span
-                key={item}
-                className={`text-[11px] font-medium px-2 py-[3px] rounded-[6px] leading-tight border ${
-                  isConflict
-                    ? 'text-amber-800 bg-amber-50 border-amber-300'
-                    : chipClass
-                }`}
-                title={isConflict ? 'Conflict: item appears in both lists' : undefined}
-              >
-                {isConflict && '⚠ '}
-                Item {item}
-              </span>
-            );
-          })}
-        </div>
-      ) : (
-        <span className="text-[11px] text-[#cbd5e1] italic">Enter item numbers</span>
-      )}
-
-      {/* Conflict warning */}
-      {conflicts.length > 0 && (
-        <div className="text-[10px] text-amber-600 flex items-center gap-1">
-          <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-          </svg>
-          Conflict: items {conflicts.join(', ')} in both lists
-        </div>
-      )}
     </div>
   );
 };
+
+const WarningIcon = () => (
+  <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+  </svg>
+);
 
 export default SkillsSection;

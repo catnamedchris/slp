@@ -91,14 +91,13 @@ const ReverseLookup = ({
   const isDisabled = ageMonths === null;
 
   return (
-    <div className="bg-white rounded-[14px] shadow-card overflow-hidden">
-      <div className="p-[10px] px-4 flex items-center gap-3">
+    <div className="bg-surface rounded-[14px] shadow-card overflow-hidden">
+      <div className="p-3 px-5 flex items-center gap-4">
         {/* Title */}
-        <span className="text-[13px] font-bold text-slate-700">Reverse Lookup</span>
+        <span className="text-base font-bold text-text-default">Targets</span>
 
         {/* Target input */}
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-slate-500">Target</span>
+        <div className="flex items-center gap-1.5">
           <input
             type="number"
             id="targetPercentile"
@@ -108,14 +107,14 @@ const ReverseLookup = ({
             onChange={(e) => handlePercentileChange(e.target.value)}
             onKeyDown={handleEnterAdvance}
             disabled={isDisabled}
-            className="w-9 h-6 bg-slate-50 border border-slate-200 rounded-[5px] text-center text-xs font-bold font-sans text-slate-800 focus:border-primary-300 focus:bg-white focus:shadow-[0_0_0_3px_#eef2ff] focus:outline-none disabled:text-slate-300"
+            className="w-14 h-10 bg-input-bg border border-border-default rounded-lg text-center text-lg font-bold font-sans text-text-strong focus:border-primary-300 focus:bg-white focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:outline-none disabled:text-text-placeholder"
           />
-          <span className="text-[10px] text-slate-500">%ile</span>
+          <span className="text-sm text-text-muted">%ile</span>
         </div>
 
         {/* Error */}
         {lookupResults?.note && (
-          <span className="text-red-600 text-[10px]">{lookupResults.note}</span>
+          <span className="text-red-700 text-xs">{lookupResults.note}</span>
         )}
 
         {/* Result chips */}
@@ -139,14 +138,14 @@ const ReverseLookup = ({
                       : undefined
                   }
                   title={result?.note ?? (hasProvenance ? 'Click to view calculation details' : undefined)}
-                  className={`py-[5px] px-3 rounded-lg text-center min-w-[56px] ${
+                  className={`py-2 px-4 rounded-lg text-center min-w-[64px] ${
                     hasProvenance
-                      ? 'bg-slate-50 border border-slate-200 hover:bg-primary-50 hover:border-primary-200 cursor-pointer'
-                      : 'bg-slate-50 border border-slate-100'
+                      ? 'bg-input-bg border border-border-default hover:bg-primary-50 hover:border-primary-200 cursor-pointer'
+                      : 'bg-input-bg border border-border-subtle'
                   } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500`}
                 >
-                  <div className="text-[8px] font-bold uppercase tracking-[0.06em] text-slate-400">{SUBTEST_ABBREVS[subtest]}</div>
-                  <div className={`text-base font-extrabold ${hasProvenance ? 'text-primary-700' : 'text-slate-400'}`}>
+                  <div className="text-xs font-bold uppercase tracking-[0.04em] text-primary-500">{SUBTEST_ABBREVS[subtest]}</div>
+                  <div className={`text-xl font-bold ${hasProvenance ? 'text-text-strong' : 'text-text-placeholder'}`}>
                     {rawValue}
                   </div>
                 </button>

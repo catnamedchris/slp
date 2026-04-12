@@ -1,5 +1,6 @@
 // ChildBar: Compact child info bar with date inputs, age display, and clear
 
+import { useState, useEffect, useCallback } from 'react';
 import { calculateAgeInfo } from '@/dayc2/lib/age';
 import { handleEnterAdvance } from '@/shared/lib/keyboard';
 
@@ -14,74 +15,113 @@ interface ChildBarProps {
 const formatAge = (months: number): string => {
   const years = Math.floor(months / 12);
   const remainder = months % 12;
-  return `${years}y ${remainder}m`;
+  return `${years}yr ${remainder}mo`;
 };
 
+const CONFIRM_TIMEOUT_MS = 3000;
+
 const ChildBar = ({ dob, testDate, onDobChange, onTestDateChange, onClear }: ChildBarProps) => {
+  const [clearPending, setClearPending] = useState(false);
   const ageInfo = calculateAgeInfo(dob, testDate);
 
+  useEffect(() => {
+    if (!clearPending) return;
+    const timer = setTimeout(() => setClearPending(false), CONFIRM_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [clearPending]);
+
+  const handleClearClick = useCallback(() => {
+    setClearPending(true);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    setClearPending(false);
+    onClear();
+  }, [onClear]);
+
+  const handleCancel = useCallback(() => {
+    setClearPending(false);
+  }, []);
+
   return (
-    <div className="max-w-[1200px] mx-auto px-6 pt-[10px]">
-      <div className="bg-white rounded-xl shadow-card p-[10px] px-4 flex items-center gap-[14px]">
-        {/* Birth Date */}
-        <div className="flex flex-col gap-[1px]">
-          <label htmlFor="dob" className="text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            Birth Date
-          </label>
-          <input
-            type="date"
-            id="dob"
-            value={dob}
-            onChange={(e) => onDobChange(e.target.value)}
-            onKeyDown={handleEnterAdvance}
-            className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-[7px] text-[13px] w-[130px] font-sans text-slate-800 focus:border-primary-300 focus:shadow-[0_0_0_3px_#eef2ff] focus:bg-white"
-          />
+    <div className="max-w-(--container-max) mx-auto px-4 pt-4">
+      <div className="bg-surface rounded-xl shadow-card p-3 px-4 flex flex-col gap-2">
+        {/* Row 1: Date inputs + Clear */}
+        <div className="flex items-end gap-4">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="dob" className="text-xs font-bold uppercase tracking-[0.04em] text-text-faint">
+              Birth Date
+            </label>
+            <input
+              type="date"
+              id="dob"
+              value={dob}
+              onChange={(e) => onDobChange(e.target.value)}
+              onKeyDown={handleEnterAdvance}
+              className="px-3 py-2 bg-input-bg border border-border-default rounded-lg text-base w-[155px] font-sans text-text-strong focus:border-primary-300 focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:bg-surface"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="testDate" className="text-xs font-bold uppercase tracking-[0.04em] text-text-faint">
+              Test Date
+            </label>
+            <input
+              type="date"
+              id="testDate"
+              value={testDate}
+              onChange={(e) => onTestDateChange(e.target.value)}
+              onKeyDown={handleEnterAdvance}
+              className="px-3 py-2 bg-input-bg border border-border-default rounded-lg text-base w-[155px] font-sans text-text-strong focus:border-primary-300 focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:bg-surface"
+            />
+          </div>
+
+          {/* Clear button with inline confirmation */}
+          {clearPending ? (
+            <div className="ml-auto flex items-center gap-1.5">
+              <button
+                onClick={handleConfirm}
+                className="px-3 py-1.5 text-sm font-semibold text-rose-600 border border-rose-200 rounded-lg bg-rose-50 cursor-pointer hover:bg-rose-100"
+              >
+                Confirm?
+              </button>
+              <button
+                onClick={handleCancel}
+                className="px-3 py-1.5 text-sm font-semibold text-text-faint border border-border-default rounded-lg bg-transparent cursor-pointer hover:bg-input-bg"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleClearClick}
+              className="ml-auto px-3 py-1.5 text-sm font-semibold text-text-faint border border-border-default rounded-lg bg-transparent cursor-pointer hover:text-text-muted hover:border-border-default hover:bg-input-bg"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
-        {/* Test Date */}
-        <div className="flex flex-col gap-[1px]">
-          <label htmlFor="testDate" className="text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            Test Date
-          </label>
-          <input
-            type="date"
-            id="testDate"
-            value={testDate}
-            onChange={(e) => onTestDateChange(e.target.value)}
-            onKeyDown={handleEnterAdvance}
-            className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-[7px] text-[13px] w-[130px] font-sans text-slate-800 focus:border-primary-300 focus:shadow-[0_0_0_3px_#eef2ff] focus:bg-white"
-          />
-        </div>
-
-        {/* Age display */}
+        {/* Row 2: Age display */}
         {ageInfo && !ageInfo.error && (
-          <div className="flex items-baseline gap-[5px]">
-            <span className="text-xl font-extrabold text-primary-600">
-              {formatAge(ageInfo.ageMonths)}
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-xl font-bold text-text-strong">
+              {ageInfo.ageMonths} mo
             </span>
-            <span className="text-xs text-slate-500">
-              ({ageInfo.ageMonths} months)
+            <span className="text-sm text-text-muted">
+              ({formatAge(ageInfo.ageMonths)})
             </span>
             {ageInfo.ageBandLabel && (
-              <span className="text-[10px] text-slate-400 bg-slate-50 px-[7px] py-[2px] rounded-[5px]">
+              <span className="text-xs text-text-faint bg-input-bg px-2 py-[2px] rounded-md">
                 {ageInfo.ageBandLabel}
               </span>
             )}
           </div>
         )}
 
-        {/* Error display */}
         {ageInfo?.error && (
-          <span className="text-xs text-amber-700">{ageInfo.error}</span>
+          <span className="text-sm text-amber-700">{ageInfo.error}</span>
         )}
-
-        {/* Clear button */}
-        <button
-          onClick={onClear}
-          className="ml-auto px-3 py-[5px] text-[11px] font-semibold text-slate-400 border border-slate-200 rounded-[7px] bg-transparent cursor-pointer hover:text-slate-500 hover:border-slate-300 hover:bg-slate-50"
-        >
-          Clear
-        </button>
       </div>
     </div>
   );

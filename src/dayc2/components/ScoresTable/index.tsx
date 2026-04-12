@@ -12,9 +12,8 @@ interface ScoresTableProps {
   rawScores: RawScores;
   skillItems: AllSkillItems;
   result: CalculationResult | null;
-  thresholds?: Record<ActiveSubtestKey, number | null>;
   onRawScoreChange: (subtest: ActiveSubtestKey, value: number | null) => void;
-  onSkillItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', value: string) => void;
+  onSkillItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
 
@@ -23,7 +22,6 @@ const ScoresTable = ({
   rawScores,
   skillItems,
   result,
-  thresholds,
   onRawScoreChange,
   onSkillItemsChange,
   onProvenanceClick,
@@ -33,13 +31,12 @@ const ScoresTable = ({
   return (
     <>
       {/* Communication Group: RL + EL + Composite */}
-      <div className="bg-white rounded-[14px] shadow-card overflow-hidden mb-[10px]">
+      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-primary-400">
         <SubtestRow
           subtest="receptiveLanguage"
           rawScore={rawScores.receptiveLanguage}
           subtestResult={result?.subtests.receptiveLanguage ?? null}
           disabled={isDisabled}
-          thresholdRawScore={thresholds?.receptiveLanguage ?? null}
           skillItemsInput={skillItems.receptiveLanguage}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}
@@ -50,7 +47,6 @@ const ScoresTable = ({
           rawScore={rawScores.expressiveLanguage}
           subtestResult={result?.subtests.expressiveLanguage ?? null}
           disabled={isDisabled}
-          thresholdRawScore={thresholds?.expressiveLanguage ?? null}
           skillItemsInput={skillItems.expressiveLanguage}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}
@@ -63,13 +59,12 @@ const ScoresTable = ({
       </div>
 
       {/* SE standalone */}
-      <div className="bg-white rounded-[14px] shadow-card overflow-hidden mb-[10px]">
+      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-primary-400">
         <SubtestRow
           subtest="socialEmotional"
           rawScore={rawScores.socialEmotional}
           subtestResult={result?.subtests.socialEmotional ?? null}
           disabled={isDisabled}
-          thresholdRawScore={thresholds?.socialEmotional ?? null}
           skillItemsInput={skillItems.socialEmotional}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}

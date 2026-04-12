@@ -9,13 +9,14 @@ import type { SubtestKey } from '../types';
 import type { ActiveSubtestKey } from '../lib/metadata';
 import type { ProvenanceStep } from '@/shared/lib/types';
 import { createEmptySkillItems, type AllSkillItems } from '../lib/skills';
+import { usePersistedState } from '@/shared/hooks/usePersistedState';
 
 export const useDayc2App = () => {
-  const [dob, setDob] = useState('');
-  const [testDate, setTestDate] = useState('');
-  const [rawScores, setRawScores] = useState<RawScores>(createEmptyRawScores);
-  const [skillItems, setSkillItems] = useState<AllSkillItems>(createEmptySkillItems);
-  const [targetPercentile, setTargetPercentile] = useState(6);
+  const [dob, setDob] = usePersistedState('dayc2:dob', '');
+  const [testDate, setTestDate] = usePersistedState('dayc2:testDate', '');
+  const [rawScores, setRawScores] = usePersistedState<RawScores>('dayc2:rawScores', createEmptyRawScores);
+  const [skillItems, setSkillItems] = usePersistedState<AllSkillItems>('dayc2:skillItems', createEmptySkillItems);
+  const [targetPercentile, setTargetPercentile] = usePersistedState('dayc2:targetPercentile', 6);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
   const [provenanceTitle, setProvenanceTitle] = useState<string | null>(null);
@@ -30,10 +31,10 @@ export const useDayc2App = () => {
   }, []);
 
   const handleSkillItemsChange = useCallback(
-    (subtest: ActiveSubtestKey, list: 'able' | 'unable', value: string) => {
+    (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => {
       setSkillItems((prev) => ({
         ...prev,
-        [subtest]: { ...prev[subtest], [list]: value },
+        [subtest]: { ...prev[subtest], [list]: items },
       }));
     },
     []
@@ -51,19 +52,12 @@ export const useDayc2App = () => {
     setProvenanceTitle(null);
   }, []);
 
-  const hasData = dob !== '' || testDate !== '' ||
-    Object.values(rawScores).some((v) => v !== null) ||
-    Object.values(skillItems).some((s) => s.able !== '' || s.unable !== '');
-
   const handleClear = useCallback(() => {
-    if (hasData && !window.confirm('Clear all data? This will reset dates, scores, and skills.')) {
-      return;
-    }
     setDob('');
     setTestDate('');
     setRawScores(createEmptyRawScores());
     setSkillItems(createEmptySkillItems());
-  }, [hasData]);
+  }, []);
 
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
 

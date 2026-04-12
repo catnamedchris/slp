@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import ChildBar from './ChildBar';
 
 const defaultProps = {
@@ -33,8 +33,8 @@ describe('ChildBar', () => {
 
   it('displays age when both dates are set', () => {
     render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
-    expect(screen.getByText('2y 0m')).toBeInTheDocument();
-    expect(screen.getByText('(24 months)')).toBeInTheDocument();
+    expect(screen.getByText('24 mo')).toBeInTheDocument();
+    expect(screen.getByText('(2yr 0mo)')).toBeInTheDocument();
   });
 
   it('shows Clear button', () => {
@@ -42,16 +42,52 @@ describe('ChildBar', () => {
     expect(screen.getByText('Clear')).toBeInTheDocument();
   });
 
-  it('calls onClear when Clear is clicked', () => {
+  it('enters confirm state when Clear is clicked (does not call onClear directly)', () => {
     const onClear = vi.fn();
     render(<ChildBar {...defaultProps} onClear={onClear} />);
     fireEvent.click(screen.getByText('Clear'));
-    expect(onClear).toHaveBeenCalledOnce();
+    expect(onClear).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Confirm?' })).toBeInTheDocument();
   });
 
   it('displays age band label when available', () => {
     render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
     // 24 months falls within a valid age band
-    expect(screen.getByText(/mo/)).toBeInTheDocument();
+    expect(screen.getByText(/\d+-\d+ months/)).toBeInTheDocument();
+  });
+
+  it('Clear button shows confirm state on click', () => {
+    render(<ChildBar {...defaultProps} />);
+    fireEvent.click(screen.getByText('Clear'));
+    expect(screen.getByRole('button', { name: 'Confirm?' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+  });
+
+  it('Confirm button calls onClear', () => {
+    const onClear = vi.fn();
+    render(<ChildBar {...defaultProps} onClear={onClear} />);
+    fireEvent.click(screen.getByText('Clear'));
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm?' }));
+    expect(onClear).toHaveBeenCalledOnce();
+  });
+
+  it('Cancel button returns to normal state', () => {
+    render(<ChildBar {...defaultProps} />);
+    fireEvent.click(screen.getByText('Clear'));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(screen.getByText('Clear')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Confirm?' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+  });
+
+  it('Confirm state auto-resets after timeout', () => {
+    vi.useFakeTimers();
+    render(<ChildBar {...defaultProps} />);
+    fireEvent.click(screen.getByText('Clear'));
+    expect(screen.getByRole('button', { name: 'Confirm?' })).toBeInTheDocument();
+    act(() => { vi.advanceTimersByTime(3001); });
+    expect(screen.getByText('Clear')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Confirm?' })).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 });

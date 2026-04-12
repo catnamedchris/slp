@@ -17,7 +17,7 @@ describe('ReverseLookup', () => {
 
   it('renders title', () => {
     render(<ReverseLookup {...defaultProps} />);
-    expect(screen.getByText('Reverse Lookup')).toBeInTheDocument();
+    expect(screen.getByText('Targets')).toBeInTheDocument();
   });
 
   it('renders percentile input with target value', () => {
@@ -26,9 +26,8 @@ describe('ReverseLookup', () => {
     expect(input).toHaveValue(6);
   });
 
-  it('renders target and %ile labels', () => {
+  it('renders %ile label', () => {
     render(<ReverseLookup {...defaultProps} />);
-    expect(screen.getByText('Target')).toBeInTheDocument();
     expect(screen.getByText('%ile')).toBeInTheDocument();
   });
 
