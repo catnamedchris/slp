@@ -1,9 +1,9 @@
 // SkillsSection: Able/Unable chip-input with validation and copy
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { ActiveSubtestKey } from '../lib/metadata';
-import { SUBTEST_MAX_ITEM } from '../lib/metadata';
-import { validateSkillItems, type SkillItemsInput } from '../lib/skills';
+import { SUBTEST_LABELS, SUBTEST_MAX_ITEM } from '../lib/metadata';
+import { validateSkillItems, formatSkillCopyText, type SkillItemsInput } from '../lib/skills';
 import ChipInput from './ChipInput';
 
 interface SkillsSectionProps {
@@ -16,11 +16,13 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
   const validation = useMemo(() => validateSkillItems(input, subtest), [input, subtest]);
   const conflictSet = useMemo(() => new Set(validation.conflicts), [validation.conflicts]);
   const outOfRangeSet = useMemo(() => new Set(validation.outOfRange), [validation.outOfRange]);
+  const subtestLabel = SUBTEST_LABELS[subtest];
 
   return (
     <div className="p-3 px-4 flex flex-col gap-3">
       <SkillRow
         subtest={subtest}
+        subtestLabel={subtestLabel}
         list="able"
         label="Able"
         labelClass="text-primary-600"
@@ -29,11 +31,11 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
         conflicts={conflictSet}
         outOfRange={outOfRangeSet}
         canCopy={validation.canCopyAble}
-        copyText={validation.formatCopyText('able')}
         onChange={onItemsChange}
       />
       <SkillRow
         subtest={subtest}
+        subtestLabel={subtestLabel}
         list="unable"
         label="Unable"
         labelClass="text-text-muted"
@@ -42,19 +44,18 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
         conflicts={conflictSet}
         outOfRange={outOfRangeSet}
         canCopy={validation.canCopyUnable}
-        copyText={validation.formatCopyText('unable')}
         onChange={onItemsChange}
       />
 
       {/* Warnings */}
       {validation.hasConflicts && (
-        <div className="text-xs text-amber-800 flex items-center gap-1">
+        <div className="text-xs text-amber-800 flex items-center gap-1" role="alert">
           <WarningIcon />
           Conflict: items {validation.conflicts.join(', ')} in both lists
         </div>
       )}
       {validation.hasOutOfRange && (
-        <div className="text-xs text-red-700 flex items-center gap-1">
+        <div className="text-xs text-red-700 flex items-center gap-1" role="alert">
           <WarningIcon />
           Invalid: items {validation.outOfRange.join(', ')} exceed max ({SUBTEST_MAX_ITEM[subtest]})
         </div>
@@ -65,6 +66,7 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
 
 interface SkillRowProps {
   subtest: ActiveSubtestKey;
+  subtestLabel: string;
   list: 'able' | 'unable';
   label: string;
   labelClass: string;
@@ -73,12 +75,12 @@ interface SkillRowProps {
   conflicts: Set<number>;
   outOfRange: Set<number>;
   canCopy: boolean;
-  copyText: string;
   onChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
 }
 
 const SkillRow = ({
   subtest,
+  subtestLabel,
   list,
   label,
   labelClass,
@@ -87,44 +89,54 @@ const SkillRow = ({
   conflicts,
   outOfRange,
   canCopy,
-  copyText,
   onChange,
 }: SkillRowProps) => {
   const [copyFeedback, setCopyFeedback] = useState(false);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    };
+  }, []);
 
   const handleCopy = useCallback(async () => {
-    if (!canCopy || !copyText) return;
+    if (!canCopy) return;
+    const copyText = formatSkillCopyText(items);
+    if (!copyText) return;
     try {
       await navigator.clipboard.writeText(copyText);
       setCopyFeedback(true);
-      setTimeout(() => setCopyFeedback(false), 1500);
+      feedbackTimerRef.current = setTimeout(() => setCopyFeedback(false), 1500);
     } catch {
-      const input = document.querySelector<HTMLInputElement>(
-        `[aria-label="${subtest} ${list} items"]`,
-      );
-      if (input) {
-        input.value = copyText;
-        input.select();
-      }
+      // Clipboard API unavailable — no-op
     }
-  }, [canCopy, copyText, subtest, list]);
+  }, [canCopy, items]);
+
+  const showCopyButton = items.length > 0;
 
   return (
     <div className="flex flex-col gap-[4px]">
       <div className="flex items-center gap-[6px]">
         <span className={`text-sm font-bold ${labelClass}`}>{label}</span>
-        {canCopy && (
+        {showCopyButton && (
           <button
             type="button"
             onClick={handleCopy}
-            className={`ml-auto flex items-center gap-1 text-xs font-semibold transition-colors cursor-pointer ${
-              copyFeedback ? 'text-score-high' : 'text-primary-600 hover:text-primary-700'
+            onMouseDown={(e) => e.preventDefault()}
+            disabled={!canCopy}
+            className={`ml-auto flex items-center gap-1 text-xs font-semibold transition-colors ${
+              !canCopy
+                ? 'text-text-placeholder cursor-not-allowed'
+                : copyFeedback
+                  ? 'text-emerald-600 cursor-pointer'
+                  : 'text-primary-600 hover:text-primary-700 cursor-pointer'
             }`}
-            aria-label={`Copy ${list} items`}
-            title="Copy items"
+            aria-label={`Copy ${subtestLabel} ${list} items`}
+            title={!canCopy ? 'Fix errors before copying' : 'Copy items'}
           >
             {copyFeedback ? (
-              'Copied!'
+              <span aria-live="polite">Copied!</span>
             ) : (
               <>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -138,6 +150,7 @@ const SkillRow = ({
       </div>
       <ChipInput
         subtest={subtest}
+        subtestLabel={subtestLabel}
         list={list}
         items={items}
         conflicts={conflicts}

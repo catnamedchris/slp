@@ -49,9 +49,6 @@
   --color-focus-border: var(--theme-focus-border);
   --color-focus-ring: var(--theme-focus-ring);
 
-  --color-score-low: var(--theme-score-low);
-  --color-score-high: var(--theme-score-high);
-
   --color-cta: var(--theme-cta);
   --color-cta-hover: var(--theme-cta-hover);
 
@@ -93,9 +90,6 @@
 
   --theme-focus-border: #a5b4fc;
   --theme-focus-ring: #eef2ff;
-
-  --theme-score-low: #b05060;
-  --theme-score-high: #4a8564;
 
   --theme-cta: #0d9488;
   --theme-cta-hover: #0f766e;

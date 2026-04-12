@@ -5,7 +5,6 @@ import type { SkillItemsInput } from '../lib/skills';
 import {
   getSubtestDisplay,
   SUBTEST_ABBREVS,
-  type SemanticTone,
 } from '../lib/scoresDisplay';
 import { createRawScoreHandler } from '../lib/inputs';
 import { handleEnterAdvance } from '@/shared/lib/keyboard';
@@ -21,13 +20,6 @@ interface SubtestRowProps {
   onSkillItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
 }
-
-const TONE_CLASSES: Record<SemanticTone, string> = {
-  neutral: 'text-text-placeholder',
-  low: 'text-score-low',
-  average: 'text-text-strong',
-  high: 'text-score-high',
-};
 
 const SCORE_LABELS: Record<string, string> = {
   standardScore: 'SS',
@@ -83,7 +75,7 @@ const SubtestRow = ({
           {/* Computed score cells */}
           {display.scores.map((score) => {
             const hasProvenance = score.hasValue && score.steps.length > 0 && onProvenanceClick;
-            const toneClass = hasProvenance ? TONE_CLASSES[score.tone] : 'text-text-placeholder';
+            const textClass = score.hasValue ? 'text-text-strong' : 'text-text-placeholder';
 
             return (
               <div key={score.key} className="flex-1 text-center">
@@ -92,7 +84,7 @@ const SubtestRow = ({
                 </div>
                 <div
                   key={score.value}
-                  className={`h-10 flex items-center justify-center text-xl font-bold score-value whitespace-nowrap ${score.value !== '—' ? 'animate-value-in' : ''} ${toneClass} ${hasProvenance ? 'cursor-pointer hover:opacity-80' : ''} ${score.value === '—' ? 'select-none' : ''}`}
+                  className={`h-10 flex items-center justify-center text-xl font-bold score-value whitespace-nowrap ${score.value !== '—' ? 'animate-value-in' : ''} ${textClass} ${hasProvenance ? 'cursor-pointer hover:opacity-80' : ''} ${score.value === '—' ? 'select-none' : ''}`}
                   onClick={
                     hasProvenance
                       ? (e: React.MouseEvent<HTMLDivElement>) => {

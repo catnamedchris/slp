@@ -91,17 +91,6 @@ Computed scores (SS, %ile) use size + semantic color to create visual "slope" �
 | `--theme-text-placeholder` | `#cbd5e1` | Empty states, disabled |
 | `--theme-border-default` | `#e2e8f0` | Card borders, dividers |
 | `--theme-border-subtle` | `#f1f5f9` | Inner dividers |
-| `--theme-score-low` | `#b05060` | Below-average scores (muted warm rose) |
-| `--theme-score-high` | `#4a8564` | Above-average scores (muted sage green) |
-
-### Score Semantic Coloring
-- **Low:** `text-score-low` (#b05060) — serious but not alarming
-- **Average:** `text-text-strong` — no color, normalcy is the default
-- **High:** `text-score-high` (#4a8564) — positive but calm
-- **Empty/placeholder:** `text-text-placeholder`
-
-Color is pre-attentive — the SLP sees concerning scores in <200ms without reading numbers.
-
 ---
 
 ## 5. Component Specifications
