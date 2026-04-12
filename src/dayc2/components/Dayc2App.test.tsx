@@ -28,9 +28,11 @@ describe('Dayc2App', () => {
     expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
   });
 
-  it('shows empty state when no dates entered', () => {
+  it('shows no scores and no empty state when only test date is defaulted', () => {
     render(<Dayc2App />);
-    expect(screen.getByText('Ready to calculate')).toBeInTheDocument();
+    // Test date defaults to today, but no DOB yet — no scores should render
+    expect(screen.queryByText('Ready to calculate')).not.toBeInTheDocument();
+    expect(screen.queryByText('Targets')).not.toBeInTheDocument();
   });
 
   it('renders default visible subtests (RL, EL, SE) after entering valid dates', () => {

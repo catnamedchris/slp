@@ -10,6 +10,7 @@ import type { ActiveSubtestKey } from '../lib/metadata';
 import type { ProvenanceStep } from '@/shared/lib/types';
 import { createEmptySkillItems, type AllSkillItems } from '../lib/skills';
 import { usePersistedState } from '@/shared/hooks/usePersistedState';
+import { todayIso } from '@/shared/lib/dates';
 import { computeReverseLookup } from '../components/ReverseLookup';
 import { computeEligibility } from '../lib/eligibility';
 
@@ -17,7 +18,7 @@ const DEFAULT_TARGET_PERCENTILE = 6;
 
 export const useDayc2App = () => {
   const [dob, setDob] = usePersistedState('dayc2:dob', '');
-  const [testDate, setTestDate] = usePersistedState('dayc2:testDate', '');
+  const [testDate, setTestDate] = usePersistedState('dayc2:testDate', todayIso);
   const [rawScores, setRawScores] = usePersistedState<RawScores>('dayc2:rawScores', createEmptyRawScores);
   const [skillItems, setSkillItems] = usePersistedState<AllSkillItems>('dayc2:skillItems', createEmptySkillItems);
   const [targetPercentile, setTargetPercentile] = usePersistedState('dayc2:targetPercentile', DEFAULT_TARGET_PERCENTILE);
@@ -68,7 +69,7 @@ export const useDayc2App = () => {
 
   const handleClear = useCallback(() => {
     setDob('');
-    setTestDate('');
+    setTestDate(todayIso());
     setRawScores(createEmptyRawScores());
     setSkillItems(createEmptySkillItems());
     setTargetPercentile(DEFAULT_TARGET_PERCENTILE);
