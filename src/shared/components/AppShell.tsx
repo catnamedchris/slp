@@ -7,7 +7,7 @@ interface AppShellProps {
 const AppShell = ({ children }: AppShellProps) => {
   return (
     <div className="font-sans min-h-screen bg-app-bg">
-      <header className="sticky top-0 z-50 bg-white/92 backdrop-blur-[12px] border-b border-border-default">
+      <header className="sticky top-0 z-50 bg-white/92 backdrop-blur-[12px] border-b border-accent-200">
         <div className="max-w-(--container-max) mx-auto px-4">
           <div className="h-[36px] flex items-center justify-between">
             <div className="flex items-center gap-2">

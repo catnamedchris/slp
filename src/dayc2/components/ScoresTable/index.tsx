@@ -31,7 +31,7 @@ const ScoresTable = ({
   return (
     <>
       {/* Communication Group: RL + EL + Composite */}
-      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-primary-400">
+      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-indigo-300">
         <SubtestRow
           subtest="receptiveLanguage"
           rawScore={rawScores.receptiveLanguage}
@@ -59,7 +59,7 @@ const ScoresTable = ({
       </div>
 
       {/* SE standalone */}
-      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-primary-400">
+      <div className="bg-surface rounded-[14px] shadow-card overflow-hidden border-l-[3px] border-l-amber-300">
         <SubtestRow
           subtest="socialEmotional"
           rawScore={rawScores.socialEmotional}

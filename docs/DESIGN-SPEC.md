@@ -71,10 +71,22 @@ Computed scores (SS, %ile) use size + semantic color to create visual "slope" �
 
 ## 4. Color
 
-### Palette (unchanged from current)
-- **Primary (blue-gray):** `#4b5064` (700) down to `#f5f6f8` (50) — chrome, accents, badges
-- **Accent (warm gold):** `#c0a76e` (400) — brand dot only, used sparingly
+### Palette
+- **Primary (blue-gray):** `#4b5064` (700) down to `#f5f6f8` (50) — chrome, structural elements
+- **Accent (warm gold):** `#c0a76e` (400) — brand dot, header border warmth
 - **CTA (teal):** `#0d9488` — interactive/clickable actions
+
+### Domain Color Coding
+Each developmental domain has its own color identity for instant visual wayfinding:
+
+| Domain | Color Family | Border | Badge |
+|--------|-------------|--------|-------|
+| Receptive Language | **Indigo** | `indigo-300` | `text-indigo-600 bg-indigo-50` |
+| Expressive Language | **Violet** | (shares Communication card) | `text-violet-600 bg-violet-50` |
+| Communication Composite | **Indigo** | `indigo-300` | `text-indigo-500 bg-indigo-50` |
+| Social-Emotional | **Amber** | `amber-300` | `text-amber-700 bg-amber-50` |
+
+Focus states tint to match the domain (e.g., `bg-indigo-50/30` for RL, `bg-amber-50/30` for SE).
 
 ### Semantic Theme Variables (`:root`)
 

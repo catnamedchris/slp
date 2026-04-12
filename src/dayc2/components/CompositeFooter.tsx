@@ -16,13 +16,13 @@ const CompositeFooter = ({ result, onProvenanceClick }: CompositeFooterProps) =>
   const display = getDomainDisplay(result);
 
   return (
-    <div className="border-t-2 border-primary-100 bg-primary-50/50 grid grid-cols-1 md:grid-cols-[var(--score-grid-width)_1fr]">
+    <div className="border-t-2 border-indigo-100 bg-indigo-50/40 grid grid-cols-1 md:grid-cols-[var(--score-grid-width)_1fr]">
       {/* Left: label + scores — mirrors SubtestRow left column */}
       <div className="p-3 px-4 flex flex-col gap-1.5">
         {/* Header row */}
         <div className="flex items-center gap-2">
           <span className="text-base font-bold text-text-default">{DOMAIN_LABELS.communication}</span>
-          <span className="text-xs font-bold uppercase tracking-[0.04em] text-primary-500 bg-primary-50 px-2 py-[2px] rounded-full">
+          <span className="text-xs font-bold uppercase tracking-[0.04em] text-indigo-500 bg-indigo-50 px-2 py-[2px] rounded-full">
             Composite
           </span>
         </div>
