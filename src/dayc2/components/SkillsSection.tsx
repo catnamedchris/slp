@@ -15,6 +15,7 @@ interface SkillsSectionProps {
 const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) => {
   const validation = useMemo(() => validateSkillItems(input, subtest), [input, subtest]);
   const conflictSet = useMemo(() => new Set(validation.conflicts), [validation.conflicts]);
+  const duplicateSet = useMemo(() => new Set(validation.duplicates), [validation.duplicates]);
   const outOfRangeSet = useMemo(() => new Set(validation.outOfRange), [validation.outOfRange]);
   const subtestLabel = SUBTEST_LABELS[subtest];
 
@@ -29,6 +30,7 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
         chipClass="text-primary-700 bg-primary-50 border-primary-200"
         items={validation.ableItems}
         conflicts={conflictSet}
+        duplicates={duplicateSet}
         outOfRange={outOfRangeSet}
         canCopy={validation.canCopyAble}
         onChange={onItemsChange}
@@ -42,12 +44,19 @@ const SkillsSection = ({ subtest, input, onItemsChange }: SkillsSectionProps) =>
         chipClass="text-text-default bg-surface-muted border-border-default"
         items={validation.unableItems}
         conflicts={conflictSet}
+        duplicates={duplicateSet}
         outOfRange={outOfRangeSet}
         canCopy={validation.canCopyUnable}
         onChange={onItemsChange}
       />
 
       {/* Warnings */}
+      {validation.hasDuplicates && (
+        <div className="text-xs text-amber-800 flex items-center gap-1" role="alert">
+          <WarningIcon />
+          Duplicate: items {validation.duplicates.join(', ')} entered more than once
+        </div>
+      )}
       {validation.hasConflicts && (
         <div className="text-xs text-amber-800 flex items-center gap-1" role="alert">
           <WarningIcon />
@@ -73,6 +82,7 @@ interface SkillRowProps {
   chipClass: string;
   items: number[];
   conflicts: Set<number>;
+  duplicates: Set<number>;
   outOfRange: Set<number>;
   canCopy: boolean;
   onChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
@@ -87,6 +97,7 @@ const SkillRow = ({
   chipClass,
   items,
   conflicts,
+  duplicates,
   outOfRange,
   canCopy,
   onChange,
@@ -154,6 +165,7 @@ const SkillRow = ({
         list={list}
         items={items}
         conflicts={conflicts}
+        duplicates={duplicates}
         outOfRange={outOfRange}
         chipClass={chipClass}
         placeholder={list === 'able' ? 'e.g. 8, 11, 14' : 'e.g. 16, 18'}

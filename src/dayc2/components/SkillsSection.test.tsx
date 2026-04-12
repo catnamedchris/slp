@@ -18,8 +18,8 @@ describe('SkillsSection', () => {
 
   it('renders chip inputs for both lists', () => {
     render(<SkillsSection {...defaultProps} />);
-    expect(screen.getByLabelText('receptiveLanguage able items')).toBeInTheDocument();
-    expect(screen.getByLabelText('receptiveLanguage unable items')).toBeInTheDocument();
+    expect(screen.getByLabelText('Receptive Language able items')).toBeInTheDocument();
+    expect(screen.getByLabelText('Receptive Language unable items')).toBeInTheDocument();
   });
 
   it('shows placeholder when no items', () => {
@@ -47,8 +47,8 @@ describe('SkillsSection', () => {
         input={{ able: [12, 14], unable: [] }}
       />,
     );
-    expect(screen.getByLabelText('Remove item 12')).toBeInTheDocument();
-    expect(screen.getByLabelText('Remove item 14')).toBeInTheDocument();
+    expect(screen.getByLabelText('Remove Receptive Language able item 12')).toBeInTheDocument();
+    expect(screen.getByLabelText('Remove Receptive Language able item 14')).toBeInTheDocument();
   });
 
   it('calls onItemsChange when chip is dismissed', async () => {
@@ -60,7 +60,7 @@ describe('SkillsSection', () => {
         onItemsChange={onItemsChange}
       />,
     );
-    await userEvent.click(screen.getByLabelText('Remove item 12'));
+    await userEvent.click(screen.getByLabelText('Remove Receptive Language able item 12'));
     expect(onItemsChange).toHaveBeenCalledWith('receptiveLanguage', 'able', [14]);
   });
 
@@ -73,36 +73,40 @@ describe('SkillsSection', () => {
         onItemsChange={onItemsChange}
       />,
     );
-    const input = screen.getByLabelText('receptiveLanguage able items');
+    const input = screen.getByLabelText('Receptive Language able items');
     await userEvent.type(input, '8{Enter}');
     expect(onItemsChange).toHaveBeenCalledWith('receptiveLanguage', 'able', [8]);
   });
 
-  it('hides copy icon when no items', () => {
+  it('hides copy button when no items', () => {
     render(<SkillsSection {...defaultProps} />);
-    expect(screen.queryByLabelText('Copy able items')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Copy unable items')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Copy Receptive Language able items')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Copy Receptive Language unable items')).not.toBeInTheDocument();
   });
 
-  it('shows copy icon when items exist and no errors', () => {
+  it('shows enabled copy button when items exist and no errors', () => {
     render(
       <SkillsSection
         {...defaultProps}
         input={{ able: [12, 14], unable: [] }}
       />,
     );
-    expect(screen.getByLabelText('Copy able items')).toBeInTheDocument();
+    const copyBtn = screen.getByLabelText('Copy Receptive Language able items');
+    expect(copyBtn).toBeInTheDocument();
+    expect(copyBtn).not.toBeDisabled();
   });
 
-  it('hides copy icon when conflicts exist', () => {
+  it('shows disabled copy button when conflicts exist', () => {
     render(
       <SkillsSection
         {...defaultProps}
         input={{ able: [12, 14], unable: [14, 18] }}
       />,
     );
-    expect(screen.queryByLabelText('Copy able items')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Copy unable items')).not.toBeInTheDocument();
+    const copyAble = screen.getByLabelText('Copy Receptive Language able items');
+    const copyUnable = screen.getByLabelText('Copy Receptive Language unable items');
+    expect(copyAble).toBeDisabled();
+    expect(copyUnable).toBeDisabled();
   });
 
   it('shows conflict warning when same item in both lists', () => {
@@ -113,6 +117,17 @@ describe('SkillsSection', () => {
       />,
     );
     expect(screen.getByText(/Conflict: items 14 in both lists/)).toBeInTheDocument();
+  });
+
+  it('conflict warning has role="alert"', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [12, 14], unable: [14, 18] }}
+      />,
+    );
+    const alerts = screen.getAllByRole('alert');
+    expect(alerts.some((el) => el.textContent?.includes('Conflict'))).toBe(true);
   });
 
   it('highlights conflicting chips with warning style', () => {
@@ -136,24 +151,120 @@ describe('SkillsSection', () => {
     expect(screen.getByText(/Invalid: items 35 exceed max/)).toBeInTheDocument();
   });
 
-  it('renders out-of-range chips with dashed border style', () => {
+  it('out-of-range warning has role="alert"', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [10, 35], unable: [] }}
+      />,
+    );
+    const alerts = screen.getAllByRole('alert');
+    expect(alerts.some((el) => el.textContent?.includes('Invalid'))).toBe(true);
+  });
+
+  it('renders out-of-range chips with title', () => {
     render(
       <SkillsSection
         {...defaultProps}
         input={{ able: [35], unable: [] }}
       />,
     );
-    expect(screen.getByText('35')).toBeInTheDocument();
+    expect(screen.getByTitle('Invalid: item number does not exist for this subtest')).toBeInTheDocument();
   });
 
-  it('hides copy icon when out-of-range items exist', () => {
+  it('disables copy button when out-of-range items exist in that list', () => {
     render(
       <SkillsSection
         {...defaultProps}
         input={{ able: [10, 35], unable: [20] }}
       />,
     );
-    expect(screen.queryByLabelText('Copy able items')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('Copy unable items')).not.toBeInTheDocument();
+    const copyAble = screen.getByLabelText('Copy Receptive Language able items');
+    expect(copyAble).toBeDisabled();
+  });
+
+  it('allows copy of clean list when other list has out-of-range', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [10, 12], unable: [36] }}
+      />,
+    );
+    const copyAble = screen.getByLabelText('Copy Receptive Language able items');
+    expect(copyAble).not.toBeDisabled();
+    const copyUnable = screen.getByLabelText('Copy Receptive Language unable items');
+    expect(copyUnable).toBeDisabled();
+  });
+
+  // Duplicate tests
+  it('allows duplicate entry and shows both chips', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8, 12], unable: [] }}
+      />,
+    );
+    const chips8 = screen.getAllByText('8');
+    expect(chips8).toHaveLength(2);
+    expect(screen.getByText('12')).toBeInTheDocument();
+  });
+
+  it('shows duplicate warning', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8], unable: [] }}
+      />,
+    );
+    expect(screen.getByText(/Duplicate: items 8 entered more than once/)).toBeInTheDocument();
+  });
+
+  it('duplicate warning has role="alert"', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8], unable: [] }}
+      />,
+    );
+    const alerts = screen.getAllByRole('alert');
+    expect(alerts.some((el) => el.textContent?.includes('Duplicate'))).toBe(true);
+  });
+
+  it('highlights duplicate chips with warning style', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8], unable: [] }}
+      />,
+    );
+    const chips = screen.getAllByTitle('Duplicate: item entered more than once');
+    expect(chips).toHaveLength(2);
+  });
+
+  it('disables copy when duplicates exist in that list', () => {
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8], unable: [16] }}
+      />,
+    );
+    const copyAble = screen.getByLabelText('Copy Receptive Language able items');
+    expect(copyAble).toBeDisabled();
+    const copyUnable = screen.getByLabelText('Copy Receptive Language unable items');
+    expect(copyUnable).not.toBeDisabled();
+  });
+
+  it('removing one duplicate leaves a valid single item', async () => {
+    const onItemsChange = vi.fn();
+    render(
+      <SkillsSection
+        {...defaultProps}
+        input={{ able: [8, 8], unable: [] }}
+        onItemsChange={onItemsChange}
+      />,
+    );
+    const removeButtons = screen.getAllByLabelText('Remove Receptive Language able item 8');
+    await userEvent.click(removeButtons[0]);
+    expect(onItemsChange).toHaveBeenCalledWith('receptiveLanguage', 'able', [8]);
   });
 });

@@ -18,12 +18,17 @@ export interface SkillValidation {
   ableItems: number[];
   unableItems: number[];
   conflicts: number[];
+  duplicates: number[];
+  duplicatesAble: number[];
+  duplicatesUnable: number[];
   outOfRange: number[];
+  outOfRangeAble: number[];
+  outOfRangeUnable: number[];
   hasConflicts: boolean;
+  hasDuplicates: boolean;
   hasOutOfRange: boolean;
   canCopyAble: boolean;
   canCopyUnable: boolean;
-  formatCopyText: (list: 'able' | 'unable') => string;
 }
 
 /** Create empty skill items for all subtests */
@@ -33,10 +38,13 @@ export const createEmptySkillItems = (): AllSkillItems => ({
   socialEmotional: { able: [], unable: [] },
 });
 
+/** Only bare digit sequences are valid item numbers */
+const INTEGER_TOKEN = /^\d+$/;
+
 /**
  * Parse a flexible input string into sorted unique positive integers.
  * Accepts commas, spaces, semicolons as separators.
- * Ignores non-numeric, negative, zero, and decimal values.
+ * Only accepts bare digit tokens (rejects hex, scientific notation, decimals).
  */
 export const parseItemInput = (input: string): number[] => {
   if (!input.trim()) return [];
@@ -45,8 +53,9 @@ export const parseItemInput = (input: string): number[] => {
   const numbers: Set<number> = new Set();
 
   for (const token of tokens) {
-    const parsed = Number(token);
-    if (Number.isInteger(parsed) && parsed > 0) {
+    if (!INTEGER_TOKEN.test(token)) continue;
+    const parsed = Number.parseInt(token, 10);
+    if (parsed >= 1) {
       numbers.add(parsed);
     }
   }
@@ -54,54 +63,75 @@ export const parseItemInput = (input: string): number[] => {
   return [...numbers].sort((a, b) => a - b);
 };
 
+/** Format a list of item numbers for clipboard copy */
+export const formatSkillCopyText = (items: number[]): string =>
+  items.join(', ');
+
 /**
- * Add items to a sorted number array, returning a new sorted unique array.
+ * Add items to a sorted number array, returning a new sorted array.
+ * Duplicates are preserved so validation can flag them.
  */
-export const addItems = (existing: number[], toAdd: number[]): number[] => {
-  const set = new Set([...existing, ...toAdd]);
-  return [...set].sort((a, b) => a - b);
+export const addItems = (existing: number[], toAdd: number[]): number[] =>
+  [...existing, ...toAdd].sort((a, b) => a - b);
+
+/**
+ * Remove the first occurrence of an item from a number array.
+ */
+export const removeItem = (existing: number[], item: number): number[] => {
+  const idx = existing.indexOf(item);
+  if (idx === -1) return existing;
+  return [...existing.slice(0, idx), ...existing.slice(idx + 1)];
+};
+
+/** Find values that appear more than once in a list */
+const findDuplicates = (items: number[]): number[] => {
+  const seen = new Set<number>();
+  const dupes = new Set<number>();
+  for (const item of items) {
+    if (seen.has(item)) dupes.add(item);
+    seen.add(item);
+  }
+  return [...dupes].sort((a, b) => a - b);
 };
 
 /**
- * Remove an item from a number array, returning a new array.
- */
-export const removeItem = (existing: number[], item: number): number[] =>
-  existing.filter((n) => n !== item);
-
-/**
- * Validate a subtest's skill items: detect conflicts and out-of-range items.
+ * Validate a subtest's skill items: detect conflicts, duplicates, and out-of-range items.
  */
 export const validateSkillItems = (
   input: SkillItemsInput,
-  subtest?: ActiveSubtestKey,
+  subtest: ActiveSubtestKey,
 ): SkillValidation => {
   const { able: ableItems, unable: unableItems } = input;
 
   const ableSet = new Set(ableItems);
-  const conflicts = unableItems.filter((item) => ableSet.has(item));
+  const conflicts = [...new Set(unableItems.filter((item) => ableSet.has(item)))];
   const hasConflicts = conflicts.length > 0;
 
-  const maxItem = subtest ? SUBTEST_MAX_ITEM[subtest] : Infinity;
-  const allItems = [...new Set([...ableItems, ...unableItems])];
-  const outOfRange = allItems.filter((item) => item > maxItem).sort((a, b) => a - b);
+  const duplicatesAble = findDuplicates(ableItems);
+  const duplicatesUnable = findDuplicates(unableItems);
+  const duplicates = [...new Set([...duplicatesAble, ...duplicatesUnable])].sort((a, b) => a - b);
+  const hasDuplicates = duplicates.length > 0;
+
+  const maxItem = SUBTEST_MAX_ITEM[subtest];
+  const outOfRangeAble = [...new Set(ableItems.filter((item) => item > maxItem))];
+  const outOfRangeUnable = [...new Set(unableItems.filter((item) => item > maxItem))];
+  const outOfRange = [...new Set([...outOfRangeAble, ...outOfRangeUnable])].sort((a, b) => a - b);
   const hasOutOfRange = outOfRange.length > 0;
-
-  const hasErrors = hasConflicts || hasOutOfRange;
-
-  const formatCopyText = (list: 'able' | 'unable'): string => {
-    const items = list === 'able' ? ableItems : unableItems;
-    return items.join(', ');
-  };
 
   return {
     ableItems,
     unableItems,
     conflicts,
+    duplicates,
+    duplicatesAble,
+    duplicatesUnable,
     outOfRange,
+    outOfRangeAble,
+    outOfRangeUnable,
     hasConflicts,
+    hasDuplicates,
     hasOutOfRange,
-    canCopyAble: ableItems.length > 0 && !hasErrors,
-    canCopyUnable: unableItems.length > 0 && !hasErrors,
-    formatCopyText,
+    canCopyAble: ableItems.length > 0 && !hasConflicts && outOfRangeAble.length === 0 && duplicatesAble.length === 0,
+    canCopyUnable: unableItems.length > 0 && !hasConflicts && outOfRangeUnable.length === 0 && duplicatesUnable.length === 0,
   };
 };
