@@ -39,6 +39,14 @@ describe('formatPercentileValue', () => {
     expect(formatPercentileValue({ value: 50 })).toBe('50');
   });
 
+  it('formats less-than bound', () => {
+    expect(formatPercentileValue({ bound: 'lt', value: 0.1 })).toBe('<0.1');
+  });
+
+  it('formats greater-than bound', () => {
+    expect(formatPercentileValue({ bound: 'gt', value: 99.9 })).toBe('>99.9');
+  });
+
   it('formats range', () => {
     expect(formatPercentileValue({ min: 25, max: 75 })).toBe('25-75');
   });

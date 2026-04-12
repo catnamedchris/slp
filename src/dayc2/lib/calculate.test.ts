@@ -282,6 +282,9 @@ describe('calculateAllScores', () => {
     expect(result.domains.communication.sum).toBeNull();
     expect(result.domains.communication.standardScore.value).toBeNull();
     expect(result.domains.communication.percentile.value).toBeNull();
+    expect(result.domains.communication.standardScore.note).toBe(
+      'Communication composite requires both RL and EL standard scores'
+    );
   });
 
   it('returns null domain composite when both subtest raw scores are null', () => {
@@ -302,5 +305,144 @@ describe('calculateAllScores', () => {
 
     expect(result.domains.communication.sum).toBeNull();
     expect(result.domains.communication.standardScore.value).toBeNull();
+    expect(result.domains.communication.standardScore.note).toBe(
+      'Communication composite requires both RL and EL standard scores'
+    );
+  });
+
+  it('derives bounded composite percentile for lt sum', () => {
+    // RL raw 0 → SS <50, EL raw 0 → SS <50
+    // Sum <100 → D1 lookup at 99 → SS 40 → bounded as <41
+    // Percentile: lookup SS 40 in C1 → <1, apply lt bound → <1
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 0,
+        expressiveLanguage: 0,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+
+    expect(result.domains.communication.standardScore.value).toEqual({ bound: 'lt', value: 41 });
+    // mockC1 has SS 40 → percentile <1, with lt bound applied stays <1
+    expect(result.domains.communication.percentile.value).toEqual({ bound: 'lt', value: 1 });
+  });
+
+  it('derives bounded composite percentile for gt sum', () => {
+    // RL raw 30 → SS >150, EL raw 30 → SS >150
+    // Sum >300 → D1 lookup at 301 → SS 160 → bounded as >159
+    // Percentile: lookup SS 160 in C1 → >99.9, apply gt bound → >99.9
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 30,
+        expressiveLanguage: 30,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+
+    expect(result.domains.communication.standardScore.value).toEqual({ bound: 'gt', value: 159 });
+    // mockC1 has SS 160 → >99.9, with gt bound applied stays >99.9
+    expect(result.domains.communication.percentile.value).toEqual({ bound: 'gt', value: 99.9 });
+  });
+
+  it('includes bound transformation step in composite provenance', () => {
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 0,
+        expressiveLanguage: 0,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+
+    // Standard score provenance should include the bound transformation step
+    const ssSteps = result.domains.communication.standardScore.steps;
+    const transformStep = ssSteps.find((s) => s.description?.includes('reported as'));
+    expect(transformStep).toBeDefined();
+    expect(transformStep!.description).toContain('bounded');
+  });
+});
+
+describe('computeSumValue coverage', () => {
+  let ctx: LookupContext;
+
+  beforeEach(() => {
+    ctx = createFixtureLookupContext();
+  });
+
+  it('computes exact + lt sum', () => {
+    // RL raw 10 → SS 90 (exact), EL raw 0 → SS <50 (lt)
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 10,
+        expressiveLanguage: 0,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+    expect(result.domains.communication.sum).toEqual({ type: 'lt', value: 140 });
+  });
+
+  it('computes exact + gt sum', () => {
+    // RL raw 10 → SS 90 (exact), EL raw 30 → SS >150 (gt)
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 10,
+        expressiveLanguage: 30,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+    expect(result.domains.communication.sum).toEqual({ type: 'gt', value: 240 });
+  });
+
+  it('computes gt + lt sum (uses gt value only)', () => {
+    // RL raw 30 → SS >150 (gt), EL raw 0 → SS <50 (lt)
+    const input: CalculationInput = {
+      ageMonths: 12,
+      rawScores: {
+        cognitive: 10,
+        receptiveLanguage: 30,
+        expressiveLanguage: 0,
+        socialEmotional: 10,
+        grossMotor: 10,
+        fineMotor: 10,
+        adaptiveBehavior: 10,
+      },
+    };
+
+    const result = calculateAllScores(input, ctx);
+    expect(result.domains.communication.sum).toEqual({ type: 'gt', value: 150 });
   });
 });

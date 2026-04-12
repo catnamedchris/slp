@@ -16,8 +16,9 @@ export const formatScoreValue = (score: ParsedScore | null): string => {
   return String(score.value);
 };
 
-export const formatPercentileValue = (pct: { value: number } | { min: number; max: number } | null): string => {
+export const formatPercentileValue = (pct: { value: number } | { bound: 'lt' | 'gt'; value: number } | { min: number; max: number } | null): string => {
   if (pct === null) return '—';
+  if ('bound' in pct) return pct.bound === 'lt' ? `<${pct.value}` : `>${pct.value}`;
   if ('min' in pct && 'max' in pct) return `${pct.min}-${pct.max}`;
   return String(pct.value);
 };

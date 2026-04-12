@@ -44,7 +44,7 @@ const CompositeFooter = ({ result, onProvenanceClick }: CompositeFooterProps) =>
 
           {/* Standard + Percentile */}
           {display.scores.map((score) => {
-            const hasProvenance = score.steps.length > 0 && onProvenanceClick;
+            const hasProvenance = score.hasValue && score.steps.length > 0 && onProvenanceClick;
             const toneClass = hasProvenance ? TONE_CLASSES[score.tone] : 'text-text-placeholder';
 
             return (

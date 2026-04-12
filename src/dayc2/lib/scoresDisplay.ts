@@ -91,9 +91,9 @@ export type SemanticTone = 'neutral' | 'low' | 'average' | 'high';
 export const getPercentileTone = (pct: ParsedPercentile | null): SemanticTone => {
   if (!pct) return 'neutral';
   if ('bound' in pct) {
-    // <N: if N <= 16, it's low; >N: if N >= 84, it's high
-    if (pct.bound === 'lt') return pct.value <= 16 ? 'low' : 'average';
-    if (pct.bound === 'gt') return pct.value >= 84 ? 'high' : 'average';
+    // Only assign a tone when the bound guarantees it; otherwise neutral
+    if (pct.bound === 'lt') return pct.value <= 16 ? 'low' : 'neutral';
+    if (pct.bound === 'gt') return pct.value >= 84 ? 'high' : 'neutral';
   }
   if ('value' in pct && !('bound' in pct) && !('min' in pct)) {
     if (pct.value < 16) return 'low';
@@ -108,6 +108,7 @@ export interface SubtestScoreDisplay {
   key: ScoreColumn['key'];
   label: string;
   value: string;
+  hasValue: boolean;
   steps: ProvenanceStep[];
   tone: SemanticTone;
 }
@@ -122,6 +123,7 @@ export interface DomainScoreDisplay {
   key: DomainScoreKey;
   label: string;
   value: string;
+  hasValue: boolean;
   steps: ProvenanceStep[];
   tone: SemanticTone;
 }
@@ -142,7 +144,7 @@ export const getSubtestDisplay = (
 
   const scores: SubtestScoreDisplay[] = SUBTEST_SCORE_COLUMNS.map((col) => {
     if (!result) {
-      return { key: col.key, label: col.label, value: '—', steps: [], tone: 'neutral' as SemanticTone };
+      return { key: col.key, label: col.label, value: '—', hasValue: false, steps: [], tone: 'neutral' as SemanticTone };
     }
 
     let value: string;
@@ -158,6 +160,7 @@ export const getSubtestDisplay = (
       key: col.key,
       label: col.label,
       value,
+      hasValue: value !== '—',
       steps: result[col.key].steps,
       tone,
     };
@@ -183,7 +186,7 @@ export const getDomainDisplay = (result: DomainResult | null): DomainDisplay => 
 
   const scores: DomainScoreDisplay[] = DOMAIN_SCORE_COLUMNS.map((col) => {
     if (!result) {
-      return { key: col.key, label: col.label, value: '—', steps: [], tone: 'neutral' as SemanticTone };
+      return { key: col.key, label: col.label, value: '—', hasValue: false, steps: [], tone: 'neutral' as SemanticTone };
     }
 
     let value: string;
@@ -197,6 +200,7 @@ export const getDomainDisplay = (result: DomainResult | null): DomainDisplay => 
       key: col.key,
       label: col.label,
       value,
+      hasValue: value !== '—',
       steps: result[col.key].steps,
       tone,
     };

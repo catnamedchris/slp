@@ -93,11 +93,13 @@ export const lookupStandardScore = (
 
   const wasClamped = clampedRaw !== rawScore;
   const clampNote = wasClamped ? ` (entered ${rawScore}, using max ${clampedRaw})` : '';
+  const wasFallback = usedRow !== row;
+  const fallbackNote = wasFallback ? ` (no ${subtest} score at raw ${row.rawScore}; using raw ${usedRow.rawScore})` : '';
   const step: ProvenanceStep = {
     tableId: bTable.tableId,
     csvRow: usedRow.csvRow,
     source: bTable.source,
-    description: `Raw Score ${clampedRaw}${clampNote} → Standard Score ${formatScoreValue(score)}`,
+    description: `Raw Score ${clampedRaw}${clampNote}${fallbackNote} → Standard Score ${formatScoreValue(score)}`,
   };
 
   return {

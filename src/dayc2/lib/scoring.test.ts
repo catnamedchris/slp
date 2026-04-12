@@ -44,6 +44,15 @@ describe('lookupStandardScore', () => {
     expect(result.value).toEqual({ value: 110 });
   });
 
+  it('includes fallback info in provenance when cell is null', () => {
+    const result = lookupStandardScore(30, 'fineMotor', 12, ctx);
+    expect(result.steps).toHaveLength(1);
+    expect(result.steps[0].description).toContain('no fineMotor score at raw 30');
+    expect(result.steps[0].description).toContain('using raw 20');
+  });
+
+
+
   it('returns null when age has no B table', () => {
     const result = lookupStandardScore(10, 'cognitive', 36, ctx);
     expect(result.value).toBeNull();

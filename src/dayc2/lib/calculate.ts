@@ -229,10 +229,12 @@ const calculateDomainComposite = (
       standardScore: {
         value: null,
         steps: subtestSteps,
+        note: 'Communication composite requires both RL and EL standard scores',
       },
       percentile: {
         value: null,
         steps: subtestSteps,
+        note: 'Communication composite requires both RL and EL standard scores',
       },
     };
   }
@@ -265,7 +267,7 @@ const calculateDomainComposite = (
   }
 
   // Bounded sum - look up the boundary value
-  const lookupBoundedComposite = (sum: SumValue): ValueWithProvenance<ParsedScore> => {
+  const lookupBoundedComposite = (sum: SumValue): { ss: ValueWithProvenance<ParsedScore>; exactSS: ParsedScore | null } => {
     const d1 = ctx.sumToDomain;
     const boundPrefix = sum.type === 'lt' ? '<' : '>';
     
@@ -273,56 +275,75 @@ const calculateDomainComposite = (
       // Sum < value means max sum is value-1
       const result = lookupDomainComposite(sum.value - 1, ctx);
       if (result.value && isExact(result.value)) {
+        const boundedValue: ParsedScore = { bound: 'lt', value: result.value.value + 1 };
         return {
-          value: { bound: 'lt', value: result.value.value + 1 },
-          steps: result.steps,
+          ss: {
+            value: boundedValue,
+            steps: [
+              ...result.steps,
+              { tableId: d1.tableId, csvRow: null, source: d1.source, description: `Composite ${result.value.value} → reported as <${result.value.value + 1} (bounded)` },
+            ],
+          },
+          exactSS: result.value,
         };
       }
-      // Lookup failed - provide accurate bounded sum in message
       return {
-        value: null,
-        steps: [createFailureStep(
-          d1.tableId,
-          d1.source,
-          `Sum of Standard Scores ${boundPrefix}${sum.value} is below table minimum`
-        )],
-        note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+        ss: {
+          value: null,
+          steps: [createFailureStep(d1.tableId, d1.source, `Sum of Standard Scores ${boundPrefix}${sum.value} is outside table range`)],
+          note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+        },
+        exactSS: null,
       };
     }
     if (sum.type === 'gt') {
       // Sum > value means min sum is value+1
       const result = lookupDomainComposite(sum.value + 1, ctx);
       if (result.value && isExact(result.value)) {
+        const boundedValue: ParsedScore = { bound: 'gt', value: result.value.value - 1 };
         return {
-          value: { bound: 'gt', value: result.value.value - 1 },
-          steps: result.steps,
+          ss: {
+            value: boundedValue,
+            steps: [
+              ...result.steps,
+              { tableId: d1.tableId, csvRow: null, source: d1.source, description: `Composite ${result.value.value} → reported as >${result.value.value - 1} (bounded)` },
+            ],
+          },
+          exactSS: result.value,
         };
       }
-      // Lookup failed - provide accurate bounded sum in message
       return {
-        value: null,
-        steps: [createFailureStep(
-          d1.tableId,
-          d1.source,
-          `Sum of Standard Scores ${boundPrefix}${sum.value} is above table maximum`
-        )],
-        note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+        ss: {
+          value: null,
+          steps: [createFailureStep(d1.tableId, d1.source, `Sum of Standard Scores ${boundPrefix}${sum.value} is outside table range`)],
+          note: `Sum ${boundPrefix}${sum.value} is outside D1 table range`,
+        },
+        exactSS: null,
       };
     }
-    return { value: null, steps: [], note: 'Unexpected sum type in bounded composite lookup' };
+    return { ss: { value: null, steps: [], note: 'Unexpected sum type in bounded composite lookup' }, exactSS: null };
   };
 
-  const standardScore = lookupBoundedComposite(sumValue);
+  const { ss: standardScore, exactSS } = lookupBoundedComposite(sumValue);
   const combinedSteps = [...subtestSteps, ...standardScore.steps];
 
-  // For bounded scores, also compute bounded percentile
+  // For bounded scores, look up percentile using the exact D1 result, then apply the bound
   let percentile: ValueWithProvenance<ParsedPercentile>;
-  if (standardScore.value) {
-    percentile = lookupPercentile(standardScore.value, ctx);
-    percentile = {
-      ...percentile,
-      steps: [...combinedSteps, ...percentile.steps],
-    };
+  if (standardScore.value && exactSS) {
+    percentile = lookupPercentile(exactSS, ctx);
+    // Apply the bound from the standard score to the percentile
+    if (percentile.value && isBounded(standardScore.value) && isExact(percentile.value)) {
+      percentile = {
+        ...percentile,
+        value: { bound: standardScore.value.bound, value: percentile.value.value },
+        steps: [...combinedSteps, ...percentile.steps],
+      };
+    } else {
+      percentile = {
+        ...percentile,
+        steps: [...combinedSteps, ...percentile.steps],
+      };
+    }
   } else {
     percentile = {
       value: null,

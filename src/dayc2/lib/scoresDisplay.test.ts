@@ -4,6 +4,7 @@ import {
   formatScore,
   formatPercentile,
   formatSumValue,
+  getPercentileTone,
   getSubtestDisplay,
   getDomainDisplay,
   SUBTEST_SCORE_COLUMNS,
@@ -85,6 +86,46 @@ describe('formatSumValue', () => {
 
   it('formats greater-than sum', () => {
     expect(formatSumValue({ type: 'gt', value: 300 })).toBe('>300');
+  });
+});
+
+describe('getPercentileTone', () => {
+  it('returns neutral for null', () => {
+    expect(getPercentileTone(null)).toBe('neutral');
+  });
+
+  it('returns low for exact value below 16', () => {
+    expect(getPercentileTone({ value: 5 })).toBe('low');
+  });
+
+  it('returns average for exact value between 16 and 84', () => {
+    expect(getPercentileTone({ value: 50 })).toBe('average');
+  });
+
+  it('returns high for exact value above 84', () => {
+    expect(getPercentileTone({ value: 90 })).toBe('high');
+  });
+
+  it('returns low for <N when N <= 16', () => {
+    expect(getPercentileTone({ bound: 'lt', value: 16 })).toBe('low');
+    expect(getPercentileTone({ bound: 'lt', value: 1 })).toBe('low');
+  });
+
+  it('returns neutral for <N when N > 16 (ambiguous)', () => {
+    expect(getPercentileTone({ bound: 'lt', value: 20 })).toBe('neutral');
+    expect(getPercentileTone({ bound: 'lt', value: 50 })).toBe('neutral');
+    expect(getPercentileTone({ bound: 'lt', value: 90 })).toBe('neutral');
+  });
+
+  it('returns high for >N when N >= 84', () => {
+    expect(getPercentileTone({ bound: 'gt', value: 84 })).toBe('high');
+    expect(getPercentileTone({ bound: 'gt', value: 99 })).toBe('high');
+  });
+
+  it('returns neutral for >N when N < 84 (ambiguous)', () => {
+    expect(getPercentileTone({ bound: 'gt', value: 80 })).toBe('neutral');
+    expect(getPercentileTone({ bound: 'gt', value: 50 })).toBe('neutral');
+    expect(getPercentileTone({ bound: 'gt', value: 10 })).toBe('neutral');
   });
 });
 
@@ -268,6 +309,24 @@ describe('createRawScoreHandler', () => {
     handler('abc');
 
     expect(mockCallback).not.toHaveBeenCalled();
+  });
+
+  it('ignores decimal values like "20.5"', () => {
+    const mockCallback = vi.fn();
+    const handler = createRawScoreHandler('cognitive', mockCallback);
+
+    handler('20.5');
+
+    expect(mockCallback).not.toHaveBeenCalled();
+  });
+
+  it('accepts leading zeros like "020"', () => {
+    const mockCallback = vi.fn();
+    const handler = createRawScoreHandler('cognitive', mockCallback);
+
+    handler('020');
+
+    expect(mockCallback).toHaveBeenCalledWith('cognitive', 20);
   });
 
   it('handles zero correctly', () => {

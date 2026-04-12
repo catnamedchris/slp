@@ -9,6 +9,7 @@ export const createRawScoreHandler = <K extends string>(
     if (value === '') {
       onRawScoreChange(subtest, null);
     } else {
+      if (!/^\d+$/.test(value)) return;
       const parsed = parseInt(value, 10);
       if (!isNaN(parsed) && parsed >= 0) {
         onRawScoreChange(subtest, parsed);

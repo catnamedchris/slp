@@ -287,4 +287,59 @@ describe('ScoresTable', () => {
     expect(onProvenanceClick.mock.calls[0][0]).toHaveLength(1);
     expect(onProvenanceClick.mock.calls[0][0][0].tableId).toBe('B13');
   });
+
+  it('does not call onProvenanceClick when dash cell with steps is clicked', () => {
+    const onProvenanceClick = vi.fn();
+    const mockStep = {
+      tableId: 'B13',
+      csvRow: null,
+      source: {
+        tableId: 'B13',
+        tableTitle: 'Table B.13',
+        manualPage: 4,
+        csvFilename: 'test.csv',
+        csvSha256: 'abc123',
+        generatedAt: '2025-01-01',
+        generatorVersion: 'test',
+      },
+      description: 'Raw Score 15 not found in table',
+    };
+    const resultWithDashSteps: CalculationResult = {
+      ...mockResult,
+      subtests: {
+        ...mockResult.subtests,
+        receptiveLanguage: {
+          rawScore: 15,
+          standardScore: {
+            value: null,
+            steps: [mockStep],
+          },
+          percentile: {
+            value: null,
+            steps: [mockStep],
+          },
+          ageEquivalent: {
+            value: null,
+            steps: [mockStep],
+          },
+        },
+      },
+    };
+    render(
+      <ScoresTable
+        ageMonths={24}
+        rawScores={{ ...createEmptyRawScores(), receptiveLanguage: 15 }}
+        result={resultWithDashSteps}
+        onProvenanceClick={onProvenanceClick}
+        onRawScoreChange={() => {}}
+        {...defaultSkillProps}
+      />
+    );
+
+    // Click all dash cells in the RL row — none should trigger provenance
+    const dashCells = screen.getAllByText('—');
+    dashCells.forEach((cell) => fireEvent.click(cell));
+
+    expect(onProvenanceClick).not.toHaveBeenCalled();
+  });
 });
