@@ -4,7 +4,6 @@ import ScoresTable from './ScoresTable';
 import { createEmptyRawScores } from '../lib/rawScores';
 import { createEmptySkillItems } from '../lib/skills';
 import type { CalculationResult } from '../lib/calculate';
-
 const getRawScoreInput = (subtest: string) =>
   document.getElementById(`raw-${subtest}`);
 

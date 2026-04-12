@@ -21,6 +21,7 @@ const Dayc2App = () => {
     ageMonths,
     targetPercentile,
     setTargetPercentile,
+    eligibility,
     selectedProvenance,
     provenanceAnchor,
     provenanceTitle,
@@ -52,6 +53,8 @@ const Dayc2App = () => {
               targetPercentile={targetPercentile}
               onTargetPercentileChange={setTargetPercentile}
               onProvenanceClick={handleProvenanceClick}
+              exceedingSubtests={eligibility.subtests}
+              allExceedTargets={eligibility.allExceed}
             />
 
             <ScoresTable

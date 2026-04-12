@@ -10,6 +10,8 @@ import type { ActiveSubtestKey } from '../lib/metadata';
 import type { ProvenanceStep } from '@/shared/lib/types';
 import { createEmptySkillItems, type AllSkillItems } from '../lib/skills';
 import { usePersistedState } from '@/shared/hooks/usePersistedState';
+import { computeReverseLookup } from '../components/ReverseLookup';
+import { computeEligibility } from '../lib/eligibility';
 
 const DEFAULT_TARGET_PERCENTILE = 6;
 
@@ -27,6 +29,16 @@ export const useDayc2App = () => {
   const ageMonths = ageInfo?.error ? null : ageInfo?.ageMonths ?? null;
 
   const { result } = useCalculation({ ageMonths, rawScores });
+
+  const lookupResults = useMemo(
+    () => computeReverseLookup(ageMonths, targetPercentile),
+    [ageMonths, targetPercentile]
+  );
+
+  const eligibility = useMemo(
+    () => computeEligibility(rawScores, lookupResults),
+    [rawScores, lookupResults]
+  );
 
   const handleRawScoreChange = useCallback((subtest: SubtestKey, value: number | null) => {
     setRawScores((prev) => ({ ...prev, [subtest]: value }));
@@ -80,6 +92,7 @@ export const useDayc2App = () => {
     ageMonths,
     targetPercentile,
     setTargetPercentile,
+    eligibility,
     selectedProvenance,
     provenanceAnchor,
     provenanceTitle,
