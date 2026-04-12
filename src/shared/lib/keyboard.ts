@@ -2,8 +2,6 @@
 
 /** Ordered list of input identifiers for Enter-to-advance navigation */
 const FOCUS_ORDER = [
-  { type: 'id', value: 'dob' },
-  { type: 'id', value: 'testDate' },
   { type: 'id', value: 'targetPercentile' },
   { type: 'id', value: 'raw-receptiveLanguage' },
   { type: 'id', value: 'raw-expressiveLanguage' },

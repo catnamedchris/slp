@@ -6,7 +6,6 @@ import ProvenancePanel from './ProvenancePanel';
 import ReverseLookup from './ReverseLookup';
 import EmptyState from './EmptyState';
 import { useDayc2App } from '../hooks/useDayc2App';
-import { isDayc2AgeInRange } from '../constants';
 
 const Dayc2App = () => {
   const {
@@ -18,6 +17,7 @@ const Dayc2App = () => {
     rawScores,
     skillItems,
     result,
+    ageInfo,
     ageMonths,
     targetPercentile,
     setTargetPercentile,
@@ -30,13 +30,15 @@ const Dayc2App = () => {
     handleProvenanceClose,
   } = useDayc2App();
 
-  const hasValidAge = isDayc2AgeInRange(ageMonths);
+  const hasValidAge = ageMonths !== null;
+  const hasDatesEntered = dob !== '' || testDate !== '';
 
   return (
     <div>
       <ChildBar
         dob={dob}
         testDate={testDate}
+        ageInfo={ageInfo}
         onDobChange={setDob}
         onTestDateChange={setTestDate}
         onClear={handleClear}
@@ -63,7 +65,7 @@ const Dayc2App = () => {
             />
           </div>
         ) : (
-          <EmptyState />
+          !hasDatesEntered && <EmptyState />
         )}
       </main>
 

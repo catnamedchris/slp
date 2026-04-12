@@ -2,6 +2,7 @@ const EmptyState = () => {
   return (
     <div className="animate-fade-in flex flex-col items-center justify-center px-6 py-12">
       <svg
+        aria-hidden="true"
         width="160"
         height="120"
         viewBox="0 0 160 120"

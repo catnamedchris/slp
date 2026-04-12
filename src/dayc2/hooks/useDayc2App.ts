@@ -1,6 +1,6 @@
 // useDayc2App: State and handlers for the main DAYC-2 calculator
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { calculateAgeInfo } from '../lib/age';
 import { createEmptyRawScores } from '../lib/rawScores';
 import type { RawScores } from '../lib/rawScores';
@@ -11,17 +11,19 @@ import type { ProvenanceStep } from '@/shared/lib/types';
 import { createEmptySkillItems, type AllSkillItems } from '../lib/skills';
 import { usePersistedState } from '@/shared/hooks/usePersistedState';
 
+const DEFAULT_TARGET_PERCENTILE = 6;
+
 export const useDayc2App = () => {
   const [dob, setDob] = usePersistedState('dayc2:dob', '');
   const [testDate, setTestDate] = usePersistedState('dayc2:testDate', '');
   const [rawScores, setRawScores] = usePersistedState<RawScores>('dayc2:rawScores', createEmptyRawScores);
   const [skillItems, setSkillItems] = usePersistedState<AllSkillItems>('dayc2:skillItems', createEmptySkillItems);
-  const [targetPercentile, setTargetPercentile] = usePersistedState('dayc2:targetPercentile', 6);
+  const [targetPercentile, setTargetPercentile] = usePersistedState('dayc2:targetPercentile', DEFAULT_TARGET_PERCENTILE);
   const [selectedProvenance, setSelectedProvenance] = useState<ProvenanceStep[] | null>(null);
   const [provenanceAnchor, setProvenanceAnchor] = useState<HTMLElement | null>(null);
   const [provenanceTitle, setProvenanceTitle] = useState<string | null>(null);
 
-  const ageInfo = calculateAgeInfo(dob, testDate);
+  const ageInfo = useMemo(() => calculateAgeInfo(dob, testDate), [dob, testDate]);
   const ageMonths = ageInfo?.error ? null : ageInfo?.ageMonths ?? null;
 
   const { result } = useCalculation({ ageMonths, rawScores });
@@ -57,6 +59,10 @@ export const useDayc2App = () => {
     setTestDate('');
     setRawScores(createEmptyRawScores());
     setSkillItems(createEmptySkillItems());
+    setTargetPercentile(DEFAULT_TARGET_PERCENTILE);
+    setSelectedProvenance(null);
+    setProvenanceAnchor(null);
+    setProvenanceTitle(null);
   }, []);
 
   const isPanelOpen = selectedProvenance !== null && selectedProvenance.length > 0;
@@ -70,6 +76,7 @@ export const useDayc2App = () => {
     rawScores,
     skillItems,
     result,
+    ageInfo,
     ageMonths,
     targetPercentile,
     setTargetPercentile,

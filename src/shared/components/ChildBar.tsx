@@ -1,12 +1,13 @@
 // ChildBar: Compact child info bar with date inputs, age display, and clear
 
 import { useState, useEffect, useCallback } from 'react';
-import { calculateAgeInfo } from '@/dayc2/lib/age';
-import { handleEnterAdvance } from '@/shared/lib/keyboard';
+import type { AgeInfo } from '@/dayc2/lib/age';
+import DatePickerInput from './DatePickerInput';
 
 interface ChildBarProps {
   dob: string;
   testDate: string;
+  ageInfo: AgeInfo | null;
   onDobChange: (dob: string) => void;
   onTestDateChange: (testDate: string) => void;
   onClear: () => void;
@@ -20,9 +21,8 @@ const formatAge = (months: number): string => {
 
 const CONFIRM_TIMEOUT_MS = 3000;
 
-const ChildBar = ({ dob, testDate, onDobChange, onTestDateChange, onClear }: ChildBarProps) => {
+const ChildBar = ({ dob, testDate, ageInfo, onDobChange, onTestDateChange, onClear }: ChildBarProps) => {
   const [clearPending, setClearPending] = useState(false);
-  const ageInfo = calculateAgeInfo(dob, testDate);
 
   useEffect(() => {
     if (!clearPending) return;
@@ -48,33 +48,19 @@ const ChildBar = ({ dob, testDate, onDobChange, onTestDateChange, onClear }: Chi
       <div className="bg-surface rounded-xl shadow-card p-3 px-4 flex flex-col gap-2">
         {/* Row 1: Date inputs + Clear */}
         <div className="flex items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="dob" className="text-xs font-bold uppercase tracking-[0.04em] text-text-faint">
-              Birth Date
-            </label>
-            <input
-              type="date"
-              id="dob"
-              value={dob}
-              onChange={(e) => onDobChange(e.target.value)}
-              onKeyDown={handleEnterAdvance}
-              className="px-3 py-2 bg-input-bg border border-border-default rounded-lg text-base w-[155px] font-sans text-text-strong focus:border-primary-300 focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:bg-surface"
-            />
-          </div>
+          <DatePickerInput
+            id="dob"
+            label="Birth Date"
+            value={dob}
+            onChange={onDobChange}
+          />
 
-          <div className="flex flex-col gap-1">
-            <label htmlFor="testDate" className="text-xs font-bold uppercase tracking-[0.04em] text-text-faint">
-              Test Date
-            </label>
-            <input
-              type="date"
-              id="testDate"
-              value={testDate}
-              onChange={(e) => onTestDateChange(e.target.value)}
-              onKeyDown={handleEnterAdvance}
-              className="px-3 py-2 bg-input-bg border border-border-default rounded-lg text-base w-[155px] font-sans text-text-strong focus:border-primary-300 focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:bg-surface"
-            />
-          </div>
+          <DatePickerInput
+            id="testDate"
+            label="Test Date"
+            value={testDate}
+            onChange={onTestDateChange}
+          />
 
           {/* Clear button with inline confirmation */}
           {clearPending ? (
@@ -120,7 +106,7 @@ const ChildBar = ({ dob, testDate, onDobChange, onTestDateChange, onClear }: Chi
         )}
 
         {ageInfo?.error && (
-          <span className="text-sm text-amber-700">{ageInfo.error}</span>
+          <span className="text-sm text-amber-700" role="alert">{ageInfo.error}</span>
         )}
       </div>
     </div>

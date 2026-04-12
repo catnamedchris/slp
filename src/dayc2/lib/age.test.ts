@@ -66,6 +66,14 @@ describe('calcAgeMonths', () => {
   it('accepts string dates', () => {
     expect(calcAgeMonths('2020-01-15', '2021-07-15')).toBe(18);
   });
+
+  it('returns NaN for invalid date strings', () => {
+    expect(calcAgeMonths('bad-date', '2021-07-15')).toBeNaN();
+  });
+
+  it('returns NaN for impossible dates', () => {
+    expect(calcAgeMonths('2020-02-30', '2021-07-15')).toBeNaN();
+  });
 });
 
 describe('findAgeBand', () => {

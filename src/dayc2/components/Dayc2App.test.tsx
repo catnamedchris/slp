@@ -10,12 +10,10 @@ const getRawScoreInput = (subtest: string) => {
   return mobileInput || desktopInput;
 };
 
-// Helper to enter valid dates so the scores section appears
+// Pre-seed persisted state so Dayc2App renders with valid dates
 const enterValidDates = () => {
-  const dobInput = screen.getByLabelText('Birth Date');
-  const testDateInput = screen.getByLabelText('Test Date');
-  fireEvent.change(dobInput, { target: { value: '2022-01-15' } });
-  fireEvent.change(testDateInput, { target: { value: '2024-01-15' } });
+  localStorage.setItem('slp:dayc2:dob', JSON.stringify('2022-01-15'));
+  localStorage.setItem('slp:dayc2:testDate', JSON.stringify('2024-01-15'));
 };
 
 describe('Dayc2App', () => {
@@ -31,22 +29,22 @@ describe('Dayc2App', () => {
   });
 
   it('renders default visible subtests (RL, EL, SE) after entering valid dates', () => {
-    render(<Dayc2App />);
     enterValidDates();
+    render(<Dayc2App />);
     expect(getRawScoreInput('receptiveLanguage')).toBeInTheDocument();
     expect(getRawScoreInput('expressiveLanguage')).toBeInTheDocument();
     expect(getRawScoreInput('socialEmotional')).toBeInTheDocument();
   });
 
   it('enables raw score inputs when age is valid', () => {
-    render(<Dayc2App />);
     enterValidDates();
+    render(<Dayc2App />);
     expect(getRawScoreInput('receptiveLanguage')).not.toBeDisabled();
   });
 
   it('calculates and displays results when inputs are entered', () => {
-    render(<Dayc2App />);
     enterValidDates();
+    render(<Dayc2App />);
 
     fireEvent.change(getRawScoreInput('receptiveLanguage')!, { target: { value: '20' } });
     fireEvent.change(getRawScoreInput('expressiveLanguage')!, { target: { value: '18' } });

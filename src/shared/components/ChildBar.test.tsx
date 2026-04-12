@@ -1,13 +1,21 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import ChildBar from './ChildBar';
+import type { AgeInfo } from '@/dayc2/lib/age';
 
 const defaultProps = {
   dob: '',
   testDate: '',
+  ageInfo: null as AgeInfo | null,
   onDobChange: vi.fn(),
   onTestDateChange: vi.fn(),
   onClear: vi.fn(),
+};
+
+const validAgeInfo: AgeInfo = {
+  ageMonths: 24,
+  ageBandLabel: '22-24 months',
+  error: null,
 };
 
 describe('ChildBar', () => {
@@ -17,22 +25,29 @@ describe('ChildBar', () => {
     expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
   });
 
-  it('calls onDobChange when birth date changes', () => {
+  it('calls onDobChange when a day is selected in the picker', () => {
     const onDobChange = vi.fn();
     render(<ChildBar {...defaultProps} onDobChange={onDobChange} />);
-    fireEvent.change(screen.getByLabelText('Birth Date'), { target: { value: '2022-01-15' } });
-    expect(onDobChange).toHaveBeenCalledWith('2022-01-15');
+    fireEvent.click(screen.getByLabelText('Birth Date'));
+    // Click the first day button in the calendar
+    const dayButton = document.querySelector('.rdp-day button');
+    expect(dayButton).toBeTruthy();
+    fireEvent.click(dayButton!);
+    expect(onDobChange).toHaveBeenCalledOnce();
   });
 
-  it('calls onTestDateChange when test date changes', () => {
+  it('calls onTestDateChange when a day is selected in the picker', () => {
     const onTestDateChange = vi.fn();
     render(<ChildBar {...defaultProps} onTestDateChange={onTestDateChange} />);
-    fireEvent.change(screen.getByLabelText('Test Date'), { target: { value: '2024-01-15' } });
-    expect(onTestDateChange).toHaveBeenCalledWith('2024-01-15');
+    fireEvent.click(screen.getByLabelText('Test Date'));
+    const dayButton = document.querySelector('.rdp-day button');
+    expect(dayButton).toBeTruthy();
+    fireEvent.click(dayButton!);
+    expect(onTestDateChange).toHaveBeenCalledOnce();
   });
 
   it('displays age when both dates are set', () => {
-    render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
+    render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" ageInfo={validAgeInfo} />);
     expect(screen.getByText('24 mo')).toBeInTheDocument();
     expect(screen.getByText('(2yr 0mo)')).toBeInTheDocument();
   });
@@ -51,9 +66,8 @@ describe('ChildBar', () => {
   });
 
   it('displays age band label when available', () => {
-    render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" />);
-    // 24 months falls within a valid age band
-    expect(screen.getByText(/\d+-\d+ months/)).toBeInTheDocument();
+    render(<ChildBar {...defaultProps} dob="2022-01-15" testDate="2024-01-15" ageInfo={validAgeInfo} />);
+    expect(screen.getByText('22-24 months')).toBeInTheDocument();
   });
 
   it('Clear button shows confirm state on click', () => {

@@ -27,21 +27,6 @@ describe('advanceFocus', () => {
     document.body.removeChild(container);
   });
 
-  it('advances from dob to testDate', () => {
-    const dob = document.getElementById('dob')!;
-    dob.focus();
-    const moved = advanceFocus(dob);
-    expect(moved).toBe(true);
-    expect(document.activeElement).toBe(document.getElementById('testDate'));
-  });
-
-  it('advances from testDate to targetPercentile', () => {
-    const testDate = document.getElementById('testDate')!;
-    const moved = advanceFocus(testDate);
-    expect(moved).toBe(true);
-    expect(document.activeElement).toBe(document.getElementById('targetPercentile'));
-  });
-
   it('advances from targetPercentile to raw-receptiveLanguage', () => {
     const el = document.getElementById('targetPercentile')!;
     const moved = advanceFocus(el);

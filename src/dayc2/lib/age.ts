@@ -1,26 +1,30 @@
-// Age calculation utilities using date-fns
+// Age calculation utilities using plain-date parsing
 
-import { differenceInMonths } from 'date-fns';
 import type { RawToStandardTableJson } from '../types';
 import type { LookupContext } from '../data/context';
 import { createLookupContext } from '../data/context';
 import { DAYC2_MIN_AGE_MONTHS, DAYC2_MAX_AGE_MONTHS } from '../constants';
+import { parseIsoDateOnly, calcCompletedMonths } from '@/shared/lib/dates';
 
 /**
- * Calculates age in months between date of birth and test date.
- * Uses date-fns for accurate handling of month boundaries and leap years.
- *
- * @param dob - Date of birth (Date object or ISO string)
- * @param testDate - Test date (Date object or ISO string)
- * @returns Age in complete months (negative if testDate before dob)
+ * Calculates age in completed months between date of birth and test date.
+ * Accepts Date objects or ISO date strings (YYYY-MM-DD).
+ * Uses plain-date parsing to avoid timezone ambiguity.
  */
 export const calcAgeMonths = (
   dob: Date | string,
   testDate: Date | string
 ): number => {
-  const dobDate = typeof dob === 'string' ? new Date(dob) : dob;
-  const testDateObj = typeof testDate === 'string' ? new Date(testDate) : testDate;
-  return differenceInMonths(testDateObj, dobDate);
+  const dobParts = typeof dob === 'string'
+    ? parseIsoDateOnly(dob)
+    : { year: dob.getFullYear(), month: dob.getMonth() + 1, day: dob.getDate() };
+  const testParts = typeof testDate === 'string'
+    ? parseIsoDateOnly(testDate)
+    : { year: testDate.getFullYear(), month: testDate.getMonth() + 1, day: testDate.getDate() };
+
+  if (!dobParts || !testParts) return NaN;
+
+  return calcCompletedMonths(dobParts, testParts);
 };
 
 /**
@@ -65,7 +69,14 @@ export interface AgeInfo {
 export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null => {
   if (!dob || !testDate) return null;
 
-  const ageMonths = calcAgeMonths(dob, testDate);
+  const dobParsed = parseIsoDateOnly(dob);
+  const testParsed = parseIsoDateOnly(testDate);
+
+  if (!dobParsed || !testParsed) {
+    return { ageMonths: NaN, ageBandLabel: null, error: 'Invalid date format' };
+  }
+
+  const ageMonths = calcCompletedMonths(dobParsed, testParsed);
   const ctx = createLookupContext();
   const bTable = findAgeBand(ageMonths, ctx);
 
@@ -74,6 +85,9 @@ export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null 
     error = 'Test date cannot be before date of birth';
   } else {
     error = validateAgeBounds(ageMonths);
+    if (!error && !bTable) {
+      error = `No normative table available for age ${ageMonths} months`;
+    }
   }
 
   return {
