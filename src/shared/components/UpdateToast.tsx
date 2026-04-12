@@ -11,22 +11,22 @@ const UpdateToast = ({ needRefresh, offlineReady, onUpdate, onClose }: UpdateToa
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm bg-white rounded-lg shadow-lg border border-slate-200 p-4">
+    <div className="fixed bottom-4 right-4 z-50 max-w-sm bg-surface rounded-lg shadow-lg border border-border-default p-4">
       {needRefresh ? (
         <>
-          <p className="text-sm text-slate-700 mb-3">
+          <p className="text-sm text-text-default mb-3">
             A new version is available.
           </p>
           <div className="flex gap-2">
             <button
               onClick={onUpdate}
-              className="px-3 py-1.5 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-teal-700 transition-colors"
+              className="px-3 py-1.5 bg-cta text-white text-sm font-medium rounded-md hover:bg-cta-hover transition-colors"
             >
               Update now
             </button>
             <button
               onClick={onClose}
-              className="px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-md hover:bg-slate-200 transition-colors"
+              className="px-3 py-1.5 bg-surface-muted text-text-default text-sm font-medium rounded-md hover:bg-border-default transition-colors"
             >
               Later
             </button>
@@ -34,12 +34,12 @@ const UpdateToast = ({ needRefresh, offlineReady, onUpdate, onClose }: UpdateToa
         </>
       ) : (
         <>
-          <p className="text-sm text-slate-700 mb-2">
+          <p className="text-sm text-text-default mb-2">
             App ready for offline use.
           </p>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-md hover:bg-slate-200 transition-colors"
+            className="px-3 py-1.5 bg-surface-muted text-text-default text-sm font-medium rounded-md hover:bg-border-default transition-colors"
           >
             OK
           </button>

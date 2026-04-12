@@ -78,7 +78,7 @@ export const calculateAgeInfo = (dob: string, testDate: string): AgeInfo | null 
 
   return {
     ageMonths,
-    ageBandLabel: bTable?.source.ageBand.label ?? null,
+    ageBandLabel: bTable?.source.ageBand.label?.toLowerCase() ?? null,
     error,
   };
 };

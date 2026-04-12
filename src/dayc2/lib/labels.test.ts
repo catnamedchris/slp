@@ -49,16 +49,16 @@ describe('formatAgeMonthsValue', () => {
     expect(formatAgeMonthsValue(null)).toBe('—');
   });
 
-  it('formats exact value with months suffix', () => {
-    expect(formatAgeMonthsValue({ value: 24 })).toBe('24 months');
+  it('formats exact value with mo suffix', () => {
+    expect(formatAgeMonthsValue({ value: 24 })).toBe('24 mo');
   });
 
-  it('formats less-than bound with months suffix', () => {
-    expect(formatAgeMonthsValue({ bound: 'lt', value: 12 })).toBe('<12 months');
+  it('formats less-than bound with mo suffix', () => {
+    expect(formatAgeMonthsValue({ bound: 'lt', value: 12 })).toBe('<12 mo');
   });
 
-  it('formats greater-than bound with months suffix', () => {
-    expect(formatAgeMonthsValue({ bound: 'gt', value: 71 })).toBe('>71 months');
+  it('formats greater-than bound with mo suffix', () => {
+    expect(formatAgeMonthsValue({ bound: 'gt', value: 71 })).toBe('>71 mo');
   });
 });
 

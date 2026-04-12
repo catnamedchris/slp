@@ -25,7 +25,7 @@ export const formatPercentileValue = (pct: { value: number } | { min: number; ma
 export const formatAgeMonthsValue = (age: { value: number } | { bound: 'lt' | 'gt'; value: number } | null): string => {
   if (age === null) return '—';
   if ('bound' in age) {
-    return age.bound === 'lt' ? `<${age.value} months` : `>${age.value} months`;
+    return age.bound === 'lt' ? `<${age.value} mo` : `>${age.value} mo`;
   }
-  return `${age.value} months`;
+  return `${age.value} mo`;
 };
