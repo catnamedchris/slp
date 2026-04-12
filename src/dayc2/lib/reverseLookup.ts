@@ -52,8 +52,16 @@ export const lookupStandardScoreFromPercentile = (
 };
 
 /**
- * Reverse lookup: finds the minimum raw score needed to achieve a target standard score.
- * Used for reverse lookup ("what raw score do I need to reach SS 100?").
+ * Reverse lookup: finds the maximum raw score that still qualifies at a target standard score.
+ *
+ * Used for eligibility determination: a child qualifies for services if their
+ * standard score is at or below the target. Since B tables have gaps in SS values
+ * (e.g., SS jumps from 75 to 79 with no 77), we find the highest SS that doesn't
+ * exceed the target, then return the minimum raw score that produces that SS.
+ *
+ * Example at age 24mo, target SS 77 (6th %ile), Receptive Language:
+ *   raw 12 → SS 75 (qualifies ✓) ← returned
+ *   raw 13 → SS 79 (does NOT qualify ✗)
  */
 export const lookupRawScoreFromStandardScore = (
   targetSS: number,
@@ -71,24 +79,18 @@ export const lookupRawScoreFromStandardScore = (
     };
   }
 
-  // Find the minimum raw score that achieves at most the target SS
-  // (For qualification: you qualify if your score is at or below the threshold)
-  // If exact match not found, use the next highest available SS that's still ≤ target
+  // Find the highest SS that is still ≤ targetSS (i.e., still qualifies).
+  // Among rows with that SS, pick the minimum raw score.
   let bestRow: RawToStandardRow | null = null;
   let bestSS: number | null = null;
 
   for (const row of bTable.rows) {
     const score = row[subtest];
     if (score === null) continue;
-
-    // Only consider exact values, not bounded ones
-    if (!isExact(score)) continue;
+    if (!isExact(score)) continue; // skip bounded values like <50 or >150
 
     const ss = score.value;
 
-    // We want scores <= targetSS (at or below the threshold)
-    // Among those, find the highest SS (closest to target)
-    // Among rows with that SS, find the minimum raw score
     if (ss <= targetSS) {
       if (bestSS === null || ss > bestSS || (ss === bestSS && row.rawScore < bestRow!.rawScore)) {
         bestSS = ss;
