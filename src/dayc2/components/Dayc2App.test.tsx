@@ -62,7 +62,7 @@ describe('Dayc2App', () => {
     //   EL: raw 11 (SS 77, exact match)
     //   SE: raw 19 (SS 76, highest ≤ 77)
     const targetsSection = screen.getByText('Targets').closest('div.bg-surface')!;
-    const chipValues = targetsSection.querySelectorAll('.text-xl.font-bold');
+    const chipValues = targetsSection.querySelectorAll('div.text-xl.font-bold');
     const chips = Array.from(chipValues).map((el) => el.textContent);
     expect(chips).toEqual(['12', '11', '19']);
   });

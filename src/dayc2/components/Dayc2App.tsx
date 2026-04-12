@@ -54,7 +54,7 @@ const Dayc2App = () => {
               onTargetPercentileChange={setTargetPercentile}
               onProvenanceClick={handleProvenanceClick}
               exceedingSubtests={eligibility.subtests}
-              allExceedTargets={eligibility.allExceed}
+              onClear={handleClear}
             />
 
             <ScoresTable
@@ -62,6 +62,7 @@ const Dayc2App = () => {
               rawScores={rawScores}
               skillItems={skillItems}
               result={result}
+              exceedingSubtests={eligibility.subtests}
               onRawScoreChange={handleRawScoreChange}
               onSkillItemsChange={handleSkillItemsChange}
               onProvenanceClick={handleProvenanceClick}

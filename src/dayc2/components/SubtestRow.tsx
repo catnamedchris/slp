@@ -15,6 +15,7 @@ interface SubtestRowProps {
   rawScore: number | null;
   subtestResult: SubtestResult | null;
   disabled: boolean;
+  exceedsTarget?: boolean;
   skillItemsInput: SkillItemsInput;
   onRawScoreChange: (subtest: ActiveSubtestKey, value: number | null) => void;
   onSkillItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
@@ -47,6 +48,7 @@ const SubtestRow = ({
   rawScore,
   subtestResult,
   disabled,
+  exceedsTarget = false,
   skillItemsInput,
   onRawScoreChange,
   onSkillItemsChange,
@@ -84,14 +86,17 @@ const SubtestRow = ({
               onKeyDown={handleEnterAdvance}
               disabled={disabled}
               placeholder="—"
-              className="w-14 h-10 bg-input-bg border border-border-default rounded-lg text-center text-lg font-bold font-sans text-text-strong placeholder:text-text-placeholder placeholder:font-normal disabled:text-text-placeholder disabled:cursor-not-allowed focus:border-focus-border focus:bg-surface focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:outline-none"
+              className={`w-14 h-10 border border-border-default rounded-lg text-center text-xl font-bold font-sans placeholder:text-text-placeholder placeholder:font-normal disabled:text-text-placeholder disabled:cursor-not-allowed focus:border-focus-border focus:bg-surface focus:shadow-[0_0_0_3px_var(--theme-focus-ring)] focus:outline-none ${
+                exceedsTarget ? 'bg-red-50 text-red-700' : 'bg-input-bg text-text-strong'
+              }`}
             />
           </div>
 
           {/* Computed score cells */}
           {display.scores.map((score) => {
             const hasProvenance = score.hasValue && score.steps.length > 0 && onProvenanceClick;
-            const textClass = score.hasValue ? 'text-text-strong' : 'text-text-placeholder';
+            const isExceedingPercentile = exceedsTarget && score.key === 'percentile' && score.hasValue;
+            const textClass = isExceedingPercentile ? 'text-red-700' : score.hasValue ? 'text-text-strong' : 'text-text-placeholder';
 
             return (
               <div key={score.key} className="flex-1 text-center">
@@ -100,7 +105,7 @@ const SubtestRow = ({
                 </div>
                 <div
                   key={score.value}
-                  className={`h-10 flex items-center justify-center text-xl font-bold score-value whitespace-nowrap ${score.value !== '—' ? 'animate-value-in' : ''} ${textClass} ${hasProvenance ? 'cursor-pointer hover:opacity-80' : ''} ${score.value === '—' ? 'select-none' : ''}`}
+                  className={`h-10 flex items-center justify-center text-xl font-bold score-value whitespace-nowrap ${score.value !== '—' ? 'animate-value-in' : ''} ${textClass} ${hasProvenance ? 'cursor-pointer hover:opacity-80' : ''} ${score.value === '—' ? 'select-none' : ''} ${isExceedingPercentile ? 'bg-red-50 rounded-lg' : ''}`}
                   onClick={
                     hasProvenance
                       ? (e: React.MouseEvent<HTMLDivElement>) => {
@@ -119,7 +124,7 @@ const SubtestRow = ({
 
         {/* Note (e.g. raw score exceeds table max) */}
         {display.note && (
-          <div className="text-xs text-amber-800 flex items-center gap-1">
+          <div className="text-xs text-red-800 flex items-center gap-1">
             <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
             </svg>

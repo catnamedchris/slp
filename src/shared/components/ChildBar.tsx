@@ -102,6 +102,7 @@ const ChildBar = ({ dob, testDate, ageInfo, onDobChange, onTestDateChange, onCle
                 {ageInfo.ageBandLabel}
               </span>
             )}
+
           </div>
         )}
 

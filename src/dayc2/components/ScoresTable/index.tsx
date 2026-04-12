@@ -3,6 +3,7 @@ import type { ProvenanceStep } from '@/shared/lib/types';
 import type { RawScores } from '../../lib/rawScores';
 import type { ActiveSubtestKey } from '../../lib/scoresDisplay';
 import type { AllSkillItems } from '../../lib/skills';
+import type { EligibilityMap } from '../../lib/eligibility';
 import { isDayc2AgeInRange } from '../../constants';
 import SubtestRow from '../SubtestRow';
 import CompositeFooter from '../CompositeFooter';
@@ -12,6 +13,7 @@ interface ScoresTableProps {
   rawScores: RawScores;
   skillItems: AllSkillItems;
   result: CalculationResult | null;
+  exceedingSubtests?: EligibilityMap;
   onRawScoreChange: (subtest: ActiveSubtestKey, value: number | null) => void;
   onSkillItemsChange: (subtest: ActiveSubtestKey, list: 'able' | 'unable', items: number[]) => void;
   onProvenanceClick?: (steps: ProvenanceStep[], anchorElement: HTMLElement, title?: string) => void;
@@ -22,6 +24,7 @@ const ScoresTable = ({
   rawScores,
   skillItems,
   result,
+  exceedingSubtests = {},
   onRawScoreChange,
   onSkillItemsChange,
   onProvenanceClick,
@@ -37,6 +40,7 @@ const ScoresTable = ({
           rawScore={rawScores.receptiveLanguage}
           subtestResult={result?.subtests.receptiveLanguage ?? null}
           disabled={isDisabled}
+          exceedsTarget={exceedingSubtests.receptiveLanguage?.exceedsTarget ?? false}
           skillItemsInput={skillItems.receptiveLanguage}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}
@@ -47,6 +51,7 @@ const ScoresTable = ({
           rawScore={rawScores.expressiveLanguage}
           subtestResult={result?.subtests.expressiveLanguage ?? null}
           disabled={isDisabled}
+          exceedsTarget={exceedingSubtests.expressiveLanguage?.exceedsTarget ?? false}
           skillItemsInput={skillItems.expressiveLanguage}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}
@@ -65,6 +70,7 @@ const ScoresTable = ({
           rawScore={rawScores.socialEmotional}
           subtestResult={result?.subtests.socialEmotional ?? null}
           disabled={isDisabled}
+          exceedsTarget={exceedingSubtests.socialEmotional?.exceedsTarget ?? false}
           skillItemsInput={skillItems.socialEmotional}
           onRawScoreChange={onRawScoreChange}
           onSkillItemsChange={onSkillItemsChange}
