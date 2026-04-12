@@ -42,6 +42,13 @@ export const DOMAIN_TO_AGE_EQUIV: Record<DomainKey, AgeEquivalentKey> = {
   communication: 'communication',
 };
 
+/** Maximum valid item number per subtest (from Table A1 ceiling values) */
+export const SUBTEST_MAX_ITEM: Record<ActiveSubtestKey, number> = {
+  receptiveLanguage: 34,
+  expressiveLanguage: 38,
+  socialEmotional: 58,
+};
+
 export const DEFAULT_VISIBLE_SUBTESTS: ActiveSubtestKey[] = [
   'receptiveLanguage',
   'expressiveLanguage',

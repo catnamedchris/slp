@@ -2,11 +2,12 @@
 // Skill descriptions will be added later — for now, items are displayed as numbers
 
 import type { ActiveSubtestKey } from './metadata';
+import { SUBTEST_MAX_ITEM } from './metadata';
 
-/** Raw input strings for a single subtest's skills */
+/** Skill items for a single subtest (stored as sorted number arrays) */
 export interface SkillItemsInput {
-  able: string;
-  unable: string;
+  able: number[];
+  unable: number[];
 }
 
 /** All subtests' skill items */
@@ -17,7 +18,9 @@ export interface SkillValidation {
   ableItems: number[];
   unableItems: number[];
   conflicts: number[];
+  outOfRange: number[];
   hasConflicts: boolean;
+  hasOutOfRange: boolean;
   canCopyAble: boolean;
   canCopyUnable: boolean;
   formatCopyText: (list: 'able' | 'unable') => string;
@@ -25,9 +28,9 @@ export interface SkillValidation {
 
 /** Create empty skill items for all subtests */
 export const createEmptySkillItems = (): AllSkillItems => ({
-  receptiveLanguage: { able: '', unable: '' },
-  expressiveLanguage: { able: '', unable: '' },
-  socialEmotional: { able: '', unable: '' },
+  receptiveLanguage: { able: [], unable: [] },
+  expressiveLanguage: { able: [], unable: [] },
+  socialEmotional: { able: [], unable: [] },
 });
 
 /**
@@ -52,15 +55,38 @@ export const parseItemInput = (input: string): number[] => {
 };
 
 /**
- * Validate a subtest's skill items: parse both lists, detect conflicts.
+ * Add items to a sorted number array, returning a new sorted unique array.
  */
-export const validateSkillItems = (input: SkillItemsInput): SkillValidation => {
-  const ableItems = parseItemInput(input.able);
-  const unableItems = parseItemInput(input.unable);
+export const addItems = (existing: number[], toAdd: number[]): number[] => {
+  const set = new Set([...existing, ...toAdd]);
+  return [...set].sort((a, b) => a - b);
+};
+
+/**
+ * Remove an item from a number array, returning a new array.
+ */
+export const removeItem = (existing: number[], item: number): number[] =>
+  existing.filter((n) => n !== item);
+
+/**
+ * Validate a subtest's skill items: detect conflicts and out-of-range items.
+ */
+export const validateSkillItems = (
+  input: SkillItemsInput,
+  subtest?: ActiveSubtestKey,
+): SkillValidation => {
+  const { able: ableItems, unable: unableItems } = input;
 
   const ableSet = new Set(ableItems);
   const conflicts = unableItems.filter((item) => ableSet.has(item));
   const hasConflicts = conflicts.length > 0;
+
+  const maxItem = subtest ? SUBTEST_MAX_ITEM[subtest] : Infinity;
+  const allItems = [...new Set([...ableItems, ...unableItems])];
+  const outOfRange = allItems.filter((item) => item > maxItem).sort((a, b) => a - b);
+  const hasOutOfRange = outOfRange.length > 0;
+
+  const hasErrors = hasConflicts || hasOutOfRange;
 
   const formatCopyText = (list: 'able' | 'unable'): string => {
     const items = list === 'able' ? ableItems : unableItems;
@@ -71,9 +97,11 @@ export const validateSkillItems = (input: SkillItemsInput): SkillValidation => {
     ableItems,
     unableItems,
     conflicts,
+    outOfRange,
     hasConflicts,
-    canCopyAble: ableItems.length > 0 && !hasConflicts,
-    canCopyUnable: unableItems.length > 0 && !hasConflicts,
+    hasOutOfRange,
+    canCopyAble: ableItems.length > 0 && !hasErrors,
+    canCopyUnable: unableItems.length > 0 && !hasErrors,
     formatCopyText,
   };
 };
