@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
-import ProvenancePanel, { AboutData } from './ProvenancePanel';
+import ProvenancePanel, { AboutData, resolveManualPage } from './ProvenancePanel';
 import type { ProvenanceStep, SourceMeta } from '@/shared/lib/types';
 
 const mockSource: SourceMeta = {
@@ -23,7 +23,7 @@ const mockSteps: ProvenanceStep[] = [
   {
     tableId: 'C1',
     csvRow: 50,
-    source: { ...mockSource, tableId: 'C1', csvFilename: 'Table-C1-Percentiles.csv' },
+    source: { ...mockSource, tableId: 'C1', manualPage: 38, csvFilename: 'Table-C1-Percentiles.csv' },
     description: 'SS 100 → 50th percentile',
   },
 ];
@@ -61,10 +61,11 @@ describe('ProvenancePanel', () => {
     expect(screen.getByText('SS 100 → 50th percentile')).toBeInTheDocument();
   });
 
-  it('renders PDF links for each step', () => {
+  it('renders PDF links with correct page for each step', () => {
     render(<ProvenancePanel selectedSteps={mockSteps} onClose={() => {}} />);
     const links = screen.getAllByRole('link');
     expect(links[0].getAttribute('href')).toContain('DAYC2-Scoring-Manual.pdf#page=12');
+    expect(links[1].getAttribute('href')).toContain('DAYC2-Scoring-Manual.pdf#page=38');
   });
 
   it('calls onClose when close button is clicked', () => {
@@ -173,4 +174,79 @@ describe('AboutData', () => {
     const rows = screen.getAllByText('Table-B17-Raw-Scores.csv');
     expect(rows.length).toBe(1);
   });
+});
+
+describe('resolveManualPage', () => {
+  const makeStep = (tableId: string, csvRow: number | null, manualPage: number): ProvenanceStep => ({
+    tableId,
+    csvRow,
+    source: { ...mockSource, tableId, manualPage },
+  });
+
+  it('returns first page for B17 row on page 1 (rawScore 36 → csvRow 38)', () => {
+    expect(resolveManualPage(makeStep('B17', 38, 12))).toBe(12);
+  });
+
+  it('returns second page for B17 row on page 2 (rawScore 37 → csvRow 39)', () => {
+    expect(resolveManualPage(makeStep('B17', 39, 12))).toBe(13);
+  });
+
+  it('returns first page for A1 row on page 1 (ageMonths 25 → csvRow 27)', () => {
+    expect(resolveManualPage(makeStep('A1', 27, 1))).toBe(1);
+  });
+
+  it('returns second page for A1 row on page 2 (ageMonths 26 → csvRow 28)', () => {
+    expect(resolveManualPage(makeStep('A1', 28, 1))).toBe(2);
+  });
+
+  it('returns third page for A1 row on page 3 (ageMonths 52 → csvRow 54)', () => {
+    expect(resolveManualPage(makeStep('A1', 54, 1))).toBe(3);
+  });
+
+  it('falls back to source.manualPage for single-page tables (C1)', () => {
+    expect(resolveManualPage(makeStep('C1', 10, 38))).toBe(38);
+  });
+
+  it('falls back to source.manualPage when csvRow is null', () => {
+    expect(resolveManualPage(makeStep('B17', null, 12))).toBe(12);
+  });
+
+  it('resolves correctly for B29 page 2 (rawScore 59 → csvRow 61)', () => {
+    expect(resolveManualPage(makeStep('B29', 61, 36))).toBe(37);
+  });
+
+  // Exhaustive boundary test: last row on page 1 and first row on page 2 for every B table
+  const bTableBoundaries: Array<{ tableId: string; startPage: number; lastCsvRowPage1: number }> = [
+    { tableId: 'B13', startPage: 4,  lastCsvRowPage1: 37 },
+    { tableId: 'B14', startPage: 6,  lastCsvRowPage1: 37 },
+    { tableId: 'B15', startPage: 8,  lastCsvRowPage1: 37 },
+    { tableId: 'B16', startPage: 10, lastCsvRowPage1: 37 },
+    { tableId: 'B17', startPage: 12, lastCsvRowPage1: 38 },
+    { tableId: 'B18', startPage: 14, lastCsvRowPage1: 40 },
+    { tableId: 'B19', startPage: 16, lastCsvRowPage1: 40 },
+    { tableId: 'B20', startPage: 18, lastCsvRowPage1: 42 },
+    { tableId: 'B21', startPage: 20, lastCsvRowPage1: 43 },
+    { tableId: 'B22', startPage: 22, lastCsvRowPage1: 47 },
+    { tableId: 'B23', startPage: 24, lastCsvRowPage1: 50 },
+    { tableId: 'B24', startPage: 26, lastCsvRowPage1: 51 },
+    { tableId: 'B25', startPage: 28, lastCsvRowPage1: 54 },
+    { tableId: 'B26', startPage: 30, lastCsvRowPage1: 55 },
+    { tableId: 'B27', startPage: 32, lastCsvRowPage1: 58 },
+    { tableId: 'B28', startPage: 34, lastCsvRowPage1: 59 },
+    { tableId: 'B29', startPage: 36, lastCsvRowPage1: 60 },
+  ];
+
+  it.each(bTableBoundaries)(
+    '$tableId: last row on page 1 (csvRow $lastCsvRowPage1) → page $startPage',
+    ({ tableId, startPage, lastCsvRowPage1 }) => {
+      expect(resolveManualPage(makeStep(tableId, lastCsvRowPage1, startPage))).toBe(startPage);
+    }
+  );
+
+  it.each(bTableBoundaries)(
+    '$tableId: first row on page 2 (csvRow $lastCsvRowPage1+1) → page $startPage+1',
+    ({ tableId, startPage, lastCsvRowPage1 }) => {
+      expect(resolveManualPage(makeStep(tableId, lastCsvRowPage1 + 1, startPage))).toBe(startPage + 1);
+    }
+  );
 });

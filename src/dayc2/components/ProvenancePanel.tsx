@@ -89,6 +89,66 @@ export const AboutData = ({ sources }: AboutDataProps) => {
 const HIGHLIGHT_CLASS = 'bg-primary-50 ring-2 ring-primary-400 ring-inset';
 const PDF_PATH = `${import.meta.env.BASE_URL}DAYC2-Scoring-Manual.pdf`;
 
+/**
+ * Page-break data for multi-page tables.
+ * Each entry maps a tableId to its start page and the csvRow boundaries where
+ * page breaks occur. A table with N pages has N-1 breakpoints.
+ * breakAfterCsvRow[i] = last csvRow on page (startPage + i).
+ *
+ * Example: B17 starts on page 12, page 1 has csvRows up to 38 (rawScore 36),
+ * so csvRow > 38 means the row is on page 13.
+ */
+interface TablePageInfo {
+  startPage: number;
+  breakAfterCsvRow: number[];
+}
+
+const TABLE_PAGE_BREAKS: Record<string, TablePageInfo> = {
+  // A1: pages 1-3, page 1 ends at ageMonths 25 (csvRow 27), page 2 ends at ageMonths 51 (csvRow 53)
+  A1:  { startPage: 1,  breakAfterCsvRow: [27, 53] },
+  // B tables: each spans 2 pages; breakpoint is the last csvRow on the first page
+  B13: { startPage: 4,  breakAfterCsvRow: [37] },  // page 1 ends at rawScore 35
+  B14: { startPage: 6,  breakAfterCsvRow: [37] },  // page 1 ends at rawScore 35
+  B15: { startPage: 8,  breakAfterCsvRow: [37] },  // page 1 ends at rawScore 35
+  B16: { startPage: 10, breakAfterCsvRow: [37] },  // page 1 ends at rawScore 35
+  B17: { startPage: 12, breakAfterCsvRow: [38] },  // page 1 ends at rawScore 36
+  B18: { startPage: 14, breakAfterCsvRow: [40] },  // page 1 ends at rawScore 38
+  B19: { startPage: 16, breakAfterCsvRow: [40] },  // page 1 ends at rawScore 38
+  B20: { startPage: 18, breakAfterCsvRow: [42] },  // page 1 ends at rawScore 40
+  B21: { startPage: 20, breakAfterCsvRow: [43] },  // page 1 ends at rawScore 41
+  B22: { startPage: 22, breakAfterCsvRow: [47] },  // page 1 ends at rawScore 45
+  B23: { startPage: 24, breakAfterCsvRow: [50] },  // page 1 ends at rawScore 48
+  B24: { startPage: 26, breakAfterCsvRow: [51] },  // page 1 ends at rawScore 49
+  B25: { startPage: 28, breakAfterCsvRow: [54] },  // page 1 ends at rawScore 52
+  B26: { startPage: 30, breakAfterCsvRow: [55] },  // page 1 ends at rawScore 53
+  B27: { startPage: 32, breakAfterCsvRow: [58] },  // page 1 ends at rawScore 56
+  B28: { startPage: 34, breakAfterCsvRow: [59] },  // page 1 ends at rawScore 57
+  B29: { startPage: 36, breakAfterCsvRow: [60] },  // page 1 ends at rawScore 58
+};
+
+/**
+ * Resolves the exact PDF page for a provenance step.
+ * Uses csvRow to determine which page of a multi-page table the row falls on.
+ * Falls back to source.manualPage when no page-break data exists or csvRow is null.
+ */
+export const resolveManualPage = (step: ProvenanceStep): number => {
+  const info = TABLE_PAGE_BREAKS[step.tableId];
+  if (!info || step.csvRow === null) {
+    return step.source.manualPage;
+  }
+
+  let pageOffset = 0;
+  for (const breakpoint of info.breakAfterCsvRow) {
+    if (step.csvRow > breakpoint) {
+      pageOffset++;
+    } else {
+      break;
+    }
+  }
+
+  return info.startPage + pageOffset;
+};
+
 const getPdfLink = (page: number): string => `${PDF_PATH}#page=${page}`;
 
 const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: ProvenancePanelProps) => {
@@ -221,8 +281,11 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
                 )}
                 
                 {/* Manual Reference with PDF Link */}
+                {(() => {
+                  const resolvedPage = resolveManualPage(step);
+                  return (
                 <a
-                  href={getPdfLink(step.source.manualPage)}
+                  href={getPdfLink(resolvedPage)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 block bg-input-bg hover:bg-surface-muted border border-border-default rounded-xl p-3 transition-colors group"
@@ -236,7 +299,7 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
                         {step.source.tableTitle}
                       </div>
                       <div className="text-xs text-text-muted mt-1">
-                        Page {step.source.manualPage}
+                        Page {resolvedPage}
                       </div>
                     </div>
                     <svg className="w-4 h-4 text-text-faint group-hover:text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -244,6 +307,8 @@ const ProvenancePanel = ({ title, selectedSteps, anchorElement, onClose }: Prove
                     </svg>
                   </div>
                 </a>
+                  );
+                })()}
               </div>
             </div>
           ))}
