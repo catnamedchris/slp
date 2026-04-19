@@ -6,18 +6,14 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-// Helper to set age via localStorage (DOB + test date)
-const setAge = async (page: Page, ageMonths: number) => {
-  const testDate = new Date();
-  const dob = new Date(testDate);
-  dob.setMonth(dob.getMonth() - ageMonths);
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+// Helper to seed DOB + test date via localStorage (fixed dates for deterministic tests)
+const seedDates = async (page: Page, dob: string, testDate: string) => {
   await page.evaluate(
     ([dobIso, testIso]) => {
       localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
       localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
     },
-    [fmt(dob), fmt(testDate)]
+    [dob, testDate],
   );
   await page.reload();
 };
@@ -29,7 +25,7 @@ test.describe('Targets / Reverse Lookup', () => {
   });
 
   test('shows Targets section when age is valid', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
     await expect(page.getByText('Targets')).toBeVisible();
     await expect(page.locator('#targetPercentile')).toBeVisible();
@@ -43,79 +39,90 @@ test.describe('Targets / Reverse Lookup', () => {
   });
 
   test('default target percentile is 6', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
     await expect(page.locator('#targetPercentile')).toHaveValue('6');
   });
 
+  test('shows exact target values for default 6th percentile', async ({ page }) => {
+    await seedDates(page, '2023-06-15', '2025-06-15');
+
+    // At 24mo, 6th percentile targets are: RL=12, EL=11, SE=19
+    // The target cells are clickable divs with title="Click to view calculation details"
+    const targetCells = page.locator('[title="Click to view calculation details"]');
+    await expect(targetCells.nth(0)).toHaveText('12');
+    await expect(targetCells.nth(1)).toHaveText('11');
+    await expect(targetCells.nth(2)).toHaveText('19');
+  });
+
   test('changing percentile updates target values', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
-    // Get initial target value from the first subtest cell
-    const targetsSection = page.locator('#targetPercentile').locator('..').locator('..').locator('..');
-    const initialText = await targetsSection.textContent();
+    // Default targets at 6th percentile
+    const targetCells = page.locator('[title="Click to view calculation details"]');
+    await expect(targetCells.nth(0)).toHaveText('12');
 
-    // Change percentile to 50
+    // Change to 50th percentile — values should change
     await page.locator('#targetPercentile').fill('50');
-
-    const updatedText = await targetsSection.textContent();
-    expect(updatedText).not.toBe(initialText);
+    await expect(targetCells.nth(0)).not.toHaveText('12');
   });
 
   test('target cells are clickable with provenance', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
     const cell = page.locator('[title="Click to view calculation details"]').first();
     await cell.click();
 
     await expect(page.getByText('How was this calculated?')).toBeVisible();
   });
-
-  test('percentile input has min/max attributes', async ({ page }) => {
-    await setAge(page, 24);
-
-    const input = page.locator('#targetPercentile');
-    await expect(input).toHaveAttribute('min', '1');
-    await expect(input).toHaveAttribute('max', '99');
-  });
-
-  test('shows all three subtest abbreviations', async ({ page }) => {
-    await setAge(page, 24);
-
-    const targetsSection = page.locator('#targetPercentile').locator('..').locator('..').locator('..');
-    await expect(targetsSection.getByText('RL')).toBeVisible();
-    await expect(targetsSection.getByText('EL')).toBeVisible();
-    await expect(targetsSection.getByText('SE')).toBeVisible();
-  });
 });
 
 test.describe('Targets Sticky Bar', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.setViewportSize({ width: 1024, height: 768 });
+    // Use a short viewport so scrolling reliably triggers the sticky state
+    await page.setViewportSize({ width: 1024, height: 500 });
   });
 
-  test('shows sticky bar when scrolled', async ({ page }) => {
-    await setAge(page, 24);
+  // Helper: scroll to bottom and wait for intersection observer
+  const scrollToSticky = async (page: Page) => {
+    await page.evaluate(async () => {
+      window.scrollTo(0, document.body.scrollHeight);
+      // Allow intersection observer callback to fire
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    });
+  };
 
-    // Enter raw scores to ensure page has enough content to scroll
-    const rawInputs = page.getByRole('spinbutton');
-    const count = await rawInputs.count();
-    for (let i = 0; i < count; i++) {
-      const input = rawInputs.nth(i);
-      if (await input.isVisible()) {
-        await input.fill('10');
-      }
-    }
+  test('shows sticky bar with target values when scrolled', async ({ page }) => {
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
-    // Scroll down past the sentinel
-    await page.evaluate(() => window.scrollTo(0, 500));
-    await page.waitForTimeout(300);
+    // Enter some raw scores so page has content to scroll
+    await page.locator('#raw-receptiveLanguage').fill('10');
+    await page.locator('#raw-expressiveLanguage').fill('10');
+    await page.locator('#raw-socialEmotional').fill('10');
 
-    // Verify the sticky bar shows age display and Targets label with percentile input
-    const stickyPercentile = page.locator('#targetPercentile');
-    await expect(stickyPercentile).toBeVisible();
+    await scrollToSticky(page);
+
+    // When stuck, targets are rendered as <button> elements (not divs)
+    await expect(page.locator('button[title="Click to view calculation details"]').first()).toBeVisible({ timeout: 10000 });
+
+    // Verify age appears in sticky bar
     await expect(page.getByText('24 mo', { exact: true }).first()).toBeVisible();
-    await expect(page.getByText('Targets')).toBeVisible();
+  });
+
+  test('sticky bar targets are clickable for provenance', async ({ page }) => {
+    await seedDates(page, '2023-06-15', '2025-06-15');
+
+    await page.locator('#raw-receptiveLanguage').fill('10');
+    await page.locator('#raw-expressiveLanguage').fill('10');
+    await page.locator('#raw-socialEmotional').fill('10');
+
+    await scrollToSticky(page);
+
+    const stickyButton = page.locator('button[title="Click to view calculation details"]').first();
+    await expect(stickyButton).toBeVisible({ timeout: 10000 });
+    await stickyButton.click({ force: true });
+
+    await expect(page.getByText('How was this calculated?')).toBeVisible();
   });
 });

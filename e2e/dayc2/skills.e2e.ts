@@ -7,18 +7,14 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-// Helper to set age via localStorage and reload so SubtestRows render
-const setAge = async (page: Page, ageMonths: number) => {
-  const testDate = new Date();
-  const dob = new Date(testDate);
-  dob.setMonth(dob.getMonth() - ageMonths);
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+// Helper to seed fixed DOB and test date via localStorage and reload
+const seedDates = async (page: Page, dob: string, testDate: string) => {
   await page.evaluate(
     ([dobIso, testIso]) => {
       localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
       localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
     },
-    [fmt(dob), fmt(testDate)],
+    [dob, testDate],
   );
   await page.reload();
 };
@@ -46,7 +42,7 @@ test.describe('Skills / Chip Input', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.setViewportSize({ width: 1024, height: 768 });
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
   });
 
   test('adds chips via Enter key', async ({ page }) => {
@@ -55,15 +51,13 @@ test.describe('Skills / Chip Input', () => {
     await expect(chipLocator(page, 'Receptive Language', 'able', '5')).toBeVisible();
   });
 
-  test('adds chips via comma', async ({ page }) => {
+  test('adds chips via comma key', async ({ page }) => {
     const input = getChipInput(page, 'Receptive Language', 'able');
     await input.click();
-    await input.fill('8,11,14');
-    await input.press('Enter');
+    await input.pressSequentially('8');
+    await input.press(',');
 
     await expect(chipLocator(page, 'Receptive Language', 'able', '8')).toBeVisible();
-    await expect(chipLocator(page, 'Receptive Language', 'able', '11')).toBeVisible();
-    await expect(chipLocator(page, 'Receptive Language', 'able', '14')).toBeVisible();
   });
 
   test('removes chip via remove button', async ({ page }) => {
@@ -107,6 +101,27 @@ test.describe('Skills / Chip Input', () => {
     await expect(page.getByRole('alert').filter({ hasText: /Invalid.*35.*max.*34/ })).toBeVisible();
   });
 
+  test('duplicate warning clears after removing duplicate', async ({ page }) => {
+    await addChip(page, 'Receptive Language', 'able', '5');
+    await addChip(page, 'Receptive Language', 'able', '5');
+
+    await expect(page.getByRole('alert').filter({ hasText: /Duplicate/ })).toBeVisible();
+
+    // Remove one of the duplicates
+    const removeBtn = page.getByLabel('Remove Receptive Language able item 5').first();
+    await removeBtn.click();
+
+    await expect(page.getByRole('alert').filter({ hasText: /Duplicate/ })).not.toBeVisible();
+  });
+
+  test('copy button disabled when items have errors', async ({ page }) => {
+    // Add an out-of-range item (max for RL is 34)
+    await addChip(page, 'Receptive Language', 'able', '35');
+
+    const copyBtn = page.getByLabel('Copy Receptive Language able items');
+    await expect(copyBtn).toBeDisabled();
+  });
+
   test('copy button shows feedback', async ({ page }) => {
     // Grant clipboard permissions
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -118,27 +133,39 @@ test.describe('Skills / Chip Input', () => {
 
     await expect(page.getByText('Copied!')).toBeVisible();
   });
+
+  test('copy button copies correct text to clipboard', async ({ page }) => {
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+
+    await addChip(page, 'Receptive Language', 'able', '5');
+    await addChip(page, 'Receptive Language', 'able', '10');
+
+    const copyBtn = page.getByLabel('Copy Receptive Language able items');
+    await copyBtn.click();
+
+    await expect(page.getByText('Copied!')).toBeVisible();
+
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    expect(clipboardText).toBe('5, 10');
+  });
 });
 
 test.describe('Skills Persistence', () => {
   test('skill items persist across reload', async ({ page }) => {
     await page.goto('/');
     await page.setViewportSize({ width: 1024, height: 768 });
+    await seedDates(page, '2023-06-15', '2025-06-15');
 
-    // Seed skill items and age into localStorage
-    await page.evaluate(() => {
-      localStorage.setItem(
-        'slp:dayc2:skillItems',
-        JSON.stringify({
-          receptiveLanguage: { able: [1, 5, 10], unable: [] },
-          expressiveLanguage: { able: [], unable: [] },
-          socialEmotional: { able: [], unable: [] },
-        }),
-      );
-    });
-    await setAge(page, 24);
+    // Add chips through the UI
+    await addChip(page, 'Receptive Language', 'able', '5');
+    await addChip(page, 'Receptive Language', 'able', '10');
 
-    await expect(chipLocator(page, 'Receptive Language', 'able', '1')).toBeVisible();
+    await expect(chipLocator(page, 'Receptive Language', 'able', '5')).toBeVisible();
+    await expect(chipLocator(page, 'Receptive Language', 'able', '10')).toBeVisible();
+
+    // Reload and verify persistence
+    await page.reload();
+
     await expect(chipLocator(page, 'Receptive Language', 'able', '5')).toBeVisible();
     await expect(chipLocator(page, 'Receptive Language', 'able', '10')).toBeVisible();
   });

@@ -6,17 +6,13 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const setAge = async (page: Page, ageMonths: number) => {
-  const testDate = new Date();
-  const dob = new Date(testDate);
-  dob.setMonth(dob.getMonth() - ageMonths);
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const seedDates = async (page: Page, dob: string, testDate: string) => {
   await page.evaluate(
     ([dobIso, testIso]) => {
       localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
       localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
     },
-    [fmt(dob), fmt(testDate)],
+    [dob, testDate],
   );
   await page.reload();
 };
@@ -52,19 +48,21 @@ test.describe('Child Bar / Age Flow', () => {
   });
 
   test('shows age and age band for valid dates', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
     await expect(page.getByText('(2yr 0mo)')).toBeVisible();
+    const ageBandChip = page.locator('.bg-input-bg.rounded-md');
+    await expect(ageBandChip).toBeVisible();
   });
 
   test('shows error for age below minimum', async ({ page }) => {
-    await setAge(page, 11);
+    await seedDates(page, '2024-07-15', '2025-06-15');
     await expect(page.getByText(/below DAYC-2 minimum/)).toBeVisible();
     await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
   });
 
   test('shows error for age above maximum', async ({ page }) => {
-    await setAge(page, 72);
+    await seedDates(page, '2019-06-15', '2025-06-15');
     await expect(page.getByText(/above DAYC-2 maximum/)).toBeVisible();
     await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
   });
@@ -79,13 +77,13 @@ test.describe('Child Bar / Age Flow', () => {
   });
 
   test('renders scoring sections for valid age', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await expect(page.locator('#raw-receptiveLanguage')).toBeVisible();
     await expect(page.locator('#targetPercentile')).toBeVisible();
   });
 
   test('hides scoring sections for invalid age', async ({ page }) => {
-    await setAge(page, 11);
+    await seedDates(page, '2024-07-15', '2025-06-15');
     await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
     await expect(page.locator('#targetPercentile')).not.toBeVisible();
   });
@@ -98,21 +96,21 @@ test.describe('Clear Flow', () => {
   });
 
   test('Clear button shows confirmation', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await page.getByRole('button', { name: 'Clear' }).click();
     await expect(page.getByRole('button', { name: 'Confirm?' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
   });
 
   test('Cancel preserves state', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await page.getByRole('button', { name: 'Clear' }).click();
     await page.getByRole('button', { name: 'Cancel' }).click();
     await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
   });
 
   test('Confirm resets to empty state', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await page.getByRole('button', { name: 'Clear' }).click();
     await page.getByRole('button', { name: 'Confirm?' }).click();
     await expect(page.getByText('Ready to calculate')).toBeVisible();
@@ -127,14 +125,14 @@ test.describe('Persistence', () => {
   });
 
   test('DOB and test date persist across reload', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
     await page.reload();
     await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
   });
 
   test('raw scores persist across reload', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     const rawScores = {
       cognitive: null,
       receptiveLanguage: 10,
@@ -153,12 +151,12 @@ test.describe('Persistence', () => {
   });
 
   test('target percentile persists across reload', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15');
     await page.evaluate(() =>
-      localStorage.setItem('slp:dayc2:targetPercentile', JSON.stringify(6)),
+      localStorage.setItem('slp:dayc2:targetPercentile', JSON.stringify(25)),
     );
     await page.reload();
-    await expect(page.locator('#targetPercentile')).toHaveValue('6');
+    await expect(page.locator('#targetPercentile')).toHaveValue('25');
   });
 });
 

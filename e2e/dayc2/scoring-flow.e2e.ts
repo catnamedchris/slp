@@ -6,17 +6,13 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const setAge = async (page: Page, ageMonths: number) => {
-  const testDate = new Date();
-  const dob = new Date(testDate);
-  dob.setMonth(dob.getMonth() - ageMonths);
-  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+const seedDates = async (page: Page, dob: string, testDate: string) => {
   await page.evaluate(
     ([dobIso, testIso]) => {
       localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
       localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
     },
-    [fmt(dob), fmt(testDate)]
+    [dob, testDate],
   );
   await page.reload();
 };
@@ -43,7 +39,7 @@ test.describe('Score Entry and Display', () => {
   });
 
   test('shows placeholder dashes before score entry', async ({ page }) => {
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15'); // 24mo
 
     for (const id of ['receptiveLanguage', 'expressiveLanguage', 'socialEmotional']) {
       const scores = await getSubtestScores(page, id);
@@ -54,7 +50,7 @@ test.describe('Score Entry and Display', () => {
   });
 
   test('enters raw score and displays calculated results', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
     await enterRawScore(page, 'receptiveLanguage', 10);
 
     const scores = await getSubtestScores(page, 'receptiveLanguage');
@@ -62,18 +58,25 @@ test.describe('Score Entry and Display', () => {
     expect(scores.percentile).toBe('14%');
   });
 
-  test('all three subtests can be scored', async ({ page }) => {
-    await setAge(page, 12);
+  test('all three subtests show correct scores', async ({ page }) => {
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
 
-    for (const id of ['receptiveLanguage', 'expressiveLanguage', 'socialEmotional']) {
-      await enterRawScore(page, id, 10);
-      const scores = await getSubtestScores(page, id);
-      expect(scores.standardScore).not.toBe('—');
-    }
+    await enterRawScore(page, 'receptiveLanguage', 10);
+    const rl = await getSubtestScores(page, 'receptiveLanguage');
+    expect(rl.standardScore).toBe('84');
+    expect(rl.percentile).toBe('14%');
+
+    await enterRawScore(page, 'socialEmotional', 10);
+    const se = await getSubtestScores(page, 'socialEmotional');
+    expect(se.standardScore).toBe('65');
+
+    await enterRawScore(page, 'expressiveLanguage', 10);
+    const el = await getSubtestScores(page, 'expressiveLanguage');
+    expect(el.standardScore).not.toBe('—');
   });
 
   test('handles lower boundary scores (<50)', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
     await enterRawScore(page, 'socialEmotional', 2);
 
     const scores = await getSubtestScores(page, 'socialEmotional');
@@ -81,7 +84,7 @@ test.describe('Score Entry and Display', () => {
   });
 
   test('handles upper boundary scores (>150)', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
     await enterRawScore(page, 'socialEmotional', 45);
 
     const scores = await getSubtestScores(page, 'socialEmotional');
@@ -89,7 +92,7 @@ test.describe('Score Entry and Display', () => {
   });
 
   test('updates results when raw score changes', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
 
     await enterRawScore(page, 'socialEmotional', 10);
     let scores = await getSubtestScores(page, 'socialEmotional');
@@ -101,19 +104,34 @@ test.describe('Score Entry and Display', () => {
   });
 
   test('updates results when age changes', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
     await enterRawScore(page, 'receptiveLanguage', 10);
 
     const scoresAt12 = await getSubtestScores(page, 'receptiveLanguage');
     const ssAt12 = scoresAt12.standardScore;
 
-    await setAge(page, 24);
+    await seedDates(page, '2023-06-15', '2025-06-15'); // 24mo
     await enterRawScore(page, 'receptiveLanguage', 10);
 
     const scoresAt24 = await getSubtestScores(page, 'receptiveLanguage');
     const ssAt24 = scoresAt24.standardScore;
 
     expect(ssAt12).not.toBe(ssAt24);
+  });
+
+  test('clearing raw score returns to dashes', async ({ page }) => {
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
+    await enterRawScore(page, 'receptiveLanguage', 10);
+
+    const scores = await getSubtestScores(page, 'receptiveLanguage');
+    expect(scores.standardScore).toBe('84');
+
+    await page.locator('#raw-receptiveLanguage').fill('');
+
+    const cleared = await getSubtestScores(page, 'receptiveLanguage');
+    expect(cleared.standardScore).toBe('—');
+    expect(cleared.percentile).toBe('—');
+    expect(cleared.ageEquivalent).toBe('—');
   });
 });
 
@@ -124,29 +142,39 @@ test.describe('Communication Composite', () => {
   });
 
   test('shows composite sum for RL + EL', async ({ page }) => {
-    await setAge(page, 12);
-    await enterRawScore(page, 'receptiveLanguage', 10);
-    await enterRawScore(page, 'expressiveLanguage', 10);
+    await seedDates(page, '2023-06-15', '2025-06-15'); // 24mo
+    await enterRawScore(page, 'receptiveLanguage', 20);
+    await enterRawScore(page, 'expressiveLanguage', 18);
 
-    // Navigate from the unique "Composite" badge up to CompositeFooter root
-    // Badge(span) → header(div) → left column(div) → root(div)
     const compositeSection = page.getByText('Composite', { exact: true }).locator('..').locator('..').locator('..');
     const sumValue = compositeSection.locator('.score-value').first();
-    await expect(sumValue).toHaveText('174');
+    await expect(sumValue).toHaveText('203');
   });
 
   test('shows composite standard score and percentile', async ({ page }) => {
-    await setAge(page, 12);
-    await enterRawScore(page, 'receptiveLanguage', 10);
-    await enterRawScore(page, 'expressiveLanguage', 10);
+    await seedDates(page, '2023-06-15', '2025-06-15'); // 24mo
+    await enterRawScore(page, 'receptiveLanguage', 20);
+    await enterRawScore(page, 'expressiveLanguage', 18);
 
     const compositeSection = page.getByText('Composite', { exact: true }).locator('..').locator('..').locator('..');
     const scoreValues = compositeSection.locator('.score-value');
     const ss = (await scoreValues.nth(1).textContent())?.trim() ?? '';
     const pct = (await scoreValues.nth(2).textContent())?.trim() ?? '';
 
-    expect(ss).not.toBe('—');
-    expect(pct).not.toBe('—');
+    expect(ss).toBe('103');
+    expect(pct).toBe('58%');
+  });
+
+  test('composite stays blank until both RL and EL entered', async ({ page }) => {
+    await seedDates(page, '2023-06-15', '2025-06-15'); // 24mo
+    await enterRawScore(page, 'receptiveLanguage', 20);
+
+    const compositeSection = page.getByText('Composite', { exact: true }).locator('..').locator('..').locator('..');
+    const sumValue = compositeSection.locator('.score-value').first();
+    await expect(sumValue).toHaveText('—');
+
+    await enterRawScore(page, 'expressiveLanguage', 18);
+    await expect(sumValue).not.toHaveText('—');
   });
 });
 
@@ -157,10 +185,21 @@ test.describe('Eligibility Highlighting', () => {
   });
 
   test('highlights raw input when score exceeds target', async ({ page }) => {
-    await setAge(page, 12);
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
     await enterRawScore(page, 'socialEmotional', 30);
 
     const input = page.locator('#raw-socialEmotional');
     await expect(input).toHaveClass(/bg-red-50/);
+  });
+
+  test('eligibility highlight removed when score lowered', async ({ page }) => {
+    await seedDates(page, '2024-06-15', '2025-06-15'); // 12mo
+    await enterRawScore(page, 'socialEmotional', 30);
+
+    const input = page.locator('#raw-socialEmotional');
+    await expect(input).toHaveClass(/bg-red-50/);
+
+    await input.fill('2');
+    await expect(input).not.toHaveClass(/bg-red-50/);
   });
 });
