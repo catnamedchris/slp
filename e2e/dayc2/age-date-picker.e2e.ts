@@ -1,200 +1,189 @@
 /**
  * E2E Tests for Age/Date Picker scenarios using Playwright
- * 
- * Install: npm install -D @playwright/test
- * Run: npx playwright test src/dayc2/e2e/age-date-picker.e2e.ts
- * 
- * Prerequisites:
- * - Dev server running (npm run dev) on http://localhost:5173
+ *
+ * Tests: child bar age flow, clear flow, persistence, date picker interaction
  */
 
 import { test, expect, Page } from '@playwright/test';
 
-
-
-const expectAgeVisible = async (page: Page, months: number) => {
-  await expect(page.getByText(`${months} months`, { exact: true })).toBeVisible();
+const setAge = async (page: Page, ageMonths: number) => {
+  const testDate = new Date();
+  const dob = new Date(testDate);
+  dob.setMonth(dob.getMonth() - ageMonths);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  await page.evaluate(
+    ([dobIso, testIso]) => {
+      localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
+      localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
+    },
+    [fmt(dob), fmt(testDate)],
+  );
+  await page.reload();
 };
 
-const expectAgeBandVisible = async (page: Page) => {
-  await expect(page.getByText(/Age Band:/)).toBeVisible();
+const clearStorage = async (page: Page) => {
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
 };
 
-const expectScoreInputsEnabled = async (page: Page) => {
-  const receptiveInput = page.getByRole('spinbutton', { name: 'Receptive Language' });
-  await expect(receptiveInput).toBeEnabled();
+const todayFormatted = () => {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${mm}/${dd}/${yyyy}`;
 };
 
-const expectScoreInputsDisabled = async (page: Page) => {
-  const receptiveInput = page.getByRole('spinbutton', { name: 'Receptive Language' });
-  await expect(receptiveInput).toBeDisabled();
-};
-
-const expectAgeError = async (page: Page, pattern: RegExp) => {
-  await expect(page.getByText(pattern)).toBeVisible();
-};
-
-// Helper to select a date in react-datepicker
-const selectDate = async (page: Page, fieldLabel: string, month: string, year: string, day: string) => {
-  const field = page.getByLabel(fieldLabel);
-  await field.click();
-  
-  // Select year
-  const yearDropdown = page.locator('.react-datepicker__year-select');
-  await yearDropdown.selectOption(year);
-  
-  // Select month (react-datepicker uses month name)
-  const monthDropdown = page.locator('.react-datepicker__month-select');
-  await monthDropdown.selectOption(month);
-  
-  // Click the day - react-datepicker uses class with day number
-  const dayNum = parseInt(day, 10);
-  await page.locator(`.react-datepicker__day--0${dayNum.toString().padStart(2, '0')}:not(.react-datepicker__day--outside-month)`).click();
-};
-
-test.describe('Age/Date Picker E2E Tests', () => {
+test.describe('Child Bar / Age Flow', () => {
   test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto('/');
   });
 
-  test('Valid Age Calculation (24 months)', async ({ page }) => {
-    // Set test date to Dec 31, 2025
-    await selectDate(page, 'Test Date', 'December', '2025', '31');
-    
-    // Set birth date to Dec 31, 2023 (24 months before)
-    await selectDate(page, 'Birth Date', 'December', '2023', '31');
-    
-    await expectAgeVisible(page, 24);
-    await expectAgeBandVisible(page);
-    await expectScoreInputsEnabled(page);
+  test('shows EmptyState when no birth date entered', async ({ page }) => {
+    await clearStorage(page);
+    await expect(page.getByText('Ready to calculate')).toBeVisible();
   });
 
-  test('Below Minimum Age (6 months)', async ({ page }) => {
-    // Set test date to Dec 31, 2025
-    await selectDate(page, 'Test Date', 'December', '2025', '31');
-    
-    // Set birth date to June 30, 2025 (6 months before)
-    await selectDate(page, 'Birth Date', 'June', '2025', '30');
-    
-    await expectAgeVisible(page, 6);
-    await expectAgeError(page, /below DAYC-2 minimum/);
-    await expectScoreInputsDisabled(page);
+  test('test date defaults to today', async ({ page }) => {
+    await clearStorage(page);
+    const testDateButton = page.locator('button#testDate');
+    await expect(testDateButton).toContainText(todayFormatted());
   });
 
-  test('Above Maximum Age via Override (80 months)', async ({ page }) => {
-    // Enable age override mode
-    await page.getByLabel('Enter age directly').check();
-    
-    // Enter age of 80 months
-    await page.getByLabel('Age (months)').fill('80');
-    
-    await expectAgeVisible(page, 80);
-    await expectAgeError(page, /above DAYC-2 maximum/);
-    await expectScoreInputsDisabled(page);
+  test('shows age and age band for valid dates', async ({ page }) => {
+    await setAge(page, 24);
+    await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
+    await expect(page.getByText('(2yr 0mo)')).toBeVisible();
   });
 
-  test('Age Override Valid (36 months)', async ({ page }) => {
-    // Enable age override mode
-    await page.getByLabel('Enter age directly').check();
-    
-    // Enter valid age
-    await page.getByLabel('Age (months)').fill('36');
-    
-    await expectAgeVisible(page, 36);
-    await expectAgeBandVisible(page);
-    await expectScoreInputsEnabled(page);
+  test('shows error for age below minimum', async ({ page }) => {
+    await setAge(page, 11);
+    await expect(page.getByText(/below DAYC-2 minimum/)).toBeVisible();
+    await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
   });
 
-  test('Age Override Below Minimum (5 months)', async ({ page }) => {
-    // Enable age override mode
-    await page.getByLabel('Enter age directly').check();
-    
-    // Enter age below minimum
-    await page.getByLabel('Age (months)').fill('5');
-    
-    await expectAgeVisible(page, 5);
-    await expectAgeError(page, /below DAYC-2 minimum/);
+  test('shows error for age above maximum', async ({ page }) => {
+    await setAge(page, 72);
+    await expect(page.getByText(/above DAYC-2 maximum/)).toBeVisible();
+    await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
   });
 
-  test('Age Override Above Maximum (80 months)', async ({ page }) => {
-    // Enable age override mode
-    await page.getByLabel('Enter age directly').check();
-    
-    // Enter age above maximum
-    await page.getByLabel('Age (months)').fill('80');
-    
-    await expectAgeVisible(page, 80);
-    await expectAgeError(page, /above DAYC-2 maximum/);
+  test('shows error when test date is before birth date', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('slp:dayc2:dob', JSON.stringify('2025-06-01'));
+      localStorage.setItem('slp:dayc2:testDate', JSON.stringify('2025-01-01'));
+    });
+    await page.reload();
+    await expect(page.getByText(/before date of birth/)).toBeVisible();
   });
 
-  test('No Date Restrictions Without Test Date', async ({ page }) => {
-    // Click birth date field to open picker
-    await page.getByLabel('Birth Date').click();
-    
-    // Check year dropdown has wide range (1900-2100)
-    const yearDropdown = page.locator('.react-datepicker__year-select');
-    const options = await yearDropdown.locator('option').allTextContents();
-    
-    expect(options).toContain('1900');
-    expect(options).toContain('2100');
+  test('renders scoring sections for valid age', async ({ page }) => {
+    await setAge(page, 24);
+    await expect(page.locator('#raw-receptiveLanguage')).toBeVisible();
+    await expect(page.locator('#targetPercentile')).toBeVisible();
   });
 
-  test('Birth Date Restricted After Test Date Set', async ({ page }) => {
-    // First set test date to Dec 31, 2025
-    await selectDate(page, 'Test Date', 'December', '2025', '31');
-    
-    // Click birth date field to open picker
-    await page.getByLabel('Birth Date').click();
-    
-    // Check year dropdown is restricted (2019-2025 for 6 years before test date)
-    const yearDropdown = page.locator('.react-datepicker__year-select');
-    const options = await yearDropdown.locator('option').allTextContents();
-    
-    expect(options).toContain('2019');
-    expect(options).toContain('2025');
-    expect(options).not.toContain('2018'); // Should not have years before 6 years ago
-    expect(options).not.toContain('2026'); // Should not have future years
+  test('hides scoring sections for invalid age', async ({ page }) => {
+    await setAge(page, 11);
+    await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
+    await expect(page.locator('#targetPercentile')).not.toBeVisible();
+  });
+});
+
+test.describe('Clear Flow', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto('/');
   });
 
-  test('Mode Toggle Preserves Dates', async ({ page }) => {
-    // Enter dates
-    await selectDate(page, 'Test Date', 'December', '2025', '31');
-    await selectDate(page, 'Birth Date', 'December', '2023', '31');
-    
-    await expectAgeVisible(page, 24);
-    
-    // Toggle to age override mode
-    await page.getByLabel('Enter age directly').check();
-    
-    // Verify date inputs disappear
-    await expect(page.getByLabel('Birth Date')).not.toBeVisible();
-    
-    // Toggle back to date mode
-    await page.getByLabel('Enter age directly').uncheck();
-    
-    // Verify date inputs reappear with preserved values
-    await expect(page.getByLabel('Birth Date')).toHaveValue('12/31/2023');
-    await expect(page.getByLabel('Test Date')).toHaveValue('12/31/2025');
-    await expectAgeVisible(page, 24);
+  test('Clear button shows confirmation', async ({ page }) => {
+    await setAge(page, 24);
+    await page.getByRole('button', { name: 'Clear' }).click();
+    await expect(page.getByRole('button', { name: 'Confirm?' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
   });
 
-  test('Mode Toggle After Age Change Preserves Dates', async ({ page }) => {
-    // Enter dates (24 months)
-    await selectDate(page, 'Test Date', 'December', '2025', '31');
-    await selectDate(page, 'Birth Date', 'December', '2023', '31');
-    await expectAgeVisible(page, 24);
+  test('Cancel preserves state', async ({ page }) => {
+    await setAge(page, 24);
+    await page.getByRole('button', { name: 'Clear' }).click();
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
+  });
 
-    // Toggle to age override and change age
-    await page.getByLabel('Enter age directly').check();
-    await page.getByLabel('Age (months)').fill('48');
-    await expectAgeVisible(page, 48);
+  test('Confirm resets to empty state', async ({ page }) => {
+    await setAge(page, 24);
+    await page.getByRole('button', { name: 'Clear' }).click();
+    await page.getByRole('button', { name: 'Confirm?' }).click();
+    await expect(page.getByText('Ready to calculate')).toBeVisible();
+    await expect(page.locator('#raw-receptiveLanguage')).not.toBeVisible();
+  });
+});
 
-    // Toggle back to date mode
-    await page.getByLabel('Enter age directly').uncheck();
+test.describe('Persistence', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto('/');
+  });
 
-    // Dates should be preserved, showing original calculated age
-    await expect(page.getByLabel('Birth Date')).toHaveValue('12/31/2023');
-    await expect(page.getByLabel('Test Date')).toHaveValue('12/31/2025');
-    await expectAgeVisible(page, 24);
+  test('DOB and test date persist across reload', async ({ page }) => {
+    await setAge(page, 24);
+    await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
+    await page.reload();
+    await expect(page.getByText('24 mo', { exact: true })).toBeVisible();
+  });
+
+  test('raw scores persist across reload', async ({ page }) => {
+    await setAge(page, 24);
+    const rawScores = {
+      cognitive: null,
+      receptiveLanguage: 10,
+      expressiveLanguage: null,
+      socialEmotional: null,
+      grossMotor: null,
+      fineMotor: null,
+      adaptiveBehavior: null,
+    };
+    await page.evaluate(
+      (scores) => localStorage.setItem('slp:dayc2:rawScores', JSON.stringify(scores)),
+      rawScores,
+    );
+    await page.reload();
+    await expect(page.locator('#raw-receptiveLanguage')).toHaveValue('10');
+  });
+
+  test('target percentile persists across reload', async ({ page }) => {
+    await setAge(page, 24);
+    await page.evaluate(() =>
+      localStorage.setItem('slp:dayc2:targetPercentile', JSON.stringify(6)),
+    );
+    await page.reload();
+    await expect(page.locator('#targetPercentile')).toHaveValue('6');
+  });
+});
+
+test.describe('Date Picker Interaction', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto('/');
+  });
+
+  test('date picker opens when clicking birth date', async ({ page }) => {
+    await page.locator('button#dob').click();
+    await expect(page.locator('[role="dialog"]')).toBeVisible();
+  });
+
+  test('date picker closes on Escape', async ({ page }) => {
+    await page.locator('button#dob').click();
+    await expect(page.locator('[role="dialog"]')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('[role="dialog"]')).not.toBeVisible();
+  });
+
+  test('date picker closes on outside click', async ({ page }) => {
+    await page.locator('button#dob').click();
+    await expect(page.locator('[role="dialog"]')).toBeVisible();
+    await page.locator('body').click({ position: { x: 0, y: 0 } });
+    await expect(page.locator('[role="dialog"]')).not.toBeVisible();
   });
 });

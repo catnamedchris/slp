@@ -1,141 +1,121 @@
 /**
- * E2E Tests for Goal Planner (Reverse Lookup)
+ * E2E Tests for Targets (Reverse Lookup)
  *
- * Tests entering a target percentile and viewing required raw scores
+ * Tests target percentile input and viewing required raw scores
  */
 
 import { test, expect, Page } from '@playwright/test';
 
-// Helper to enable age override mode and set age
-const setAgeOverride = async (page: Page, ageMonths: number) => {
-  await page.getByLabel('Enter age directly').check();
-  await page.getByLabel('Age (months)').fill(ageMonths.toString());
+// Helper to set age via localStorage (DOB + test date)
+const setAge = async (page: Page, ageMonths: number) => {
+  const testDate = new Date();
+  const dob = new Date(testDate);
+  dob.setMonth(dob.getMonth() - ageMonths);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+  await page.evaluate(
+    ([dobIso, testIso]) => {
+      localStorage.setItem('slp:dayc2:dob', JSON.stringify(dobIso));
+      localStorage.setItem('slp:dayc2:testDate', JSON.stringify(testIso));
+    },
+    [fmt(dob), fmt(testDate)]
+  );
+  await page.reload();
 };
 
-// Helper to toggle display settings
-const openDisplaySettings = async (page: Page) => {
-  await page.locator('details summary:has-text("Display Settings")').click();
-};
-
-// Helper to enable a subtest in display settings
-const enableSubtest = async (page: Page, subtestName: string) => {
-  await openDisplaySettings(page);
-  // Use checkbox role to avoid ambiguity with raw score inputs
-  await page.getByRole('checkbox', { name: subtestName }).check();
-  await openDisplaySettings(page); // close
-};
-
-// Helper to disable a subtest in display settings
-const disableSubtest = async (page: Page, subtestName: string) => {
-  await openDisplaySettings(page);
-  // Use checkbox role to avoid ambiguity with raw score inputs
-  await page.getByRole('checkbox', { name: subtestName }).uncheck();
-  await openDisplaySettings(page); // close
-};
-
-test.describe('Goal Planner / Reverse Lookup', () => {
+test.describe('Targets / Reverse Lookup', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.setViewportSize({ width: 1024, height: 768 });
   });
 
-  test('displays reverse lookup section when age is valid', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('shows Targets section when age is valid', async ({ page }) => {
+    await setAge(page, 24);
 
-    await expect(page.getByText('Reverse Lookup')).toBeVisible();
-    await expect(page.getByText('Find the raw scores needed to reach a target percentile')).toBeVisible();
+    await expect(page.getByText('Targets')).toBeVisible();
+    await expect(page.locator('#targetPercentile')).toBeVisible();
   });
 
-  test('hides reverse lookup section when no valid age', async ({ page }) => {
-    // Without setting age, the section should not appear
-    await expect(page.getByText('Reverse Lookup')).not.toBeVisible();
+  test('hides Targets section when no valid age', async ({ page }) => {
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+
+    await expect(page.locator('#targetPercentile')).not.toBeVisible();
   });
 
-  test('shows target standard score for selected percentile', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('default target percentile is 6', async ({ page }) => {
+    await setAge(page, 24);
 
-    // Default percentile is 6
-    await expect(page.getByText(/Target Standard Score:/)).toBeVisible();
-    await expect(page.locator('strong.text-indigo-600')).toBeVisible();
+    await expect(page.locator('#targetPercentile')).toHaveValue('6');
   });
 
-  test('changes results when target percentile is adjusted', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('changing percentile updates target values', async ({ page }) => {
+    await setAge(page, 24);
 
-    // Get initial standard score
-    const initialSS = await page.locator('strong.text-indigo-600').textContent();
+    // Get initial target value from the first subtest cell
+    const targetsSection = page.locator('#targetPercentile').locator('..').locator('..').locator('..');
+    const initialText = await targetsSection.textContent();
 
     // Change percentile to 50
-    await page.getByLabel('Target Percentile').fill('50');
+    await page.locator('#targetPercentile').fill('50');
 
-    // Standard score should change
-    const newSS = await page.locator('strong.text-indigo-600').textContent();
-    expect(newSS).not.toBe(initialSS);
+    const updatedText = await targetsSection.textContent();
+    expect(updatedText).not.toBe(initialText);
   });
 
-  test('displays required raw scores table', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('target cells are clickable with provenance', async ({ page }) => {
+    await setAge(page, 24);
 
-    // Table should have subtest rows
-    const tableRows = page.locator('table tbody tr');
-    const count = await tableRows.count();
-    expect(count).toBeGreaterThan(0);
+    const cell = page.locator('[title="Click to view calculation details"]').first();
+    await cell.click();
 
-    // Should show Min. Raw Score column header
-    await expect(page.getByText('Min. Raw Score')).toBeVisible();
-  });
-
-  test('shows raw scores for each subtest', async ({ page }) => {
-    await setAgeOverride(page, 24);
-    await page.getByLabel('Target Percentile').fill('25');
-
-    // Check that visible subtests are listed (RL, EL, SE are visible by default)
-    const goalTable = page.locator('table').filter({ has: page.getByText('Min. Raw Score') });
-    await expect(goalTable.locator('tr').filter({ hasText: 'Receptive Language' })).toBeVisible();
-    await expect(goalTable.locator('tr').filter({ hasText: 'Expressive Language' })).toBeVisible();
-  });
-
-  test('raw score cells have provenance click handler', async ({ page }) => {
-    await setAgeOverride(page, 24);
-
-    // Click on a raw score cell in goal planner table
-    const table = page.locator('table').filter({ has: page.getByText('Min. Raw Score') });
-    const firstRow = table.locator('tbody tr').first();
-    const scoreCell = firstRow.locator('td').nth(1);
-
-    // Should have cursor pointer and underline for clickable cells
-    await expect(scoreCell).toHaveClass(/cursor-pointer/);
-
-    await scoreCell.click();
-
-    // Provenance panel should open
     await expect(page.getByText('How was this calculated?')).toBeVisible();
   });
 
-  test('validates percentile input range (1-99)', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('percentile input has min/max attributes', async ({ page }) => {
+    await setAge(page, 24);
 
-    const input = page.getByLabel('Target Percentile');
-
-    // Input should have min/max attributes
+    const input = page.locator('#targetPercentile');
     await expect(input).toHaveAttribute('min', '1');
     await expect(input).toHaveAttribute('max', '99');
   });
 
-  test('respects display settings for visible subtests', async ({ page }) => {
-    await setAgeOverride(page, 24);
+  test('shows all three subtest abbreviations', async ({ page }) => {
+    await setAge(page, 24);
 
-    // Enable Cognitive first, then disable it
-    await enableSubtest(page, 'Cognitive');
+    const targetsSection = page.locator('#targetPercentile').locator('..').locator('..').locator('..');
+    await expect(targetsSection.getByText('RL')).toBeVisible();
+    await expect(targetsSection.getByText('EL')).toBeVisible();
+    await expect(targetsSection.getByText('SE')).toBeVisible();
+  });
+});
 
-    // Verify Cognitive is now visible
-    const goalTable = page.locator('table').filter({ has: page.getByText('Min. Raw Score') });
-    await expect(goalTable.locator('tr').filter({ hasText: 'Cognitive' })).toBeVisible();
+test.describe('Targets Sticky Bar', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.setViewportSize({ width: 1024, height: 768 });
+  });
 
-    // Disable Cognitive
-    await disableSubtest(page, 'Cognitive');
+  test('shows sticky bar when scrolled', async ({ page }) => {
+    await setAge(page, 24);
 
-    // Goal planner table should no longer show Cognitive
-    await expect(goalTable.locator('tr').filter({ hasText: 'Cognitive' })).not.toBeVisible();
+    // Enter raw scores to ensure page has enough content to scroll
+    const rawInputs = page.getByRole('spinbutton');
+    const count = await rawInputs.count();
+    for (let i = 0; i < count; i++) {
+      const input = rawInputs.nth(i);
+      if (await input.isVisible()) {
+        await input.fill('10');
+      }
+    }
+
+    // Scroll down past the sentinel
+    await page.evaluate(() => window.scrollTo(0, 500));
+    await page.waitForTimeout(300);
+
+    // Verify the sticky bar shows age display and Targets label with percentile input
+    const stickyPercentile = page.locator('#targetPercentile');
+    await expect(stickyPercentile).toBeVisible();
+    await expect(page.getByText('24 mo', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Targets')).toBeVisible();
   });
 });
