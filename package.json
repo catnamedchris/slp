@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "test:node": "jest",
     "build": "tsc",
-    "build:dayc2-json": "npx ts-node tools/dayc2/csvToJson.ts"
+    "build:dayc2-json": "npx ts-node tools/dayc2/csvToJson.ts",
+    "validate:dayc2-data": "npx ts-node tools/dayc2/validateCrossTable.ts"
   },
   "keywords": [],
   "author": "",

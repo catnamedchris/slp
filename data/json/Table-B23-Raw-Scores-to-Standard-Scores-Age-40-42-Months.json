@@ -6,7 +6,7 @@
     "manualPage": 24,
     "csvFilename": "Table-B23-Raw-Scores-to-Standard-Scores-Age-40-42-Months.csv",
     "csvSha256": "200ad9c424c692a5baa4dde7ec2c62f673731ac5bdbf392d731c44753a00170c",
-    "generatedAt": "2026-01-05T18:42:52.718Z",
+    "generatedAt": "2026-04-19T08:19:41.254Z",
     "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 40,

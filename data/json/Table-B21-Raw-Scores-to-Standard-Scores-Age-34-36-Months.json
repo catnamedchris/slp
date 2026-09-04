@@ -5,8 +5,8 @@
     "tableTitle": "Table B.21 Raw Scores to Standard Scores: Ages 34–36 Months",
     "manualPage": 20,
     "csvFilename": "Table-B21-Raw-Scores-to-Standard-Scores-Age-34-36-Months.csv",
-    "csvSha256": "b17898c7b49bd69e492a862639f550b08329118f72cc32c5868f25c86d5cb503",
-    "generatedAt": "2026-01-05T18:42:52.717Z",
+    "csvSha256": "1ec170582ac77f97a772ac0ed3537548047495753ffac60a920433f950ed7c38",
+    "generatedAt": "2026-04-19T08:19:41.253Z",
     "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 34,
@@ -1529,9 +1529,7 @@
       },
       "receptiveLanguage": null,
       "expressiveLanguage": null,
-      "socialEmotional": {
-        "value": 134
-      },
+      "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
       "adaptiveBehavior": {

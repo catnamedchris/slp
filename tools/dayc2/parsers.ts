@@ -68,9 +68,9 @@ const B_TABLE_AGE_BANDS: Record<BTableId, AgeBand> = {
   B23: { minMonths: 40, maxMonths: 42, label: '40-42 Months' },
   B24: { minMonths: 43, maxMonths: 45, label: '43-45 Months' },
   B25: { minMonths: 46, maxMonths: 48, label: '46-48 Months' },
-  B26: { minMonths: 49, maxMonths: 54, label: '49-54 Months' },
-  B27: { minMonths: 55, maxMonths: 60, label: '55-60 Months' },
-  B28: { minMonths: 61, maxMonths: 65, label: '61-65 Months' },
+  B26: { minMonths: 49, maxMonths: 53, label: '49-53 Months' },
+  B27: { minMonths: 54, maxMonths: 59, label: '54-59 Months' },
+  B28: { minMonths: 60, maxMonths: 65, label: '60-65 Months' },
   B29: { minMonths: 66, maxMonths: 71, label: '66-71 Months' },
 };
 

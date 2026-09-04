@@ -55,7 +55,7 @@ describe('createSourceMeta', () => {
     expect(meta.tableId).toBe('B13');
     expect(meta.csvFilename).toBe('test.csv');
     expect(meta.csvSha256).toBe(computeSha256('content'));
-    expect(meta.generatorVersion).toBe('dayc2-csv2json@1.0.0');
+    expect(meta.generatorVersion).toBe('dayc2-csv2json@1.1.0');
     expect(meta.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 });

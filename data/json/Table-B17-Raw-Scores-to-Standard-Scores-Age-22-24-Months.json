@@ -5,8 +5,8 @@
     "tableTitle": "Table B.17 Raw Scores to Standard Scores: Ages 22–24 Months",
     "manualPage": 12,
     "csvFilename": "Table-B17-Raw-Scores-to-Standard-Scores-Age-22-24-Months.csv",
-    "csvSha256": "40ba17067ad70b88ac1324e277ea13f1c9ff6b5a55a6759c92bd2dc67ac93020",
-    "generatedAt": "2026-01-05T18:42:52.716Z",
+    "csvSha256": "26ea49894c9b2f329fb39d50760fe60384e66d5b24aaf465b5854787de42eece",
+    "generatedAt": "2026-04-19T08:19:41.252Z",
     "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 22,
@@ -995,7 +995,10 @@
       "cognitive": {
         "value": 109
       },
-      "receptiveLanguage": null,
+      "receptiveLanguage": {
+        "bound": "gt",
+        "value": 150
+      },
       "expressiveLanguage": {
         "bound": "gt",
         "value": 150

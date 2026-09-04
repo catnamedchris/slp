@@ -6,7 +6,7 @@
     "manualPage": 4,
     "csvFilename": "Table-B13-Raw-Scores-to-Standard-Scores-Age-12-13-Months.csv",
     "csvSha256": "1510f5fb475eae7489829e05e56a3615298956e9d3b025eaae94fa97dc67e300",
-    "generatedAt": "2026-01-05T18:42:52.715Z",
+    "generatedAt": "2026-04-19T08:19:41.250Z",
     "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 12,

@@ -5,8 +5,8 @@
     "tableTitle": "Table B.22 Raw Scores to Standard Scores: Ages 37–39 Months",
     "manualPage": 22,
     "csvFilename": "Table-B22-Raw-Scores-to-Standard-Scores-Age-37-39-Months.csv",
-    "csvSha256": "772e8af3f53c15b2bf68e35e5c94c9698e53345a3695aa74c62f04bc6ef39b4a",
-    "generatedAt": "2026-01-05T18:42:52.718Z",
+    "csvSha256": "974759d4daf1df7fbd6ad9617d02c4fa9fdb34f7242016f9396145714456588b",
+    "generatedAt": "2026-04-19T08:19:41.253Z",
     "generatorVersion": "dayc2-csv2json@1.1.0",
     "ageBand": {
       "minMonths": 37,
@@ -1558,9 +1558,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 142
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 68,
@@ -1573,9 +1571,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 144
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 69,
@@ -1588,9 +1584,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 145
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 70,
@@ -1603,9 +1597,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 147
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 71,
@@ -1618,9 +1610,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 148
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 72,
@@ -1633,9 +1623,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 73,
@@ -1648,10 +1636,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 74,
@@ -1664,10 +1649,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 75,
@@ -1680,10 +1662,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 76,
@@ -1696,10 +1675,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 77,
@@ -1712,10 +1688,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 78,
@@ -1728,10 +1701,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 79,
@@ -1744,10 +1714,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 80,
@@ -1760,10 +1727,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 81,
@@ -1776,10 +1740,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     },
     {
       "csvRow": 82,
@@ -1792,10 +1753,7 @@
       "socialEmotional": null,
       "grossMotor": null,
       "fineMotor": null,
-      "adaptiveBehavior": {
-        "bound": "gt",
-        "value": 150
-      }
+      "adaptiveBehavior": null
     }
   ]
 }
