@@ -28,10 +28,10 @@ describe('Dayc2App', () => {
     expect(screen.getByLabelText('Test Date')).toBeInTheDocument();
   });
 
-  it('shows no scores and no empty state when only test date is defaulted', () => {
+  it('shows empty state when only test date is defaulted', () => {
     render(<Dayc2App />);
-    // Test date defaults to today, but no DOB yet — no scores should render
-    expect(screen.queryByText('Ready to calculate')).not.toBeInTheDocument();
+    // Test date defaults to today, but no DOB yet — empty state should render
+    expect(screen.queryByText('Ready to calculate')).toBeInTheDocument();
     expect(screen.queryByText('Targets')).not.toBeInTheDocument();
   });
 
