@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+required_node_version="$(<.node-version)"
+if [[ ! -x "$HOME/.local/bin/node" ]] || [[ "$($HOME/.local/bin/node --version)" != "v$required_node_version" ]]; then
+  echo "Installing Node $required_node_version..."
+  npm install --global --prefix "$HOME/.local" "node@$required_node_version"
+fi
+export PATH="$HOME/.local/bin:$PATH"
+hash -r
+
+echo "Installing npm dependencies with Node $(node --version) and npm $(npm --version)..."
+SECONDS=0
+npm ci --registry=https://registry.npmjs.org
+echo "npm dependencies installed in ${SECONDS}s."
+
+# npm can omit Rollup's platform package from otherwise complete lockfiles.
+rollup_version="$(node -p "require('./node_modules/rollup/package.json').version")"
+rollup_package_dir="node_modules/@rollup/rollup-linux-x64-gnu"
+if [[ ! -d "$rollup_package_dir" ]]; then
+  rollup_archive_dir="$(mktemp -d)"
+  trap 'rm -rf "$rollup_archive_dir"' EXIT
+  npm pack --silent --pack-destination "$rollup_archive_dir" --registry=https://registry.npmjs.org \
+    "@rollup/rollup-linux-x64-gnu@$rollup_version" >/dev/null
+  mkdir -p "$rollup_package_dir"
+  tar -xzf "$rollup_archive_dir"/*.tgz -C "$rollup_package_dir" --strip-components=1
+  rm -rf "$rollup_archive_dir"
+  trap - EXIT
+fi
+
+echo "Installing the Playwright Chromium browser..."
+SECONDS=0
+npx playwright install chromium
+echo "Playwright Chromium installed in ${SECONDS}s."
