@@ -68,6 +68,9 @@ export default defineConfig({
       '@data': path.resolve(__dirname, './data'),
     },
   },
+  server: {
+    allowedHosts: process.env.AMP_ORB ? true : undefined,
+  },
   build: {
     outDir: 'dist-web',
     chunkSizeWarningLimit: 800,
